@@ -37,5 +37,4 @@ void print_log_register_io(struct print_log_interface fio);
 #define LOG_ERROR(fmt,...)  print_level(LOG_LEVEL_ERROR,fmt, ##__VA_ARGS__)
 #endif
 
-
 #endif

@@ -67,7 +67,8 @@ static int get_sys_time(struct ecode_cli_dev *dev, char **args, int argc)
     timestamp = get_timestamp();
 
     ecode_cli_print(dev, "time:%d s %d ms\r\n", timestamp.second, timestamp.msecond);
-    printf("time:%d s %d ms\r\n", timestamp.second, timestamp.msecond);
+    //printf("time:%d s %d ms\r\n", timestamp.second, timestamp.msecond);
+    printf("ecode cli\r\n");
 
     cli_error(dev, ERROR_NONE);
 }

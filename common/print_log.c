@@ -100,7 +100,6 @@ int print_level(int level, const char *fmt, ...)
         
         printf("\r\n");
         
-        fflush(stdout);
     }
     
     return ret;
@@ -112,11 +111,11 @@ PUTCHAR_PROTOTYPE
     return ch;
 }
 
-#ifdef __GNU__
+//#ifdef __GNU__
 
 int __io_getchar(void)
 {
     return print_log_getchar();
 }
 
-#endif
+//#endif
