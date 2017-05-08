@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\common\bin\cspybat" -f "H:\develop\baseline\ecode\targets\TARGET_STM32L0\NUCLEO_L073\EWARM\settings\ecode_nucleo_l073.Debug.general.xcl" --backend -f "H:\develop\baseline\ecode\targets\TARGET_STM32L0\NUCLEO_L073\EWARM\settings\ecode_nucleo_l073.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\common\bin\cspybat" -f "F:\demo\ecode\targets\TARGET_STM32L0\NUCLEO_L073\EWARM\settings\ecode_nucleo_l073.Debug.general.xcl" --backend -f "F:\demo\ecode\targets\TARGET_STM32L0\NUCLEO_L073\EWARM\settings\ecode_nucleo_l073.Debug.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\common\bin\cspybat" -f "H:\develop\baseline\ecode\targets\TARGET_STM32L0\NUCLEO_L073\EWARM\settings\ecode_nucleo_l073.Debug.general.xcl" "--debug_file=%~1" --backend -f "H:\develop\baseline\ecode\targets\TARGET_STM32L0\NUCLEO_L073\EWARM\settings\ecode_nucleo_l073.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\common\bin\cspybat" -f "F:\demo\ecode\targets\TARGET_STM32L0\NUCLEO_L073\EWARM\settings\ecode_nucleo_l073.Debug.general.xcl" "--debug_file=%~1" --backend -f "F:\demo\ecode\targets\TARGET_STM32L0\NUCLEO_L073\EWARM\settings\ecode_nucleo_l073.Debug.driver.xcl" 
 
 @echo off 
 :end

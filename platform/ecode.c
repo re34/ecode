@@ -4,7 +4,7 @@
 
 
 static struct ecode_cli_dev com_cli;
-static struct stdio_device com_stdio;
+static struct stdioex_device com_stdio;
 static struct timer_device base_timer;
 static struct pwm_device pwm_dev;
 static struct pwm_operations pwm_ops;
@@ -30,8 +30,9 @@ void ecode_init(void)
     ecode_tick_set_callback(timestamp_polling);
     serial_init();
     
-    com_stdio.putchar = com_putchar;
-    com_stdio.getchar = com_getchar;
+    com_stdio.put_char = com_putchar;
+    com_stdio.get_char = com_getchar;
+    stdio_puts(&com_stdio, "ecode initing......\r\n");
     com_cli.stdio = &com_stdio;
     ecode_register_cli_device( &com_cli, "COM");
     cli_register_platform_commands();

@@ -3,7 +3,7 @@
 #include "includes.h"
 #include "platform_device_tree.h"
 
-typedef int dev_t;
+typedef int device_t;
 
 
 struct device_file{
@@ -29,8 +29,8 @@ struct platform_device{
 };
 
 
-int platform_driver_register(dev_t dev, int minor_num, struct platform_device *pdev);
-int platform_driver_unregister(dev_t dev, int minor_num);
+int platform_driver_register(device_t dev, int minor_num, struct platform_device *pdev);
+int platform_driver_unregister(device_t dev, int minor_num);
 int write(int fd, char *datas, int len);
 int read(int fd, char *buf, int len);
 int ioctl(int fd, int cmd, int arg);

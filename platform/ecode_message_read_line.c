@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include "stdio_ex.h"
 
 
 int ecode_message_read_line(struct ecode_cli_dev *dev, const char *end)
@@ -13,17 +14,17 @@ int ecode_message_read_line(struct ecode_cli_dev *dev, const char *end)
     int match_len = 0;
     int ret=0;
     
-    struct stdio_device *stdio;
+    struct stdioex_device * stdio_dev;
     
-    stdio = dev->stdio;
+     stdio_dev = dev->stdio;
     
     if((dev->flag&CLI_PROMOT)==0)
     {
-        stdio_puts(stdio, "ecode>> ");
+        stdio_puts(stdio_dev , "ecode>> ");
         dev->flag|=CLI_PROMOT;
     }
     
-    data = stdio->getchar();
+    data = stdio_dev->get_char();
     
     if(data<0)
         return -1;
@@ -36,11 +37,12 @@ int ecode_message_read_line(struct ecode_cli_dev *dev, const char *end)
     if((data=='\b')&&(dev->rxlen>0))
     {
         dev->rxlen--;
-        stdio->putchar(data);
+         stdio_dev->put_char(data);
+
         return 0;
     }
     
-    stdio->putchar(data);
+    stdio_dev->put_char(data);
     
     dev->rxbuf[dev->rxlen++]=data;
     if(dev->rxlen==CLI_BUF_SIZE)

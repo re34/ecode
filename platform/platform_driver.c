@@ -4,12 +4,13 @@
 
 struct platform_device *platform_devices[DEVICEn]={0};
 
-int platform_driver_register(dev_t dev, int minor_num, struct platform_device *pdev)
+int platform_driver_register(device_t dev, int minor_num, struct platform_device *pdev)
 {
     int i;
     if(dev>=DEVICEn)
         return -1;
     pdev->major = dev;
+    
     for(i=0; i<minor_num;i++)
     {
         pdev->file[i].major = dev;
@@ -21,7 +22,7 @@ int platform_driver_register(dev_t dev, int minor_num, struct platform_device *p
     return 0;
 }
 
-int platform_driver_unregister(dev_t dev, int minor_num)
+int platform_driver_unregister(device_t dev, int minor_num)
 {
 
     return 0;

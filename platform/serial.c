@@ -62,7 +62,7 @@ int serial_init(void)
     fuart_irq.uart_rxne_callback = serial1_rx_callback;
     bsp_uart_register_irq(fuart_irq);
     
-    fprint_log.putchar = bsp_uart_writebyte;
+    fprint_log.put_char = bsp_uart_writebyte;
     print_log_register_io(fprint_log);
     
     ret = platform_driver_register(COM, 2,&com_dev);

@@ -1,6 +1,7 @@
 #ifndef __ECODE_H__
 #define __ECODE_H__
 #include "config.h"
+#include "includes.h"
 #include "../targets/target.h"
 #include "ecode_tick.h"
 #include "serial.h"

@@ -15,7 +15,7 @@ struct ecode_cli_dev{
     const char *name;
     int rxlen;
     char rxbuf[CLI_BUF_SIZE];
-    struct stdio_device *stdio;
+    struct stdioex_device *stdio;
     int flag;
     void *private_data;
 };

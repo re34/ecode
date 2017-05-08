@@ -11,7 +11,8 @@
 
 struct print_log_interface{
     //int getchar(void);
-    int (*putchar)(unsigned char data);
+    int (*put_char)(unsigned char data);
+    int (*get_char)(void);
 };
 
 

@@ -45,7 +45,7 @@ void cli_task(void *args);
 void init(void *args)
 {
     ecode_init();
-    
+    LOG_DEBUG("init completed!");
     xTaskCreate(cli_task,
                 "cli_task",
                 512,
@@ -57,7 +57,7 @@ void init(void *args)
 
 void cli_task(void *args)
 {
-
+    
     while(1)
     {
         ecode_cli_polling();
@@ -86,11 +86,6 @@ int main(void)
 
 }
 
-/*
-void _exit(int status)
-{
-    
-}*/
 
 
 

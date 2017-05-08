@@ -4,42 +4,42 @@
 #include <stdarg.h>
 
 
-int stdio_getc(struct stdio_device *dev)
+int stdio_getc(struct stdioex_device *dev)
 {
-    return dev->getchar();
+    return dev->get_char();
 }
 
-int stdio_putc(struct stdio_device *dev,char data)
+int stdio_putc(struct stdioex_device *dev,char data)
 {
-    dev->putchar(data);
+    dev->put_char(data);
     
     return 0;
 }
 
-int stdio_puts(struct stdio_device *dev, const char *str)
+int stdio_puts(struct stdioex_device *dev, const char *str)
 {
     int ret;
     int len = strlen(str);
     char *pstr = (char *)str;
     
-    if(dev->putchar==NULL)
+    if(dev->put_char==NULL)
         return -1;
     
     ret = len;
     while(len--)
     {
-        dev->putchar(*pstr++);
+        dev->put_char(*pstr++);
     }
     
     return ret;
 }
 
-int stdio_print(struct stdio_device *dev, const char *fmt, ...)
+int stdio_print(struct stdioex_device *dev, const char *fmt, ...)
 {
     int ret;
     va_list args;
     
-    if(dev->putchar==NULL)
+    if(dev->put_char==NULL)
         return -1;
     
     va_start(args, fmt);

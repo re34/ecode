@@ -10,7 +10,7 @@ void init_task(void *args)
     
     while(1)
     {
-        vTaskDelay(10);
+        vTaskDelay(500);  
     }
 }
 

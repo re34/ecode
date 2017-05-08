@@ -1,5 +1,6 @@
 #include "print_log.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
 
@@ -35,17 +36,27 @@ const LogStrItem_t tLogStrMap[]={
 
 static struct print_log_interface fprint_log;
 
+static inline int print_log_putchar(int data);
+
 void print_log_register_io(struct print_log_interface fio)
 {
     fprint_log = fio;
+    LOG_DEBUG("print log inited!\r\n");
 }
 
 
 static inline int print_log_putchar(int data)
 {
-    if(fprint_log.putchar==NULL)
+    if(fprint_log.put_char==NULL)
         return -1;
-    return fprint_log.putchar(data);
+    return fprint_log.put_char(data);
+}
+
+static inline int print_log_getchar(void)
+{
+    if(fprint_log.get_char==NULL)
+        return -1;
+    return fprint_log.get_char();
 }
 
 static char *LogGetLevelString(int level)
@@ -72,8 +83,11 @@ int print_level(int level, const char *fmt, ...)
     if(level>=LOG_LEVEL)
     {
         ret = printf("[");
+        fflush(stdout);
         ret+=printf(LogGetLevelString(level));
+        fflush(stdout);
         ret+=printf("]");
+        fflush(stdout);
         
         va_list args;
         va_start(args, fmt);
@@ -82,7 +96,11 @@ int print_level(int level, const char *fmt, ...)
         
         va_end(args);
         
+        fflush(stdout);
+        
         printf("\r\n");
+        
+        fflush(stdout);
     }
     
     return ret;
@@ -93,3 +111,12 @@ PUTCHAR_PROTOTYPE
     print_log_putchar(ch);
     return ch;
 }
+
+#ifdef __GNU__
+
+int __io_getchar(void)
+{
+    return print_log_getchar();
+}
+
+#endif
