@@ -39,7 +39,7 @@
 #include "main.h"
 
 
-
+#if RTOS_EN==1
 void cli_task(void *args);
 
 void init(void *args)
@@ -63,7 +63,7 @@ void cli_task(void *args)
         ecode_cli_polling();
     }
 }
-
+#endif
 /**
   * @brief  Main program
   * @param  None
