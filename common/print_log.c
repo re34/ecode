@@ -41,7 +41,7 @@ static inline int print_log_putchar(int data);
 void print_log_register_io(struct print_log_interface fio)
 {
     fprint_log = fio;
-    LOG_DEBUG("print log inited!\r\n");
+    print_log("print log inited!\r\n");
 }
 
 
@@ -79,15 +79,15 @@ int print_level(int level, const char *fmt, ...)
     int ret;
     if(level==LOG_LEVEL_CLOSE)
         return 0;
-    
+
     if(level>=LOG_LEVEL)
     {
         ret = printf("[");
-        fflush(stdout);
+        //fflush(stdout);
         ret+=printf(LogGetLevelString(level));
-        fflush(stdout);
+        //fflush(stdout);
         ret+=printf("]");
-        fflush(stdout);
+        //fflush(stdout);
         
         va_list args;
         va_start(args, fmt);
@@ -96,12 +96,12 @@ int print_level(int level, const char *fmt, ...)
         
         va_end(args);
         
-        fflush(stdout);
+        //fflush(stdout);
         
         printf("\r\n");
         
     }
-    
+
     return ret;
 }
 

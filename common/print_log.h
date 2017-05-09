@@ -24,11 +24,11 @@ void print_log_register_io(struct print_log_interface fio);
 #define print_log(fmt, ...)    printf(fmt, ##__VA_ARGS__)
 #define LogNewLine()          printf(NEW_LINE)
 
-#if (LOG_LEVEL==LOG_CLOSE)
-#define LOG_INFO(fmt,...)  
-#define LOG_DEBUG(fmt,...)  
-#define LOG_WARM(fmt,...)  
-#define LOG_ERROR(fmt,...)  
+#if (LOG_LEVEL==LOG_LEVEL_CLOSE)
+#define LOG_INFO(fmt,...)
+#define LOG_DEBUG(fmt,...)
+#define LOG_WARM(fmt,...)
+#define LOG_ERROR(fmt,...)
 #else
 #define LOG_INFO(fmt,...)  print_level(LOG_LEVEL_INFO,fmt, ##__VA_ARGS__)
 #define LOG_DEBUG(fmt,...)  print_level(LOG_LEVEL_DEBUG,fmt, ##__VA_ARGS__)

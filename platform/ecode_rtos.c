@@ -19,7 +19,7 @@ void rtos_start(rtos_task_run_t run)
     finit_run = run;
     xTaskCreate(init_task,
                 "init_task",
-                512,
+                1024,
                 NULL,
                 1,
                 NULL);
