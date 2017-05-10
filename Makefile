@@ -9,16 +9,16 @@
 
 
 PROJECT		=ecode
-TARGET_CHIP	=STM32L0
-TARGET_BOARD	=NUCLEO_L073
-STARTUP_FILE	:=startup_stm32l073xx.S
-LINK_FILE	:=STM32L073RZ_FLASH.ld
+TARGET_CHIP	=STM32L4
+TARGET_BOARD	=NUCLEO_L476
+STARTUP_FILE	:=startup_stm32l476xx.S
+LINK_FILE	:=STM32L476RG_FLASH.ld
 
 
 GCC_PREFIX	=arm-none-eabi-
 
 DEFS += -D USE_HAL_DRIVER
-DEFS += -D STM32L073xx
+DEFS += -D STM32L476xx
 
 #TOP_DIR         =$(shell pwd)
 TOP_DIR		=.
@@ -52,8 +52,9 @@ INC_DIR		+=-I $(TOP_DIR)/user
 INC_DIR		+=-I $(TOP_DIR)/drivers
 INC_DIR		+=-I $(TOP_DIR)/common
 INC_DIR		+=-I $(TOP_DIR)/library/OS/FreeRTOS/include
-INC_DIR		+=-I $(TOP_DIR)/library/OS/FreeRTOS/portable/GCC/ARM_CM0
+INC_DIR		+=-I $(TOP_DIR)/library/OS/FreeRTOS/portable/GCC/ARM_CM4F
 INC_DIR		+=-I $(TOP_DIR)/user/applications
+
 
 CC		:=$(GCC_PREFIX)gcc
 AS		:=$(GCC_PREFIX)as
@@ -63,16 +64,18 @@ OBJCP		:=$(GCC_PREFIX)objcopy
 OBJSIZE		:=$(GCC_PREFIX)size
 
 #CCFLAGS		+=-mcpu=cortex-m4 -mthumb -Wall -Os -ffunction-sections -fdata-sections -g -std=gnu99
-CCFLAGS		+=-mcpu=cortex-m0plus -mthumb -Wall -Os -std=gnu99
+CCFLAGS		+=-mcpu=cortex-m4 -mthumb -Wall -Os -std=gnu99
+CCFLAGS		+=-mfpu=fpv4-sp-d16 -mfloat-abi=softfp
 CCFLAGS		+=-Wno-unused-variable	#don't warning unused variable
 CCFLAGS		+=-nostartfiles
 CCFLAGS		+=-ffunction-sections -fdata-sections
 CCFLAGS		+=-g
 
-LDFLAGS		+=-mcpu=cortex-m0plus -mthumb
+LDFLAGS		+=-mcpu=cortex-m4 -mthumb
 #LDFLAGS		+=-specs=nano.specs
 LDFLAGS		+=-u_printf_float
 LDFLAGS		+=-Wl,--gc-sections
+LDFLAGS		+=-mfpu=fpv4-sp-d16 -mfloat-abi=softfp
 #LDFLAGS		+=-mcpu=cortex-m4	-mthumb -Wall -Os -ffunction-sections -fdata-sections -g -std=gnu99
 
 SOURCE		+=$(wildcard $(TARGET_CHIP_DIR)/*.c)
@@ -86,7 +89,7 @@ SOURCE		+=$(wildcard $(TOP_DIR)/common/*.c)
 SOURCE		+=$(wildcard $(TOP_DIR)/user/applications/*.c)
 SOURCE		+=$(wildcard $(TARGET_CHIP_DIR)/BSP/*.c)
 SOURCE		+=$(wildcard $(TOP_DIR)/library/OS/FreeRTOS/*.c)
-SOURCE		+=$(wildcard $(TOP_DIR)/library/OS/FreeRTOS/portable/GCC/ARM_CM0/*.c)
+SOURCE		+=$(wildcard $(TOP_DIR)/library/OS/FreeRTOS/portable/GCC/ARM_CM4F/*.c)
 SOURCE		+=$(wildcard $(TOP_DIR)/library/OS/FreeRTOS/portable/MemMang/*4.c)
 SOURCE_ASM	+=$(wildcard $(TARGET_CHIP_DIR)/$(TARGET_BOARD)/TOOLCHAIN_GCC_ARM/*.S)
 

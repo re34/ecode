@@ -146,6 +146,10 @@ int ecode_cli_polling(void)
                     cli_print_error((struct ecode_cli_dev *)dev, ERROR_UNKNOW_CMD);
                 }
             }
+            else
+            {
+                cli_print_error((struct ecode_cli_dev *)dev, ERROR_UNKNOW_CMD);
+            }
             ((struct ecode_cli_dev *)dev)->rxlen = 0;
         }
     }
