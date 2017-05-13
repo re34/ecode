@@ -3,3 +3,4 @@
 /targets/TARGET_STM32L4/NUCLEO_L476/EWARM/Debug
 /Obj
 /Output
+/targets/TARGET_STM32F3/NUCLEO_F303/EWARM/Debug

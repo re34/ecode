@@ -9,6 +9,7 @@ void display_callback(void)
 {
     led_toggle(LED1);
     ecode_tick_attach_timeout(&led_timeout, display_callback,500);
+    
 }
 
 void display_task(void *args)
@@ -30,6 +31,7 @@ void display_task(void *args)
 void display_init(void)
 {
 #if RTOS_EN==1
+    LOG_DEBUG("display init...");
     xTaskCreate(display_task,
                 "display_task",
                 512,

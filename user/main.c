@@ -45,14 +45,14 @@ void cli_task(void *args);
 void init(void *args)
 {
     ecode_init();
-    LOG_DEBUG("init completed!");
+    display_init();
     xTaskCreate(cli_task,
                 "cli_task",
                 512,
                 NULL,
                 1,
                 NULL);
-    display_init();
+    
 }
 
 void cli_task(void *args)
