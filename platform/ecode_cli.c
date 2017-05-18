@@ -1,6 +1,6 @@
 #include "ecode_cli.h"
-#include "ecode_message_read_line.h"
-#include "ecode_message_parsing.h"
+#include "cli_message_read_line.h"
+#include "cli_message_parsing.h"
 #include <string.h>
 #include <stdarg.h>
 #include "includes.h"

@@ -3,7 +3,7 @@
 #include "includes.h"
 #include "stdio_ex.h"
 #include "ecode_cli.h"
-#include "ecode_cli_errno.h"
+#include "cli_errno.h"
 
 #define CLI_BUF_SIZE    512
 #define CLI_MAX_PARAM    100

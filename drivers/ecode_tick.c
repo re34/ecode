@@ -13,6 +13,8 @@ void ecode_tick_init(void)
 {
 #if RTOS_EN==0
     target_tick_init(TICKS_PER_SECOND, 1);
+#else
+    
 #endif
     _ecode_ticks = 0;
 }

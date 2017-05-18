@@ -1,5 +1,5 @@
-#ifndef __ECODE_MESSAGE_READLINE_H__
-#define __ECODE_MESSAGE_READLINE_H__
+#ifndef __CLI_MESSAGE_READLINE_H__
+#define __CLI_MESSAGE_READLINE_H__
 #include "ecode_cli.h"
 
 
