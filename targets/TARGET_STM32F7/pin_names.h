@@ -61,6 +61,8 @@ typedef enum {
 
     PH_0  = 0x70,
     PH_1  = 0x71,
+    
+    LED1=PB_0,
 
     // Not connected
     NC = (int)0xFFFFFFFF

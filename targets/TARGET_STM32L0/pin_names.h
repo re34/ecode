@@ -62,6 +62,7 @@ typedef enum {
     PH_0  = 0x70,
     PH_1  = 0x71,
 
+    LED1=PA_5,
     // Not connected
     NC = (int)0xFFFFFFFF
 } pin_name_t;
