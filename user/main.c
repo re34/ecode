@@ -48,16 +48,17 @@ void init(void *args)
     display_init();
     xTaskCreate(cli_task,
                 "cli_task",
-                512,
+                1024,
                 NULL,
-                1,
+                2,
                 NULL);
     
 }
 
 void cli_task(void *args)
 {
-    
+    LOG_DEBUG("cli task running...");
+    wait_system_on();
     while(1)
     {
         ecode_cli_polling();

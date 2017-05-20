@@ -2,6 +2,16 @@
 #include "includes.h"
 
 rtos_task_run_t finit_run = NULL;
+static int is_system_on = 0;
+
+void wait_system_on(void)
+{
+    while(is_system_on==0)
+    {
+        vTaskDelay(1);
+    }
+}
+
 
 void init_task(void *args)
 {
@@ -10,6 +20,9 @@ void init_task(void *args)
     
     while(1)
     {
+        LOG_DEBUG("init task was removed!");
+        is_system_on = 1;
+        vTaskDelete(NULL);
         vTaskDelay(500);  
     }
 }

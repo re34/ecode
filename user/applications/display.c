@@ -16,6 +16,7 @@ void display_task(void *args)
 {
     LOG_DEBUG("display_task running...");
     led_init();
+    wait_system_on();
     ecode_tick_attach_timeout(&led_timeout, display_callback,500);
     //pwm_period_ms(PWM1,60);
     //pwm_write(PWM1, 0.5);
@@ -31,12 +32,11 @@ void display_task(void *args)
 void display_init(void)
 {
 #if RTOS_EN==1
-    LOG_DEBUG("display init...");
     xTaskCreate(display_task,
                 "display_task",
                 512,
                 NULL,
-                2,
+                3,
                 NULL);
 #endif
 }
