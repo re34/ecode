@@ -20,5 +20,7 @@ struct serial_dev{
 
 
 int serial_register(int fd, struct serial_dev *dev);
-
+int serial_write(int fd, char *datas, int len);
+int serial_read(int fd, char *buf, int len);
+int serial_in_waiting(int fd);
 #endif

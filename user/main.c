@@ -52,7 +52,7 @@ void init(void *args)
                 NULL,
                 2,
                 NULL);
-    
+    bt_spp_init();
 }
 
 void cli_task(void *args)

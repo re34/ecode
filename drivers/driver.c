@@ -1,6 +1,7 @@
 #include "driver.h"
-#include "uart.h"
 #include "ecode.h"
+#include "uart.h"
+#include "uart2.h"
 
 static struct timer_device base_timer;
 static struct pwm_device pwm_dev;
@@ -12,9 +13,17 @@ int driver_init(void)
     struct print_log_interface fprint_log;
     
     uart_init();
-    
     fprint_log.put_char = bsp_uart_writebyte;
     print_log_register_io(fprint_log);
+    
+    if(uart_init()<0)
+    {
+        LOG_ERROR("uart init failed!");
+    }
+    if(uart2_init()<0)
+    {
+        LOG_ERROR("uart2 init failed");
+    }
     
     //register base timer
     base_timer.init = bsp_base_timer_init;

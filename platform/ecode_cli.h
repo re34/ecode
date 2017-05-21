@@ -49,6 +49,7 @@ void cli_print_error(struct ecode_cli_dev *dev, int errno);
 
 
 void ecode_register_cli_device(struct ecode_cli_dev *dev, const char *name);
+void ecode_unregister_cli_device(struct ecode_cli_dev *dev);
 int ecode_cli_puts(struct ecode_cli_dev *dev, const char *str);
 void ecode_register_commands(struct cli_commands_list * cli_commands_entry, const struct cli_command *command_list);
 int ecode_cli_print_help(struct ecode_cli_dev *dev ,const char *name);

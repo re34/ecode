@@ -1,5 +1,6 @@
 #include "pwm.h"
 #include "target.h"
+#include "ecode.h"
 
 static struct pwm_device *pwm_devs[PWMn];
 
@@ -25,6 +26,7 @@ int pwm_register(pwm_name_t pwm, struct pwm_device *dev)
     
     pwm_devs[pwm]= dev;
     
+    LOG_DEBUG("PWM%d is registered!", (int)pwm);
     return 0;
 }
 

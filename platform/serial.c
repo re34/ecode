@@ -12,7 +12,7 @@ int serial_register(int fd, struct serial_dev *dev)
     
     devs[fd]=dev;
     
-    LOG_DEBUG("serial inited!");
+    LOG_DEBUG("COM%d is registered!", fd+1);
     return 0;
 }
 

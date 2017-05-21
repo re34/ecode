@@ -5,6 +5,7 @@
 #include "bsp_tick.h"
 #include "bsp_mcu.h"
 #include "bsp_uart.h"
+#include "bsp_uart2.h"
 #include "bsp_pin.h"
 #include "bsp_base_timer.h"
 #include "bsp_pwm.h"

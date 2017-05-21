@@ -59,7 +59,7 @@ int bsp_uart_init(uint32_t baudrate)
   
       In this example, Peripheral Clock is expected to be equal to 80000000 Hz => equal to SystemCoreClock
   */
-  LL_USART_SetBaudRate(USART3, SystemCoreClock/4, LL_USART_OVERSAMPLING_16, 115200); 
+  LL_USART_SetBaudRate(USART3, SystemCoreClock/4, LL_USART_OVERSAMPLING_16, baudrate); 
 
   /* (4) Enable USART *********************************************************/
   LL_USART_Enable(USART3);

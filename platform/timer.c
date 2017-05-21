@@ -22,6 +22,7 @@ int timer_register(int fd, struct timer_device *dev)
     
     timer_devs[fd]=dev;
     
+    LOG_DEBUG("TIMER%d is registered!", fd+1);
     return 0;
 }
 

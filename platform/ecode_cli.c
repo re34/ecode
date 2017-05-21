@@ -16,7 +16,11 @@ void ecode_register_cli_device(struct ecode_cli_dev *dev, const char *name)
 {
     dev->name = name;
     list_add(&ecode_cli_head, &dev->cli_entry);
-    
+}
+
+void ecode_unregister_cli_device(struct ecode_cli_dev *dev)
+{
+    list_del(&dev->cli_entry);
 }
 
 
@@ -123,12 +127,13 @@ void cli_print_error(struct ecode_cli_dev *dev, int errno)
 int ecode_cli_polling(void)
 {
     struct list_head *dev;
+    struct list_head *tnode = NULL;
     struct cli_command_param param;
     struct cli_command *command=NULL;
     
-    list_for_each(dev, &ecode_cli_head)
+    //list_for_each(dev, &ecode_cli_head)
+    list_for_each_safe(dev,tnode, &ecode_cli_head)
     {
-        
         if(ecode_message_read_line((struct ecode_cli_dev *)dev, END_LINE)>0)
         {
             if(ecode_message_parsing(((struct ecode_cli_dev *)dev)->rxbuf, ((struct ecode_cli_dev *)dev)->rxlen, &param,DELIM_STR)==0)
