@@ -2,18 +2,23 @@
 #define __SERIAL_H__
 #include "../common/includes.h"
 
-
-struct serial_operations{
-    int (*get_byte)(void);
-    int (*write_byte)(UInt8 byte);
+enum{
+    COM1,
+    COM2,
+    COM3,
+    COMn
 };
 
-typedef struct{
+
+struct serial_dev{
     int baudrate;
-    struct serial_operations ops;
-}Serial_t;
+    int (*get_c)(void);
+    int (*put_c)(unsigned char c);
+    int (*in_waiting)(void);
+};
 
 
-int serial_init(void);
+
+int serial_register(int fd, struct serial_dev *dev);
 
 #endif

@@ -2,25 +2,24 @@
 #include "target.h"
 #include "platform_cli_handles.h"
 #include <stdio.h>
+#include "driver.h"
 
 
 static struct ecode_cli_dev com_cli;
 static struct stdioex_device com_stdio;
-static struct timer_device base_timer;
-static struct pwm_device pwm_dev;
-static struct pwm_operations pwm_ops;
-
 
 
 static inline int com_putchar(unsigned char data)
 {
-    write(COM1, (char *)&data, 1);
+    //write(COM1, (char *)&data, 1);
+    serial_write(COM1, &data, 1);
     return 0;
 }
 static inline int com_getchar(void)
 {
     int data;
-    read(COM1, (char *)&data, 1);
+    //read(COM1, (char *)&data, 1);
+    serial_read(COM1, &data, 1);
     return data;
 }
 
@@ -29,39 +28,14 @@ void ecode_init(void)
     struct timestamp timestamp;
     
     ecode_tick_set_callback(timestamp_polling);
-    serial_init();
+    driver_init();
     
     com_stdio.put_char = com_putchar;
     com_stdio.get_char = com_getchar;
-    stdio_puts(&com_stdio, "ecode initing......\r\n");
+    stdio_puts(&com_stdio, "ecode stdio inited\r\n");
     com_cli.stdio = &com_stdio;
     ecode_register_cli_device( &com_cli, "COM");
     cli_register_platform_commands();
-    
-    //register base timer
-    base_timer.init = bsp_base_timer_init;
-    base_timer.start = bsp_base_timer_start;
-    base_timer.stop = bsp_base_timer_stop;
-    base_timer.reset = bsp_base_timer_reset;
-    base_timer.read = bsp_base_timer_read;
-    base_timer.read_ms = bsp_base_timer_read_ms;
-    base_timer.read_us = bsp_base_timer_read_us;
-    if(timer_register(TIMER1, &base_timer)<0)
-    {
-        LOG_ERROR("TIMER1 register error!!!");
-    }
-    
-    pwm_ops.init = bsp_pwm_init;
-    pwm_ops.period_us = bsp_pwm_period_us;
-    pwm_ops.pulsewidth_us = bsp_pwm_pulsewidth_us;
-    
-    pwm_dev.ops = &pwm_ops;
-    
-    if(pwm_register(PWM1, &pwm_dev)<0)
-    {
-        LOG_ERROR("PWM1 register error!!!");
-    }
-    
     
     timestamp = get_timestamp();
     LOG_INFO("start up time: %d s %d ms", timestamp.second, timestamp.msecond);

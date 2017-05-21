@@ -5,8 +5,8 @@
 enum{
 //串口
     COM,
-    COM1=COM,//每类有多设备都应该这样操作
-    COM2,
+    //COM1=COM,//每类有多设备都应该这样操作
+    //COM2,
 //end
     DEVICEn,
 };
