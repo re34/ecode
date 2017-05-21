@@ -26,7 +26,7 @@ int ecode_message_read_line(struct ecode_cli_dev *dev, const char *end)
     
     data = stdio_dev->get_char();
     
-    if(data<0)
+    if(data<=0)
         return -1;
     
     if((dev->rxlen==0)&&!isprint(data))
