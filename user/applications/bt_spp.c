@@ -26,6 +26,11 @@ static int bt_putc(unsigned char c)
 static int bt_getc()
 {
     int data;
+    
+    data = serial_in_waiting(COM2);
+    if(data<=0)
+        return 0;
+    
     if(serial_read(COM2, &data,1)<=0)
         return 0;
     return data;

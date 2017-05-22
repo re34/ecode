@@ -18,8 +18,12 @@ static inline int com_putchar(unsigned char data)
 static inline int com_getchar(void)
 {
     int data;
+    data = serial_in_waiting(COM1);
+    if(data<=0)
+        return 0;
     //read(COM1, (char *)&data, 1);
-    serial_read(COM1, &data, 1);
+    if(serial_read(COM1, &data, 1)<0)
+        return 0;
     return data;
 }
 
