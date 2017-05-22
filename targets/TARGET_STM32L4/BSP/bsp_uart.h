@@ -8,10 +8,10 @@
 #define UART_GPIO_CLK_ENABLE()    LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA)
 #define UART_TX_PIN               LL_GPIO_PIN_2
 #define UART_TX_GPIO_PORT              GPIOA
-#define UART_SET_TX_GPIO_AF()         LL_GPIO_SetAFPin_0_7(UART_TX_GPIO_PORT, LL_GPIO_PIN_2, LL_GPIO_AF_7)
+#define UART_SET_TX_GPIO_AF()         LL_GPIO_SetAFPin_0_7(UART_TX_GPIO_PORT, UART_TX_PIN, LL_GPIO_AF_7)
 #define UART_RX_PIN               LL_GPIO_PIN_3
 #define UART_RX_GPIO_PORT              GPIOA
-#define UART_SET_RX_GPIO_AF()         LL_GPIO_SetAFPin_0_7(UART_RX_GPIO_PORT,LL_GPIO_PIN_3, LL_GPIO_AF_7)
+#define UART_SET_RX_GPIO_AF()         LL_GPIO_SetAFPin_0_7(UART_RX_GPIO_PORT, UART_RX_PIN, LL_GPIO_AF_7)
 #define UART_IRQ_NUM              USART2_IRQn
 #define UART_INTERRUPT              USART2_IRQHandler
 
