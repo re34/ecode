@@ -1,9 +1,9 @@
-#include "bsp_uart.h"
+#include "bsp_uart2.h"
 
 
-static uart_irq_t bsp_uart_irq = {0};
+static uart2_irq_t bsp_uart2_irq = {0};
 
-int bsp_uart_init(uint32_t baudrate)
+int bsp_uart2_init(uint32_t baudrate)
 {
   /* (1) Enable GPIO clock and configures the USART pins *********************/
 
@@ -74,12 +74,12 @@ int bsp_uart_init(uint32_t baudrate)
   return 0;
 }
 
-int bsp_uart_getbyte(void)
+int bsp_uart2_getbyte(void)
 {
     return LL_USART_ReceiveData8(UART2_INSTANCE);
 }
 
-int bsp_uart_writebyte(uint8_t byte)
+int bsp_uart2_writebyte(uint8_t byte)
 {
     while(!LL_USART_IsActiveFlag_TXE(UART2_INSTANCE));
     
@@ -88,17 +88,17 @@ int bsp_uart_writebyte(uint8_t byte)
     return 0;
 }
 
-void bsp_uart_register_irq(uart_irq_t irq)
+void bsp_uart2_register_irq(uart2_irq_t irq)
 {
-    bsp_uart_irq = irq;
+    bsp_uart2_irq = irq;
 }
 
-void UART2_IRQHandler(void)
+void UART2_INTERRUPT(void)
 {
     if(LL_USART_IsActiveFlag_RXNE(UART2_INSTANCE))
     {
-        if(bsp_uart_irq.uart_rxne_callback!=NULL)
-            bsp_uart_irq.uart_rxne_callback();
+        if(bsp_uart2_irq.uart_rxne_callback!=NULL)
+            bsp_uart2_irq.uart_rxne_callback();
     }
 
 }

@@ -1,7 +1,7 @@
 #include "bsp_uart2.h"
 
 
-static uart_irq_t bsp_uart2_irq = {0};
+static uart2_irq_t bsp_uart2_irq = {0};
 
 int bsp_uart2_init(uint32_t baudrate)
 {
@@ -89,7 +89,7 @@ int bsp_uart2_writebyte(uint8_t byte)
     return 0;
 }
 
-void bsp_uart2_register_irq(uart_irq_t irq)
+void bsp_uart2_register_irq(uart2_irq_t irq)
 {
     bsp_uart2_irq = irq;
 }
