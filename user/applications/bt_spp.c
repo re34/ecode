@@ -45,6 +45,7 @@ void bt_spp_init(void)
     bt_cli_dev.stdio = &bt_stdio;
     
     bt_spp.mode = BT_COM_MODE;
+    //bt_spp_set_mode(BT_CLI_MODE);
     //bt_spp_set_mode(BT_COM_MODE);
     cli_register_bt_commands();
     xTaskCreate(bt_spp_task,
