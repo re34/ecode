@@ -6,8 +6,11 @@
 struct platform_device{
     struct list_head entry;
     const char *name;
+    int major;
+    int minor;
     void *ops;
 };
+
 
 struct device_operations{
     int (*read)(struct platform_device *dev, char *buf, int len);

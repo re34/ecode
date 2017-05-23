@@ -2,6 +2,7 @@
 #include "ecode.h"
 #include "uart.h"
 #include "uart2.h"
+#include "serial_platform_driver.h"
 
 static struct timer_device base_timer;
 static struct pwm_device pwm_dev;
@@ -24,7 +25,10 @@ int driver_init(void)
     {
         LOG_ERROR("uart2 init failed");
     }
-    
+    if(serial_platform_init()<0)
+    {
+        LOG_ERROR("serial platform driver init failed!");
+    }
     //register base timer
     base_timer.init = bsp_base_timer_init;
     base_timer.start = bsp_base_timer_start;
