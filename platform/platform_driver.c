@@ -108,11 +108,14 @@ struct platform_device *platform_device_find_next(struct platform_device *curren
     
     if(current==NULL)
         entry = &platform_device_head;
+    else
+        entry = &current->entry;
+    
     entry = entry->next;
     
     if(entry == &platform_device_head)
         return NULL;
-    
+
     return (struct platform_device *)entry;
 }
 
