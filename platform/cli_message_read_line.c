@@ -18,11 +18,11 @@ int ecode_message_read_line(struct ecode_cli_dev *dev, const char *end)
     
      stdio_dev = dev->stdio;
     
-    if((dev->flag&CLI_PROMOT)==0)
-    {
-        stdio_puts(stdio_dev , "ecode>> ");
-        dev->flag|=CLI_PROMOT;
-    }
+    //if((dev->flag&CLI_PROMOT)==0)
+    //{
+    //    stdio_puts(stdio_dev , "ecode>> ");
+   //     dev->flag|=CLI_PROMOT;
+   // }
     
     data = stdio_dev->get_char();
     
@@ -59,7 +59,7 @@ int ecode_message_read_line(struct ecode_cli_dev *dev, const char *end)
             }     
         }
         ret = dev->rxlen-match_len;
-        dev->flag&=~CLI_PROMOT;
+        //dev->flag&=~CLI_PROMOT;
     }
     
     

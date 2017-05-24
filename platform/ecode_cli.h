@@ -54,6 +54,8 @@ int ecode_cli_puts(struct ecode_cli_dev *dev, const char *str);
 void ecode_register_commands(struct cli_commands_list * cli_commands_entry, const struct cli_command *command_list);
 int ecode_cli_print_help(struct ecode_cli_dev *dev ,const char *name);
 int ecode_cli_print_help_list(struct ecode_cli_dev *dev);
+void cli_print_promot(struct ecode_cli_dev *dev);
+void cli_print_error(struct ecode_cli_dev *dev, int errno);
 int ecode_cli_polling(void);
 
 #endif

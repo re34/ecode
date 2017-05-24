@@ -113,15 +113,24 @@ int ecode_cli_print_help_list(struct ecode_cli_dev *dev)
     return 0;
 }
 
+void cli_print_promot(struct ecode_cli_dev *dev)
+{
+    ecode_cli_puts(dev,"ecode>>>");
+}
 
 void cli_print_error(struct ecode_cli_dev *dev, int errno)
 {
     if(errno==ERROR_NONE)
+    {
+        cli_print_promot(dev);
         return;
+    }
+        
     if(errno!=ERROR_OK)
       ecode_cli_puts(dev,"ERROR:");
     ecode_cli_puts(dev, cli_match_error(errno));
     ecode_cli_puts(dev, "\r\n");
+    cli_print_promot(dev);
 }
 
 int ecode_cli_polling(void)
@@ -134,6 +143,12 @@ int ecode_cli_polling(void)
     //list_for_each(dev, &ecode_cli_head)
     list_for_each_safe(dev,tnode, &ecode_cli_head)
     {
+        if((((struct ecode_cli_dev *)dev)->flag&CLI_PROMOT)==0)
+        {
+            //stdio_puts(stdio_dev , "ecode>> ");
+            cli_print_promot((struct ecode_cli_dev *)dev);
+            ((struct ecode_cli_dev *)dev)->flag|=CLI_PROMOT;
+        }
         if(ecode_message_read_line((struct ecode_cli_dev *)dev, END_LINE)>0)
         {
             if(ecode_message_parsing(((struct ecode_cli_dev *)dev)->rxbuf, ((struct ecode_cli_dev *)dev)->rxlen, &param,DELIM_STR)==0)
