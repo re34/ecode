@@ -84,17 +84,19 @@ $(TARGET_BIN):$(TARGET_ELF)
 	$(OBJCP) -O binary -S $< $@
 
 $(TARGET_ELF):$(ASM_OBJS) $(C_OBJS)
-	$(CC) $(LDFLAGS) $^ -T $(LDSCRIPT) -o $@
+	$(CC) $(LDFLAGS) $(addprefix $(OBJ_DIR)/,$(notdir $^)) -T $(LDSCRIPT) -o $@
 	$(OBJSIZE) $@
 
 
 $(C_OBJS):%.o:%.c
-	$(CC) $(CCFLAGS) $(DEFS) $(INC_DIR) -c $^ -o  $@
+	$(CC) $(CCFLAGS) $(DEFS) $(INC_DIR) -c $^ -o  $(OBJ_DIR)/$(notdir $@)
 
 $(ASM_OBJS):%.o:%.s
-	$(CC) $(CCFLAGS) -c $^ -o $@
+	rm -rf $(OBJ_DIR) $(OUTPUT_DIR)
+	mkdir $(OBJ_DIR) $(OUTPUT_DIR)
+	$(CC) $(CCFLAGS) -c $^ -o $(OBJ_DIR)/$(notdir $@)
 
 
 clean:
-	${RM} $(C_OBJS) $(ASM_OBJS) $(OBJ_DIR)/* $(TARGET_BIN) $(TARGET_ELF) $(TARGET_HEX)
+	${RM} $(OBJ_DIR)/* $(TARGET_BIN) $(TARGET_ELF) $(TARGET_HEX)
 
