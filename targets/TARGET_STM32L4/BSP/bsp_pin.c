@@ -121,11 +121,11 @@ GPIO_TypeDef *bsp_gpio_set_clk(uint32_t port_idx) {
 #if defined GPIOG_BASE
         case PortG:
 //#if defined TARGET_STM32L4
-            __HAL_RCC_PWR_CLK_ENABLE();
-            HAL_PWREx_EnableVddIO2();
+            //__HAL_RCC_PWR_CLK_ENABLE();
+           // HAL_PWREx_EnableVddIO2();
 //#endif
             gpio_add = GPIOG_BASE;
-            __GPIOG_CLK_ENABLE();
+            //__GPIOG_CLK_ENABLE();
             break;
 #endif
 #if defined GPIOH_BASE

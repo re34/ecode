@@ -101,7 +101,6 @@ int print_level(int level, const char *fmt, ...)
         printf("\r\n");
         
     }
-
     return ret;
 }
 

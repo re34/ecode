@@ -1,4 +1,5 @@
 #include "tft_lcd.h"
+#include "ecode.h"
 
 #define TFT_WIDTH	240
 #define TFT_HIGH	320
@@ -21,11 +22,9 @@ int tft_dev_register(struct tft_dev *dev)
 		return -5;
 	if(dev->reset==NULL)
 		return -6;
-	
-	
-	tft_init();
-	
 	tft_dev = dev;
+
+	tft_init();
 	
 	return 0;
 }
@@ -66,13 +65,15 @@ void tft_address_set(unsigned int x1, unsigned int y1, unsigned int x2, unsigned
 	tft_write_com_data(0x2b, y1);
 	tft_write_com_data(0x2b, y2>>8);
 	tft_write_com_data(0x2b, y2);
-	tft_write_com_data(0x2c);
+	tft_write_com(0x2c);
 }
 
 static void tft_init(void)
 {
 	tft_dev->reset(1);
+   
 	delay_ms(5);
+    LOG_DEBUG("delay ms");
 	tft_dev->reset(0);
 	delay_ms(15);
 	tft_dev->reset(1);
@@ -239,7 +240,7 @@ void tft_clear(unsigned int j)
 	tft_write_com(0x2c);
 	tft_dev->rs(1);
 	tft_dev->cs(0);
-	
+	LOG_DEBUG("TFT clear enter");
 	for(i=0;i<TFT_HIGH;i++)
 	{
 		for(m=0;m<240;m++)
@@ -249,6 +250,7 @@ void tft_clear(unsigned int j)
 		}
 	}
 	tft_dev->cs(1);
+    LOG_DEBUG("TFT clear exit");
 }
 
 void tft_draw_pixel(int x, int y, unsigned int c)
@@ -277,6 +279,7 @@ void tft_draw_hline(int x, int y, int l, unsigned int c)
 
 void tft_draw_vline(int x, int y, int l, unsigned int c)
 {
+    int i;
 	tft_address_set(x,y,x,y+l);
 	for(i=0;i<l+1;i++)
 	{
@@ -309,10 +312,10 @@ void tft_draw_round_rect(int x1, int y1, int x2, int y2, unsigned int c)
 		tft_draw_pixel(x2-1,y1+1,c);
 		tft_draw_pixel(x1+1,y2-1,c);
 		tft_draw_pixel(x2-1,y2-1,c);
-		tft_draw_pixel(x1+2,y1,x2-x1-4,c);
-		tft_draw_pixel(x1+2,y2,x2-x1-4,c);
-		tft_draw_pixel(x1,y1+2,y2-y1-4,c);
-		tft_draw_pixel(x2,y1+2,y2-y1-4,c);
+		tft_draw_hline(x1+2,y1,x2-x1-4,c);
+		tft_draw_hline(x1+2,y2,x2-x1-4,c);
+		tft_draw_vline(x1,y1+2,y2-y1-4,c);
+		tft_draw_vline(x2,y1+2,y2-y1-4,c);
 	}
 }
 
