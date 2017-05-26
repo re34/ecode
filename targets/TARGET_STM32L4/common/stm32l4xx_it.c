@@ -40,6 +40,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_it.h"
 #include "stm32l4xx_hal.h"
+#include <stdio.h>
 
 /** @addtogroup STM32L4xx_HAL_Examples
   * @{
@@ -78,6 +79,7 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* Go to infinite loop when Hard Fault exception occurs */
+  printf("Enter HardFault_Handler!!!\r\n");
   while (1)
   {
   }

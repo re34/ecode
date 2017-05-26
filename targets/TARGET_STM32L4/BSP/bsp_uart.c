@@ -93,7 +93,7 @@ void bsp_uart_register_irq(uart_irq_t irq)
     bsp_uart_irq = irq;
 }
 
-void UART_IRQHandler(void)
+void UART_INTERRUPT(void)
 {
     if(LL_USART_IsActiveFlag_RXNE(UART_INSTANCE))
     {
