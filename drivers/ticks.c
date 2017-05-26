@@ -1,38 +1,38 @@
-#include "ecode_tick.h"
+#include "ticks.h"
 #include "target.h"
 
 #define TICKS_PER_SECOND    (1000)
 
 
-UInt32 _ecode_ticks=0;
+static UInt32 _ticks=0;
 tick_callback_t ftick_callback = NULL;
 LIST_HEAD(timeout_head);
 
 
-void ecode_tick_init(void)
+void tick_init(void)
 {
 #if RTOS_EN==0
     target_tick_init(TICKS_PER_SECOND, 1);
 #else
     
 #endif
-    _ecode_ticks = 0;
+    _ticks = 0;
 }
 
-void ecode_tick_set_callback(tick_callback_t callback)
+void tick_set_callback(tick_callback_t callback)
 {
     ftick_callback = callback;
 }
 
 
-void ecode_tick_attach_timeout(struct timeout *timeout, timeout_callback_t callback,int ms)
+void tick_attach_timeout(struct timeout *timeout, timeout_callback_t callback,int ms)
 {
-    timeout->base = _ecode_ticks+ms;
+    timeout->base = _ticks+ms;
     timeout->callback = callback;
     list_add(&timeout_head, &timeout->entry);
 }
 
-void ecode_timeout_polling(void)
+void timeout_polling(void)
 {
     struct list_head *node=NULL;
     struct list_head *tnode = NULL;
@@ -40,7 +40,7 @@ void ecode_timeout_polling(void)
     list_for_each_safe(node, tnode, &timeout_head)
     {
         _timeout = (struct timeout*)node;
-        if(time_after(_ecode_ticks, _timeout->base))
+        if(time_after(_ticks, _timeout->base))
         {
             list_del(node);
             if(_timeout->callback!=NULL)
@@ -49,22 +49,22 @@ void ecode_timeout_polling(void)
     }
 }
 
-void ecode_tick_inc(void)
+void tick_inc(void)
 {
-    _ecode_ticks++;
+    _ticks++;
     if(ftick_callback!=NULL)
     {
         ftick_callback(1);
     }
-    ecode_timeout_polling();
+    timeout_polling();
 }
 
-UInt32 ecode_get_ticks(void)
+UInt32 get_ticks(void)
 {
-    return _ecode_ticks;
+    return _ticks;
 }
 
-void ecode_tick_delay_us(UInt32 us)
+void tick_delay_us(UInt32 us)
 {
     UInt32 startTick = SysTick->VAL;
     UInt32 currTick = 0;
@@ -87,7 +87,7 @@ void ecode_tick_delay_us(UInt32 us)
     }
 }
 
-void ecode_tick_delay_ms(UInt32 ms)
+void tick_delay_ms(UInt32 ms)
 {
     while(ms--)
     {
@@ -98,7 +98,7 @@ void ecode_tick_delay_ms(UInt32 ms)
 #if RTOS_EN==0
 void SysTick_Handler(void)
 {
-    ecode_tick_inc();
+    tick_inc();
 }
 #endif
 

@@ -1,7 +1,6 @@
 #include "platform_cli_handles.h"
 #include "ecode_cli.h"
 #include "mcu.h"
-#include "ecode_tick.h"
 #include "timestamp.h"
 #include <stdio.h>
 #include <stdlib.h>

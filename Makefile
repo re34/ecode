@@ -33,6 +33,7 @@ INC_DIR		+=-I $(PROJECT_DIR)/drivers
 INC_DIR		+=-I $(PROJECT_DIR)/common
 INC_DIR		+=-I $(PROJECT_DIR)/library/OS/FreeRTOS/include
 INC_DIR		+=-I $(PROJECT_DIR)/user/applications
+INC_DIR		+=-I $(PROJECT_DIR)/user/drivers
 INC_DIR		+=-I $(PROJECT_DIR)/library/OS/FreeRTOS/portable/GCC/$(OS_PORT_DIR)
 
 CC		:=$(GCC_PREFIX)gcc

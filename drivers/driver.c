@@ -12,7 +12,7 @@ static struct pwm_operations pwm_ops;
 int driver_init(void)
 {
     struct print_log_interface fprint_log;
-    
+
     uart_init();
     fprint_log.put_char = bsp_uart_writebyte;
     print_log_register_io(fprint_log);

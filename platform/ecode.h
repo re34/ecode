@@ -3,7 +3,6 @@
 #include "config.h"
 #include "includes.h"
 #include "../targets/target.h"
-#include "ecode_tick.h"
 #include "serial.h"
 #include "platform_driver.h"
 #include "ecode_cli.h"
@@ -13,6 +12,8 @@
 #include "version.h"
 #include "timer.h"
 #include "pwm.h"
+#include "delay.h"
+#include "ticks.h"
 
 void ecode_init(void);
 

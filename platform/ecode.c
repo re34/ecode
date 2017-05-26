@@ -30,8 +30,9 @@ static inline int com_getchar(void)
 void ecode_init(void)
 {
     struct timestamp timestamp;
-    
-    ecode_tick_set_callback(timestamp_polling);
+	
+    tick_set_callback(timestamp_polling);
+	
     driver_init();
     
     com_stdio.put_char = com_putchar;
@@ -51,7 +52,7 @@ void ecode_init(void)
 
 #if RTOS_EN==1
 void vApplicationTickHook( void ){
-	ecode_tick_inc();
+	tick_inc();
 }
 #if configCHECK_FOR_STACK_OVERFLOW==1
 void vApplicationStackOverflowHook(TaskHandle_t xTask, char * pcTaskName){

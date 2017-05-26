@@ -1,5 +1,5 @@
-#ifndef __ECODE_TICK_H__
-#define __ECODE_TICK_H__
+#ifndef __TICKS_H__
+#define __TICKS_H__
 #include "includes.h"
 
 
@@ -19,11 +19,11 @@ struct timeout{
     timeout_callback_t callback;
 };
 
-void ecode_tick_init(void);
-void ecode_tick_set_callback(tick_callback_t callback);
-void ecode_tick_attach_timeout(struct timeout *timeout, timeout_callback_t callback,int ms);
-void ecode_tick_inc(void);
+void tick_init(void);
+void tick_set_callback(tick_callback_t callback);
+void tick_attach_timeout(struct timeout *timeout, timeout_callback_t callback,int ms);
+void tick_inc(void);
 UInt32 ecode_get_ticks(void);
-void ecode_tick_delay_us(UInt32 us);
-void ecode_tick_delay_ms(UInt32 ms);
+void tick_delay_us(UInt32 us);
+void tick_delay_ms(UInt32 ms);
 #endif

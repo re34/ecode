@@ -1,9 +1,9 @@
 #include "mcu.h"
-#include "ecode_tick.h"
+#include "ticks.h"
 
 
 void mcu_init()
 {
     bsp_clock_config();
-    ecode_tick_init();
+   tick_init();
 }
