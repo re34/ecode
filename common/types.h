@@ -10,23 +10,23 @@ typedef signed short Int16;
 typedef unsigned long UInt32;
 typedef signed long Int32;
 
-#define BIT0 (1<<0)
-#define BIT1 (1<<1)
-#define BIT2 (1<<2)
-#define BIT3 (1<<3)
-#define BIT4 (1<<4)
-#define BIT5 (1<<5)
-#define BIT6 (1<<6)
-#define BIT7 (1<<7)
-#define BIT8 (1<<8)
-#define BIT9 (1<<9)
-#define BIT10 (1<<10)
-#define BIT11 (1<<11)
+#define BIT(b)	(1U<<(b))
+
+#define BIT_SET(x,b)	((x)|=BIT(b))
+#define BIT_RESET(x,b)	((x)&=~(BIT(b)))
+#define BITS_SET(x,bits)	((x)|=bits)
+#define BITS_RESET(x,bits)	((x)&=~(bi/bits))
+#define TEST_BIT(x,b)		(((x)&(BIT(b)))?1:0)
+#define TEST_BITS(x,bits)	(((x)&(bits))?1:0)
+
 
 #ifndef NULL
 #define NULL	0
 #endif
 
-
+enum{
+	BIT_LOW=0,
+	BIT_HIGH=!BIT_LOW,
+};
 
 #endif
