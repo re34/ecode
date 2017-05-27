@@ -33,11 +33,11 @@ static void tft_lcd_init()
 {
     int i;
     LOG_DEBUG("TFT INIT....");
-    bsp_pin_digital_out_init(A0, PIN_PULLUP);
-    bsp_pin_digital_out_init(A1, PIN_PULLUP);
-    bsp_pin_digital_out_init(A2, PIN_PULLUP);
-    bsp_pin_digital_out_init(A3, PIN_PULLUP);
-    bsp_pin_digital_out_init(A4, PIN_PULLUP);
+    bsp_pin_init(A0, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
+    bsp_pin_init(A1, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
+    bsp_pin_init(A2, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
+    bsp_pin_init(A3, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
+    bsp_pin_init(A4, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
 	bsp_pin_set(A0);
 	bsp_pin_set(A1);
 	bsp_pin_set(A2);
@@ -46,7 +46,7 @@ static void tft_lcd_init()
     LOG_DEBUG("control pin inited");
     for(i=0;i<=7;i++)
     {
-        bsp_pin_digital_out_init(pins[i], PIN_PULLUP);
+        bsp_pin_init(pins[i], PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
     }
     LOG_DEBUG("DATA PIN inited");
     tft_dev.rs = tft_rs;

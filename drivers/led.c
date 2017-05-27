@@ -4,6 +4,6 @@
 
 void led_init(void)
 {
-    bsp_pin_digital_out_init(LED1, PIN_PULLUP);
+    bsp_pin_init(LED1, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
 }
 

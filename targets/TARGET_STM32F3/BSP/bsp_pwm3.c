@@ -1,4 +1,4 @@
-#include "bsp_pwm1.h"
+#include "bsp_pwm3.h"
 #include "target_chip.h"
 
 

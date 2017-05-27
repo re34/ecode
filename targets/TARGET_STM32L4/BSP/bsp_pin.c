@@ -1,5 +1,6 @@
 #include "bsp_pin.h"
 #include "stdio.h"
+#include "includes.h"
 
 
 const uint32_t pin_defines[16] = {
@@ -18,7 +19,7 @@ const uint32_t pin_defines[16] = {
     LL_GPIO_PIN_12,
     LL_GPIO_PIN_13,
     LL_GPIO_PIN_14,
-    LL_GPIO_PIN_15
+    LL_GPIO_PIN_15,
 };
 
 static inline GPIO_TypeDef *bsp_pin_get_port(uint32_t port_idx)
@@ -120,12 +121,12 @@ GPIO_TypeDef *bsp_gpio_set_clk(uint32_t port_idx) {
 #endif
 #if defined GPIOG_BASE
         case PortG:
-//#if defined TARGET_STM32L4
-            //__HAL_RCC_PWR_CLK_ENABLE();
-           // HAL_PWREx_EnableVddIO2();
-//#endif
+#if defined TARGET_STM32L4
+            __HAL_RCC_PWR_CLK_ENABLE();
+            HAL_PWREx_EnableVddIO2();
+#endif
             gpio_add = GPIOG_BASE;
-            //__GPIOG_CLK_ENABLE();
+            __GPIOG_CLK_ENABLE();
             break;
 #endif
 #if defined GPIOH_BASE
@@ -160,23 +161,42 @@ GPIO_TypeDef *bsp_gpio_set_clk(uint32_t port_idx) {
 }
 
 
-void bsp_pin_digital_out_init(pin_name_t pin, uint8_t pull)
+void bsp_pin_init(pin_name_t pin, pin_mode_t mode, pin_pupd_t pull)
 {
     GPIO_TypeDef *port;
     uint32_t pin_mask = pin_defines[STM_PIN(pin)];
     
     port = bsp_gpio_set_clk(STM_PORT(pin));
     
-    LL_GPIO_SetPinMode(port, pin_mask, LL_GPIO_MODE_OUTPUT);
-    
-    LL_GPIO_SetPinOutputType(port, pin_mask, LL_GPIO_OUTPUT_PUSHPULL);
+	if(mode==PIN_MODE_INPUT)
+	{
+		LL_GPIO_SetPinMode(port, pin_mask, LL_GPIO_MODE_INPUT);
+	}
+	else if(mode==PIN_MODE_OUTPUT_PP)
+	{
+		LL_GPIO_SetPinMode(port, pin_mask, LL_GPIO_MODE_OUTPUT);
+		
+		LL_GPIO_SetPinOutputType(port, pin_mask, LL_GPIO_OUTPUT_PUSHPULL);
+	}
+	else if(mode==PIN_MODE_OUTPUT_OD)
+	{
+		LL_GPIO_SetPinMode(port, pin_mask, LL_GPIO_MODE_OUTPUT);
+		
+		LL_GPIO_SetPinOutputType(port, pin_mask, LL_GPIO_OUTPUT_OPENDRAIN);
+	}
+	else if(mode==PIN_MODE_ANALOG)
+	{
+		LL_GPIO_SetPinMode(port, pin_mask, LL_GPIO_MODE_ANALOG);
+	}
     
     LL_GPIO_SetPinSpeed(port, pin_mask, LL_GPIO_SPEED_HIGH);
     
-    if(pull==PIN_PULLUP)
+    if(pull==PIN_PUPD_UP)
         LL_GPIO_SetPinPull(port, pin_mask, LL_GPIO_PULL_UP);
-    else
-        LL_GPIO_SetPinPull(port, pin_mask, LL_GPIO_PULL_DOWN);  
+    else if(pull==PIN_PUPD_DOWN)
+        LL_GPIO_SetPinPull(port, pin_mask, LL_GPIO_PULL_DOWN); 
+	else if(pull==PIN_PUPD_NO)
+		LL_GPIO_SetPinPull(port, pin_mask, LL_GPIO_PULL_NO);
 }
 
 
@@ -188,6 +208,14 @@ void bsp_pin_set(pin_name_t pin)
 void bsp_pin_reset(pin_name_t pin)
 {
     LL_GPIO_ResetOutputPin(bsp_pin_get_port(STM_PORT(pin)), pin_defines[STM_PIN(pin)]);    
+}
+
+pin_state_t bsp_pin_read(pin_name_t pin)
+{
+	if(LL_GPIO_IsInputPinSet(bsp_pin_get_port(STM_PORT(pin)), pin_defines[STM_PIN(pin)]))
+		return PIN_SET;
+	else
+		return PIN_RESET;
 }
 
 void bsp_pin_toggle(pin_name_t pin)
