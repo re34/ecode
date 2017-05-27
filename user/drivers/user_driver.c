@@ -1,6 +1,7 @@
 #include "user_driver.h"
 #include "ecode.h"
 #include "tft_lcd.h"
+#include "oled.h"
 
 static struct tft_dev tft_dev;
 
@@ -60,6 +61,8 @@ static void tft_lcd_init()
     tft_clear( tft_rgb(255,0,255));
     tft_clear( tft_rgb(0,255,255));
     tft_clear( tft_rgb(0,255,0));
+	
+	
 }
 
 
