@@ -103,5 +103,11 @@ $(ASM_OBJS):%.o:%.s
 
 
 clean:
-	${RM} $(C_OBJS) $(ASM_OBJS) $(OBJ_DIR)/* $(TARGET_BIN) $(TARGET_ELF) $(TARGET_HEX)
+	$(RM) $(C_OBJS) 
+	$(RM) $(ASM_OBJS) 
+	$(RM) $(OBJ_DIR)/* 
+	$(RM) $(TARGET_BIN) 
+	$(RM) $(TARGET_ELF) 
+	$(RM) $(TARGET_HEX)
+	
 
