@@ -1,16 +1,15 @@
 
 PROJECT     =ecode
-TARGET_BOARD    =NUCLEO_L476
-TARGET_CHIP     =STM32L4
-STARTUP_FILE    =startup_stm32l476xx.s
-LINK_FILE       =STM32L476RG_FLASH.ld
-ARCH            =cortex-m4
-FPU_FLAG        =-mfpu=fpv4-sp-d16 -mfloat-abi=softfp
-
+TARGET_BOARD    =NUCLEO_F767
+TARGET_CHIP     =STM32F7
+STARTUP_FILE    =startup_stm32f767xx.
+LINK_FILE       =STM32F767ZI_FLASH.ld
+ARCH            =cortex-m7
+FPU_FLAG        =-mfpu=fpv5-sp-d16 -mfloat-abi=softfp
 
 DEFS            +=-D USE_HAL_DRIVER
-DEFS            +=-D STM32L476xx
+DEFS            +=-D STM32F767xx
 
 GCC_PREFIX      =arm-none-eabi-
 
-OS_PORT_DIR     +=ARM_CM4F
+OS_PORT_DIR     +=ARM_CM7/r0p1
