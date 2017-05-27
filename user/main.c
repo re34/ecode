@@ -45,6 +45,7 @@ void cli_task(void *args);
 void init(void *args)
 {
     ecode_init();
+	user_driver_init();
     display_init();
     xTaskCreate(cli_task,
                 "cli_task",
@@ -75,6 +76,7 @@ int main(void)
   mcu_init();
 #if RTOS_EN==0
   ecode_init();
+  
 
   while (1)
   {

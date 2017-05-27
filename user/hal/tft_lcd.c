@@ -71,9 +71,7 @@ void tft_address_set(unsigned int x1, unsigned int y1, unsigned int x2, unsigned
 static void tft_init(void)
 {
 	tft_dev->reset(1);
-   
 	delay_ms(5);
-    LOG_DEBUG("delay ms");
 	tft_dev->reset(0);
 	delay_ms(15);
 	tft_dev->reset(1);

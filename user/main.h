@@ -43,6 +43,7 @@
 #include "ecode.h"
 #include "display.h"
 #include "bt_spp.h"
+#include "user_driver.h"
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/

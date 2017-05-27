@@ -4,7 +4,6 @@
 
 #define RTOS_EN     1
 
-#define CLI_PROMOT  "ecode>>>"
 
 
 #endif

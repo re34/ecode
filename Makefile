@@ -34,6 +34,7 @@ INC_DIR		+=-I $(PROJECT_DIR)/common
 INC_DIR		+=-I $(PROJECT_DIR)/library/OS/FreeRTOS/include
 INC_DIR		+=-I $(PROJECT_DIR)/user/applications
 INC_DIR		+=-I $(PROJECT_DIR)/user/drivers
+INC_DIR		+=-I $(PROJECT_DIR)/user/hal
 INC_DIR		+=-I $(PROJECT_DIR)/library/OS/FreeRTOS/portable/GCC/$(OS_PORT_DIR)
 
 CC		:=$(GCC_PREFIX)gcc
@@ -67,6 +68,7 @@ SOURCE		+=$(wildcard $(PROJECT_DIR)/drivers/*.c)
 SOURCE		+=$(wildcard $(PROJECT_DIR)/common/*.c)
 SOURCE		+=$(wildcard $(PROJECT_DIR)/user/applications/*.c)
 SOURCE      +=$(wildcard $(PROJECT_DIR)/user/drivers/*.c)
+SOURCE      +=$(wildcard $(PROJECT_DIR)/user/hal/*.c)
 SOURCE		+=$(wildcard $(TARGET_CHIP_DIR)/BSP/*.c)
 SOURCE		+=$(wildcard $(PROJECT_DIR)/library/OS/FreeRTOS/*.c)
 SOURCE		+=$(wildcard $(PROJECT_DIR)/library/OS/FreeRTOS/portable/MemMang/*4.c)
