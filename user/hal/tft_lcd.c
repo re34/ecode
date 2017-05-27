@@ -85,52 +85,52 @@ static void tft_init(void)
 	tft_write_com(0x11);
 	delay_ms(120);
 	
-	tft_write_com(0xc2);
-	tft_write_data(0x05);
-	tft_write_data(0x00);
-	
-	tft_write_com(0xc3);
-	tft_write_data(0x05);
-	tft_write_data(0x00);
-	
-	tft_write_com(0xc3);
-	tft_write_data(0x05);
-	tft_write_data(0x00);
-	
-	tft_write_com(0xc4);
-	tft_write_data(0x05);
-	tft_write_data(0x00);
-	
-	tft_write_com(0x3a);
-	tft_write_data(0x55);
-	
-	tft_write_com(0xd7);
-	tft_write_data(0x40);
-	tft_write_data(0xe0);
-	
-	tft_write_com(0xfa);
-	tft_write_data(0x38);
-	tft_write_data(0x20);
-	tft_write_data(0x1c);
-	tft_write_data(0x10);
-	tft_write_data(0x37);
-	tft_write_data(0x12);
-	tft_write_data(0x22);
-	tft_write_data(0x1e);
-	
-	tft_write_com(0xc0);
-	tft_write_data(0x05);
-	
-	tft_write_com(0xc5);
-	tft_write_data(0x60);
-	tft_write_data(0x00);
-	
-	tft_write_com(0xc7);
-	tft_write_data(0xa9);
-	
-	tft_write_com(0x36);
-	tft_write_data(0xc8);
-	
+	tft_write_com(0xc2);//Power Control 3 
+    tft_write_data(0x05);//APA2 APA1 APA0   Large
+    tft_write_data(0x00);//Step-up cycle in Booster circuit 1 
+                         //Step-up cycle in Booster circuit 2,3
+    tft_write_com(0xc3);//Power Control 4 
+    tft_write_data(0x05);//APA2 APA1 APA0   Large
+    tft_write_data(0x00);//Step-up cycle in Booster circuit 1 
+                         //Step-up cycle in Booster circuit 2,3
+    tft_write_com(0xc4);//Power Control 5 
+    tft_write_data(0x05);//APA2 APA1 APA0   Large
+    tft_write_data(0x00);//Step-up cycle in Booster circuit 1 
+                         //Step-up cycle in Booster circuit 2,3
+    tft_write_com(0x3A); 
+    tft_write_data(0x55);
+    
+    tft_write_com(0xD7); 
+    tft_write_data(0x40);
+    tft_write_data(0xE0);
+
+    tft_write_com(0xFD);
+    tft_write_data(0x06);
+    tft_write_data(0x11);
+
+    tft_write_com(0xFA);
+    tft_write_data(0x38);
+    tft_write_data(0x20);
+    tft_write_data(0x1C);
+    tft_write_data(0x10);
+    tft_write_data(0x37);
+    tft_write_data(0x12);
+    tft_write_data(0x22);
+    tft_write_data(0x1E);
+
+    tft_write_com(0xC0);//Set GVDD	
+    tft_write_data(0x05);
+
+    tft_write_com(0xC5);//Set Vcom	
+    tft_write_data(0x60);
+    tft_write_data(0x00);
+
+    tft_write_com(0xC7);//Set VCOM-OFFSET	
+    tft_write_data(0xA9);//  可以微调改善flicker
+
+    tft_write_com(0x36);//Memory data  access control
+    tft_write_data(0xC8);//MY MX MV ML RGB MH 0 0   
+
 ////Gamma//////////////////
     tft_write_com(0xE0);//E0H Set
     tft_write_data(0x23);
@@ -148,7 +148,7 @@ static void tft_init(void)
     tft_write_data(0x10);
     tft_write_data(0x16);
     tft_write_data(0x31);
-	
+
     tft_write_com(0xE1);//E1H Set
     tft_write_data(0x0D);
     tft_write_data(0x28);
@@ -216,7 +216,7 @@ void tft_draw_rect(unsigned int x, unsigned int y, unsigned int w, unsigned int 
 	tft_draw_vertical_line(x+w,y,h,c);
 }
 
-void tft_draw_rectf(unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsigned int c)
+void tft_draw_fillrect(unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsigned int c)
 {
 	unsigned int i;
 	for(i=0;i<h;i++)
@@ -234,7 +234,7 @@ int tft_rgb(int r, int g, int b)
 void tft_clear(unsigned int j)
 {
 	unsigned int i,m;
-	tft_address_set(0,0,320,240);
+	tft_address_set(0,0,TFT_HIGH,TFT_WIDTH);
 	tft_write_com(0x2c);
 	tft_dev->rs(1);
 	tft_dev->cs(0);
@@ -267,7 +267,7 @@ void tft_swap(int *x, int *y)
 
 void tft_draw_hline(int x, int y, int l, unsigned int c)
 {
-	tft_address_set(x,y,x+1,y);
+	tft_address_set(x,y,x+l,y);
 	for(int i=0;i<i+1;i++)
 	{
 		tft_write_data(c>>8);

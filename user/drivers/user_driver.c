@@ -37,6 +37,11 @@ static void tft_lcd_init()
     bsp_pin_digital_out_init(A2, PIN_PULLUP);
     bsp_pin_digital_out_init(A3, PIN_PULLUP);
     bsp_pin_digital_out_init(A4, PIN_PULLUP);
+	bsp_pin_set(A0);
+	bsp_pin_set(A1);
+	bsp_pin_set(A2);
+	bsp_pin_set(A3);
+	bsp_pin_set(A4);
     LOG_DEBUG("control pin inited");
     for(i=0;i<=7;i++)
     {
