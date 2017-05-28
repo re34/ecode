@@ -39,7 +39,7 @@ static int bt_getc()
 
 void bt_spp_init(void)
 {
-    
+    LOG_DEBUG("bt spp init...");
     bt_stdio.put_char = bt_putc;
     bt_stdio.get_char = bt_getc;
     bt_cli_dev.stdio = &bt_stdio;

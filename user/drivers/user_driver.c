@@ -3,6 +3,7 @@
 #include "tft_lcd.h"
 #include "oled.h"
 
+
 static struct tft_dev tft_dev;
 
 
@@ -24,8 +25,8 @@ static void tft_lcd_init();
 
 void user_driver_init()
 {
-	
-	tft_lcd_init();
+	//tft_lcd_init();
+
 }
 
 
@@ -56,16 +57,7 @@ static void tft_lcd_init()
     tft_dev.reset = tft_reset;
     tft_dev.write_bus = tft_lcd_write_bus;
     tft_dev_register(&tft_dev);
-    tft_clear( tft_rgb(255,0,0));
-    tft_clear( tft_rgb(255,255,0));
-    tft_clear( tft_rgb(255,0,255));
-    tft_clear( tft_rgb(0,255,255));
-    tft_clear( tft_rgb(0,255,0));
-	
-	
 }
-
-
 
 
 static void tft_lcd_write_bus(int vh)

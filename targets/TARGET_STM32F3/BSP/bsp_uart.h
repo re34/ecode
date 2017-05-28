@@ -2,9 +2,9 @@
 #define __BSP_UART_H__
 #include "target_chip.h"
 
-#define UART_INSTANCE           USART3
-#define UART_CLK_ENABLE()     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART3)
-#define UART_CLK_SOURCE()     LL_RCC_SetUSARTClockSource(LL_RCC_USART3_CLKSOURCE_PCLK1)
+#define UART_INSTANCE           USART2
+#define UART_CLK_ENABLE()     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART2)
+#define UART_CLK_SOURCE()     LL_RCC_SetUSARTClockSource(LL_RCC_USART2_CLKSOURCE_PCLK1)
 #define UART_GPIO_CLK_ENABLE()    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA)
 #define UART_TX_PIN               LL_GPIO_PIN_2
 #define UART_TX_GPIO_PORT              GPIOA
@@ -12,8 +12,8 @@
 #define UART_RX_PIN               LL_GPIO_PIN_3
 #define UART_RX_GPIO_PORT              GPIOA
 #define UART_SET_RX_GPIO_AF()         LL_GPIO_SetAFPin_0_7(UART_RX_GPIO_PORT,LL_GPIO_PIN_3, LL_GPIO_AF_7)
-#define UART_IRQ_NUM              USART3_IRQn
-#define UART_INTERRUPT              USART3_IRQHandler
+#define UART_IRQ_NUM              USART2_IRQn
+#define UART_INTERRUPT              USART2_IRQHandler
 
 
 

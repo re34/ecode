@@ -62,7 +62,53 @@ typedef enum {
     PH_0  = 0x70,
     PH_1  = 0x71,
 
-    LED1=PA_5,
+    // ADC internal channels
+    ADC_TEMP = 0xF0,
+    ADC_VREF = 0xF1,
+    ADC_VBAT = 0xF2,
+
+    // Arduino connector namings
+    A0          = PA_0,
+    A1          = PA_1,
+    A2          = PA_4,
+    A3          = PB_0,
+    A4          = PC_1,
+    A5          = PC_0,
+    D0          = PA_3,
+    D1          = PA_2,
+    D2          = PA_10,
+    D3          = PB_3,
+    D4          = PB_5,
+    D5          = PB_4,
+    D6          = PB_10,
+    D7          = PA_8,
+    D8          = PA_9,
+    D9          = PC_7,
+    D10         = PB_6,
+    D11         = PA_7,
+    D12         = PA_6,
+    D13         = PA_5,
+    D14         = PB_9,
+    D15         = PB_8,
+
+    // Generic signals namings
+    LED1        = PA_5,
+    LED2        = PA_5,
+    LED3        = PA_5,
+    LED4        = PA_5,
+    USER_BUTTON = PC_13,
+    SERIAL_TX   = PA_2,
+    SERIAL_RX   = PA_3,
+    USBTX       = PA_2,
+    USBRX       = PA_3,
+    I2C_SCL     = PB_8,
+    I2C_SDA     = PB_9,
+    SPI_MOSI    = PA_7,
+    SPI_MISO    = PA_6,
+    SPI_SCK     = PA_5,
+    SPI_CS      = PB_6,
+    PWM_OUT     = PB_3,
+
     // Not connected
     NC = (int)0xFFFFFFFF
 } pin_name_t;

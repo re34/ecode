@@ -5,6 +5,7 @@
 typedef enum{
     PWM1,
     PWM2,
+    PWM3,
     PWMn,
 }pwm_name_t;
 

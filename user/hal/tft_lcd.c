@@ -29,43 +29,41 @@ int tft_dev_register(struct tft_dev *dev)
 	return 0;
 }
 
-
-void tft_write_bus(unsigned char vh)
-{
-	tft_dev->write_bus(vh);
-	tft_dev->wr(0);
-	tft_dev->wr(1);
-}
-
-void tft_write_com(unsigned char vh)
+void _write_reg(UInt16 reg)
 {
 	tft_dev->rs(0);
-	tft_write_bus(vh);
+    tft_dev->cs(0);
+    tft_dev->write_bus(reg);
+    tft_dev->wr(0);
+    tft_dev->wr(1);
+	tft_dev->write_bus(reg<<8);
+    tft_dev->wr(0);
+    tft_dev->wr(1);
+    tft_dev->cs(1);
 }
 
-void tft_write_data(unsigned char vh)
+void _write_data(UInt16 data)
 {
 	tft_dev->rs(1);
-	tft_write_bus(vh);
+    tft_dev->cs(0);
+    tft_dev->write_bus(data);
+    tft_dev->wr(0);
+    tft_dev->wr(1);
+	tft_dev->write_bus(data<<1);
+    tft_dev->wr(0);
+    tft_dev->wr(1);
+    tft_dev->cs(1);
 }
 
-void tft_write_com_data(unsigned char com, unsigned char dat)
+void tft_write_reg(UInt8 reg, UInt16 val)
 {
-	tft_write_com(com);
-	tft_write_data(dat);
+    _write_reg(reg);
+    _write_data(val);
 }
 
-void tft_address_set(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
+void tft_prepare_ram(void)
 {
-	tft_write_com_data(0x2a, x1>>8);
-	tft_write_com_data(0x2a, x1);
-	tft_write_com_data(0x2a, x2>>8);
-	tft_write_com_data(0x2a, x2);
-	tft_write_com_data(0x2b, y1>>8);
-	tft_write_com_data(0x2b, y1);
-	tft_write_com_data(0x2b, y2>>8);
-	tft_write_com_data(0x2b, y2);
-	tft_write_com(0x2c);
+    _write_reg(0x22);
 }
 
 static void tft_init(void)
@@ -73,248 +71,113 @@ static void tft_init(void)
 	tft_dev->reset(1);
 	delay_ms(5);
 	tft_dev->reset(0);
-	delay_ms(15);
+	delay_ms(100);
 	tft_dev->reset(1);
-	delay_ms(15);
+	delay_ms(50);
 	
-	tft_dev->cs(1);
-	tft_dev->wr(1);
-	tft_dev->cs(0);
-	tft_write_com(0x01);
-	delay_ms(20);
-	tft_write_com(0x11);
-	delay_ms(120);
+	//************* Start Initial Sequence **********//		
+	tft_write_reg(0x00E5,0x78F0); 
+	tft_write_reg(0x0001,0x0100); 
+	tft_write_reg(0x0002,0x0700); 
+	tft_write_reg(0x0003,0x1030); 
+	tft_write_reg(0x0004,0x0000); 
+	tft_write_reg(0x0008,0x0202);  
+	tft_write_reg(0x0009,0x0000);
+	tft_write_reg(0x000A,0x0000); 
+	tft_write_reg(0x000C,0x0000); 
+	tft_write_reg(0x000D,0x0000);
+	tft_write_reg(0x000F,0x0000);
+	//power on sequence VGHVGL
+	tft_write_reg(0x0010,0x0000);   
+	tft_write_reg(0x0011,0x0007);  
+	tft_write_reg(0x0012,0x0000);  
+	tft_write_reg(0x0013,0x0000); 
+	tft_write_reg(0x0007,0x0000); 
+	//vgh 
+	tft_write_reg(0x0010,0x1690);   
+	tft_write_reg(0x0011,0x0227);
+	//delay_ms(100);
+	//vregiout 
+	tft_write_reg(0x0012,0x009D); //0x001b
+	//delay_ms(100); 
+	//vom amplitude
+	tft_write_reg(0x0013,0x1900);
+	//delay_ms(100); 
+	//vom H
+	tft_write_reg(0x0029,0x0025); 
+	tft_write_reg(0x002B,0x000D); 
+	//gamma
+	tft_write_reg(0x0030,0x0007);
+	tft_write_reg(0x0031,0x0303);
+	tft_write_reg(0x0032,0x0003);// 0006
+	tft_write_reg(0x0035,0x0206);
+	tft_write_reg(0x0036,0x0008);
+	tft_write_reg(0x0037,0x0406); 
+	tft_write_reg(0x0038,0x0304);//0200
+	tft_write_reg(0x0039,0x0007); 
+	tft_write_reg(0x003C,0x0602);// 0504
+	tft_write_reg(0x003D,0x0008); 
+	//ram
+	tft_write_reg(0x0050,0x0000); 
+	tft_write_reg(0x0051,0x00EF);
+	tft_write_reg(0x0052,0x0000); 
+	tft_write_reg(0x0053,0x013F);  
+	tft_write_reg(0x0060,0xA700); 
+	tft_write_reg(0x0061,0x0001); 
+	tft_write_reg(0x006A,0x0000); 
+	//
+	tft_write_reg(0x0080,0x0000); 
+	tft_write_reg(0x0081,0x0000); 
+	tft_write_reg(0x0082,0x0000); 
+	tft_write_reg(0x0083,0x0000); 
+	tft_write_reg(0x0084,0x0000); 
+	tft_write_reg(0x0085,0x0000); 
+	//
+	tft_write_reg(0x0090,0x0010); 
+	tft_write_reg(0x0092,0x0600); 
 	
-	tft_write_com(0xc2);//Power Control 3 
-    tft_write_data(0x05);//APA2 APA1 APA0   Large
-    tft_write_data(0x00);//Step-up cycle in Booster circuit 1 
-                         //Step-up cycle in Booster circuit 2,3
-    tft_write_com(0xc3);//Power Control 4 
-    tft_write_data(0x05);//APA2 APA1 APA0   Large
-    tft_write_data(0x00);//Step-up cycle in Booster circuit 1 
-                         //Step-up cycle in Booster circuit 2,3
-    tft_write_com(0xc4);//Power Control 5 
-    tft_write_data(0x05);//APA2 APA1 APA0   Large
-    tft_write_data(0x00);//Step-up cycle in Booster circuit 1 
-                         //Step-up cycle in Booster circuit 2,3
-    tft_write_com(0x3A); 
-    tft_write_data(0x55);
+	tft_write_reg(0x0007,0x0133);
+	tft_write_reg(0x00,0x0022);//	
+
+
+	tft_write_reg(0x03,0x1030); 
+    tft_write_reg(0x0060, 0xa700);
+ 
+	tft_clear(0x001F);
+}
+
+
+void tft_set_windows(UInt16 x1, UInt16 y1, UInt16 x2, UInt16 y2)
+{
+    _write_reg(0x50);
+	_write_data(x1);
+	_write_reg(0x51);		
+	_write_data(x2);
+	_write_reg(0x52);	
+	_write_data(y1);
+	_write_reg(0x53);		
+	_write_data(y2);
     
-    tft_write_com(0xD7); 
-    tft_write_data(0x40);
-    tft_write_data(0xE0);
-
-    tft_write_com(0xFD);
-    tft_write_data(0x06);
-    tft_write_data(0x11);
-
-    tft_write_com(0xFA);
-    tft_write_data(0x38);
-    tft_write_data(0x20);
-    tft_write_data(0x1C);
-    tft_write_data(0x10);
-    tft_write_data(0x37);
-    tft_write_data(0x12);
-    tft_write_data(0x22);
-    tft_write_data(0x1E);
-
-    tft_write_com(0xC0);//Set GVDD	
-    tft_write_data(0x05);
-
-    tft_write_com(0xC5);//Set Vcom	
-    tft_write_data(0x60);
-    tft_write_data(0x00);
-
-    tft_write_com(0xC7);//Set VCOM-OFFSET	
-    tft_write_data(0xA9);//  可以微调改善flicker
-
-    tft_write_com(0x36);//Memory data  access control
-    tft_write_data(0xC8);//MY MX MV ML RGB MH 0 0   
-
-////Gamma//////////////////
-    tft_write_com(0xE0);//E0H Set
-    tft_write_data(0x23);
-    tft_write_data(0x23);
-    tft_write_data(0x24);
-    tft_write_data(0x02);
-    tft_write_data(0x08);
-    tft_write_data(0x0F);
-    tft_write_data(0x35);
-    tft_write_data(0x7B);
-    tft_write_data(0x43);
-    tft_write_data(0x0E);
-    tft_write_data(0x1F);
-    tft_write_data(0x25);
-    tft_write_data(0x10);
-    tft_write_data(0x16);
-    tft_write_data(0x31);
-
-    tft_write_com(0xE1);//E1H Set
-    tft_write_data(0x0D);
-    tft_write_data(0x28);
-    tft_write_data(0x2E);
-    tft_write_data(0x0B);
-    tft_write_data(0x11);
-    tft_write_data(0x12);
-    tft_write_data(0x3E);
-    tft_write_data(0x59);
-    tft_write_data(0x4C);
-    tft_write_data(0x10);
-    tft_write_data(0x26);
-    tft_write_data(0x2B);
-    tft_write_data(0x1B);
-    tft_write_data(0x1B);
-    tft_write_data(0x1B);
+    _write_reg(0x20);
+    _write_data(x1);
+    _write_reg(0x21);
+    _write_reg(y1);
     
-    tft_write_com(0x29);//display on
-
-    tft_write_com(0x2c);//Memory Write
+    tft_prepare_ram();
 }
 
-void tft_draw_horizon_line(unsigned int x, unsigned int y, unsigned int l, unsigned int c)
+void tft_clear(UInt16 c)
 {
-	unsigned int i,j;
-	
-	tft_write_com(0x2c);
-	tft_dev->rs(1);
-	tft_dev->cs(0);
-	l = l+x;
-	tft_address_set(x,y,l,y);
-	j=l*2;
-	for(i=1;i<j;j++)
-	{
-		tft_write_data(c>>8);
-		tft_write_data(c);		
-	}
-	
-	tft_dev->cs(1);
+	UInt32 index = 0;
+	tft_set_windows(0,0,TFT_WIDTH-1,TFT_HIGH-1);
+    for(index=0;index<TFT_WIDTH*TFT_HIGH;index++)
+    {
+        _write_data(c);
+    }
 }
 
-void tft_draw_vertical_line(unsigned int x, unsigned int y, unsigned int l, unsigned int c)
-{
-	unsigned int i,j;
-	
-	tft_write_com(0x2c);
-	tft_dev->rs(1);
-	tft_dev->cs(0);
-	l=l+y;
-	tft_address_set(x,y,x,l);
-	j=l*2;
-	for(i=1;i<=j;i++)
-	{
-		tft_write_data(c>>8);
-		tft_write_data(c);
-	}
-	tft_dev->cs(1);
-}
 
-void tft_draw_rect(unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsigned int c)
-{
-	tft_draw_horizon_line(x	,y , w, c);
-	tft_draw_horizon_line(x ,y+h,w, c);
-	tft_draw_vertical_line(x,y,h,c);
-	tft_draw_vertical_line(x+w,y,h,c);
-}
 
-void tft_draw_fillrect(unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsigned int c)
-{
-	unsigned int i;
-	for(i=0;i<h;i++)
-	{
-		tft_draw_horizon_line(x,y,w,c);
-		tft_draw_horizon_line(x,y+i,w,c);
-	}
-}
 
-int tft_rgb(int r, int g, int b)
-{
-	return ((r&0xF8)<<8)|((g&0xFC)<<3)|(b>>3);
-}
-
-void tft_clear(unsigned int j)
-{
-	unsigned int i,m;
-	tft_address_set(0,0,TFT_HIGH,TFT_WIDTH);
-	tft_write_com(0x2c);
-	tft_dev->rs(1);
-	tft_dev->cs(0);
-	LOG_DEBUG("TFT clear enter");
-	for(i=0;i<TFT_HIGH;i++)
-	{
-		for(m=0;m<240;m++)
-		{
-			tft_write_data(j>>8);
-			tft_write_data(j);
-		}
-	}
-	tft_dev->cs(1);
-    LOG_DEBUG("TFT clear exit");
-}
-
-void tft_draw_pixel(int x, int y, unsigned int c)
-{
-	tft_address_set(x,y,x,y);
-	tft_write_data(c>>8);
-	tft_write_data(c);
-}
-
-void tft_swap(int *x, int *y)
-{
-	int temp = *x;
-	*x = *y;
-	*y = temp;
-}
-
-void tft_draw_hline(int x, int y, int l, unsigned int c)
-{
-	tft_address_set(x,y,x+l,y);
-	for(int i=0;i<i+1;i++)
-	{
-		tft_write_data(c>>8);
-		tft_write_data(c);
-	}
-}
-
-void tft_draw_vline(int x, int y, int l, unsigned int c)
-{
-    int i;
-	tft_address_set(x,y,x,y+l);
-	for(i=0;i<l+1;i++)
-	{
-		tft_write_data(c);
-		tft_write_data(c);
-	}
-}
-
-void tft_draw_round_rect(int x1, int y1, int x2, int y2, unsigned int c)
-{
-	int tmp;
-	
-	tft_write_com(0x2c);
-	tft_dev->rs(1);
-	tft_dev->cs(0);
-	
-	if(x1>x2)
-	{
-		tft_swap(&x1,&x2);
-	}
-	
-	if(y1>y2)
-	{
-		tft_swap(&y1,&y2);
-	}
-	
-	if((x2-x1)>4&&(y2-y1)>4)
-	{
-		tft_draw_pixel(x1+1,y1+1,c);
-		tft_draw_pixel(x2-1,y1+1,c);
-		tft_draw_pixel(x1+1,y2-1,c);
-		tft_draw_pixel(x2-1,y2-1,c);
-		tft_draw_hline(x1+2,y1,x2-x1-4,c);
-		tft_draw_hline(x1+2,y2,x2-x1-4,c);
-		tft_draw_vline(x1,y1+2,y2-y1-4,c);
-		tft_draw_vline(x2,y1+2,y2-y1-4,c);
-	}
-}
 
 

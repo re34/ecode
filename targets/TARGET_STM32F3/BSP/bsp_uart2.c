@@ -1,5 +1,5 @@
 #include "bsp_uart2.h"
-
+#include <stdio.h>
 
 static uart2_irq_t bsp_uart2_irq = {0};
 
@@ -59,19 +59,19 @@ int bsp_uart2_init(uint32_t baudrate)
   
       In this example, Peripheral Clock is expected to be equal to 80000000 Hz => equal to SystemCoreClock
   */
-  LL_USART_SetBaudRate(UART2_INSTANCE, SystemCoreClock/2, LL_USART_OVERSAMPLING_16, baudrate); 
+  LL_USART_SetBaudRate(UART2_INSTANCE, SystemCoreClock, LL_USART_OVERSAMPLING_16, baudrate); 
 
   /* (4) Enable USART *********************************************************/
   LL_USART_Enable(UART2_INSTANCE);
-  
+  printf("uart2 is enabled\r\n");
   /* Polling USART initialisation */
-  while((!(LL_USART_IsActiveFlag_TEACK(UART2_INSTANCE))) || (!(LL_USART_IsActiveFlag_REACK(UART2_INSTANCE))))
-  { 
-  } 
+  //while((!(LL_USART_IsActiveFlag_TEACK(UART2_INSTANCE))) || (!(LL_USART_IsActiveFlag_REACK(UART2_INSTANCE))))
+  //{ 
+  //} 
 
   LL_USART_EnableIT_RXNE(UART2_INSTANCE);
   LL_USART_ClearFlag_TC(UART2_INSTANCE);
-
+  printf("uart2 is inited\r\n");
   return 0;
 }
 
