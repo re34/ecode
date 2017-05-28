@@ -65,9 +65,9 @@ int bsp_uart2_init(uint32_t baudrate)
   LL_USART_Enable(UART2_INSTANCE);
   printf("uart2 is enabled\r\n");
   /* Polling USART initialisation */
-  //while((!(LL_USART_IsActiveFlag_TEACK(UART2_INSTANCE))) || (!(LL_USART_IsActiveFlag_REACK(UART2_INSTANCE))))
-  //{ 
-  //} 
+  while((!(LL_USART_IsActiveFlag_TEACK(UART2_INSTANCE))) || (!(LL_USART_IsActiveFlag_REACK(UART2_INSTANCE))))
+  { 
+  } 
 
   LL_USART_EnableIT_RXNE(UART2_INSTANCE);
   LL_USART_ClearFlag_TC(UART2_INSTANCE);
