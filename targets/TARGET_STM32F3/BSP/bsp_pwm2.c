@@ -14,7 +14,7 @@ int bsp_pwm2_init(void)
   LL_GPIO_SetPinMode(GPIOC, LL_GPIO_PIN_7, LL_GPIO_MODE_ALTERNATE);
   LL_GPIO_SetPinPull(GPIOC, LL_GPIO_PIN_7, LL_GPIO_PULL_DOWN);
   LL_GPIO_SetPinSpeed(GPIOC, LL_GPIO_PIN_7, LL_GPIO_SPEED_FREQ_HIGH);
-  LL_GPIO_SetAFPin_0_7(GPIOC, LL_GPIO_PIN_7, LL_GPIO_AF_7);
+  LL_GPIO_SetAFPin_0_7(GPIOC, LL_GPIO_PIN_7, LL_GPIO_AF_2);
   
   /******************************/
   /* Peripheral clocks enabling */
@@ -53,7 +53,7 @@ int bsp_pwm2_init(void)
   LL_TIM_OC_SetPolarity(TIM3, LL_TIM_CHANNEL_CH2, LL_TIM_OCPOLARITY_HIGH);
   
   /* Set compare value to half of the counter period (50% duty cycle ) */
-  LL_TIM_OC_SetCompareCH1(TIM3, 0);
+  LL_TIM_OC_SetCompareCH2(TIM3, 0);
   
   /* Enable TIM3_CCR1 register preload. Read/Write operations access the      */
   /* preload register. TIM3_CCR1 preload value is loaded in the active        */
