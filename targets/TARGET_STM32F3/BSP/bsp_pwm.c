@@ -14,7 +14,7 @@ int bsp_pwm_init(void)
   LL_GPIO_SetPinMode(GPIOA, LL_GPIO_PIN_5, LL_GPIO_MODE_ALTERNATE);
   LL_GPIO_SetPinPull(GPIOA, LL_GPIO_PIN_5, LL_GPIO_PULL_DOWN);
   LL_GPIO_SetPinSpeed(GPIOA, LL_GPIO_PIN_5, LL_GPIO_SPEED_FREQ_HIGH);
-  LL_GPIO_SetAFPin_0_7(GPIOA, LL_GPIO_PIN_5, LL_GPIO_AF_5);
+  LL_GPIO_SetAFPin_0_7(GPIOA, LL_GPIO_PIN_5, LL_GPIO_AF_1);
   
   /******************************/
   /* Peripheral clocks enabling */
@@ -75,16 +75,16 @@ int bsp_pwm_init(void)
 
 void bsp_pwm_period_us(int us)
 {
-    if(us>0xFFFF)
-        us = 0xFFFF;
+    if(us>0xFFFFFFFF)
+        us = 0xFFFFFFFF;
     LL_TIM_SetAutoReload(TIM2, us-1);
     LL_TIM_GenerateEvent_UPDATE(TIM2);
 }
 
 void bsp_pwm_pulsewidth_us(int us)
 {
-    if(us > 0xFFFF)
-        us = 0xFFFF;
+    if(us > 0xFFFFFFFF)
+        us = 0xFFFFFFFF;
     LL_TIM_OC_SetCompareCH1(TIM2, us);
     LL_TIM_EnableCounter(TIM2);
 }

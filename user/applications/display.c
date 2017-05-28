@@ -20,7 +20,7 @@ void display_task(void *args)
     led_init();
     wait_system_on();
     tick_attach_timeout(&led_timeout, display_callback,500);
-    //pwm_period_ms(PWM1,60);
+    //pwm_period_ms(PWM1,500);
     //pwm_write(PWM1, 0.5);
     
 #if RTOS_EN==1

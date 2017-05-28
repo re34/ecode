@@ -11,10 +11,10 @@ int bsp_pwm2_init(void)
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
   
   /* GPIO TIM3_CH1 configuration */
-  LL_GPIO_SetPinMode(GPIOA, LL_GPIO_PIN_7, LL_GPIO_MODE_ALTERNATE);
-  LL_GPIO_SetPinPull(GPIOA, LL_GPIO_PIN_7, LL_GPIO_PULL_DOWN);
-  LL_GPIO_SetPinSpeed(GPIOA, LL_GPIO_PIN_7, LL_GPIO_SPEED_FREQ_HIGH);
-  LL_GPIO_SetAFPin_0_7(GPIOA, LL_GPIO_PIN_7, LL_GPIO_AF_2);
+  LL_GPIO_SetPinMode(GPIOC, LL_GPIO_PIN_7, LL_GPIO_MODE_ALTERNATE);
+  LL_GPIO_SetPinPull(GPIOC, LL_GPIO_PIN_7, LL_GPIO_PULL_DOWN);
+  LL_GPIO_SetPinSpeed(GPIOC, LL_GPIO_PIN_7, LL_GPIO_SPEED_FREQ_HIGH);
+  LL_GPIO_SetAFPin_0_7(GPIOC, LL_GPIO_PIN_7, LL_GPIO_AF_7);
   
   /******************************/
   /* Peripheral clocks enabling */
@@ -63,7 +63,7 @@ int bsp_pwm2_init(void)
   /**********************************/
   /* Start output signal generation */
   /**********************************/
-  /* Enable output channel 1 */
+  /* Enable output channel 2 */
   LL_TIM_CC_EnableChannel(TIM3, LL_TIM_CHANNEL_CH2);
   
   /* Enable counter */
@@ -85,7 +85,7 @@ void bsp_pwm2_pulsewidth_us(int us)
 {
     if(us > 0xFFFF)
         us = 0xFFFF;
-    LL_TIM_OC_SetCompareCH1(TIM3, us);
+    LL_TIM_OC_SetCompareCH2(TIM3, us);
     LL_TIM_EnableCounter(TIM3);
 }
 
