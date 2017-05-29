@@ -1,206 +1,544 @@
 #include "oled.h"
-#include "oledfont.h"
+#include "font.h"
 
+
+
+#define    OLED_OFF    0xAE
+#define    OLED_ON    0xAF
+#define    OLED_SET_LINEXX    0x40
+#define    OLED_SET_PAGEXX    0xB0
+#define    OLED_SET_UCOLXX    0x10
+#define    OLED_SET_DCOLXX    0x00
+//#define    OLED_READ_STATUS
+#define    OLED_ADC_NORMAL    0xA0
+#define    OLED_ADC_REVERSE    0xA1
+#define    OLED_DISPLAY_NORMAL    0xA6
+#define    OLED_DISPLAY_REVERSE    0xA7
+#define    OLED_DISPLAY_NONE    0xA4
+#define    OLED_DISPLAY_ALL    0xA5
+#define    OLED_SET_BIAS9    0xA2
+#define    OLED_SET_BIAS7    0xA3
+#define    OLED_COL_INC        0xE0
+#define    OLED_END        0xEE
+#define    OLED_RESET        0xE2
+#define    OLED_COM_DIR0        0xC0
+#define    OLED_COM_DIR1        0xC8
+#define    OLED_SET_PWR        0x2F
+#define    OLED_NOP    0xE3
+
+
+#define    OLED_COLS    128
+#define    OLED_LINES    64
+#define    OLED_PAGES    8
+#define    OLED_WIDTH    128
+#define    OLED_HIGH        64
+
+#define OLED_GRAM_WIDTH    OLED_WIDTH
+#define OLED_GRAM_HIGH    (OLED_HIGH/8)
+#define OLED_GRAM_SIZE        (OLED_GRAM_HIGH*OLED_GRAM_WIDTH)
+
+#define oled_write_cmd(cmd)    BspOledWriteCmd(cmd)
+#define oled_write_data(data)    BspOledWriteData(data)
+
+UInt8 OLED_GRAM[OLED_GRAM_SIZE];
+
+UInt8 isOledRefreshEn = 0;
 
 struct oled_dev *oled_dev;
 
 static void _oled_init();
 
+
+static void _oled_init(void);
+
 int oled_register(struct oled_dev *dev)
 {
-	if(oled_dev==NULL)
+	if(dev==NULL)
 		return -1;
 	if(dev->init()<0)
 		return -2;
 	oled_dev = dev;
 	_oled_init();
-	
+	LOG_DEBUG("oled inited!!!");
 	return 0;
 }
 
-void oled_write_byte(unsigned char data, unsigned char cmd)
+
+void oled_write_cmd(unsigned char cmd)
 {
-	unsigned char i;
-	
-	if(cmd)
-		oled_dev->dc(BIT_HIGH);
-	else
-		oled_dev->dc(BIT_LOW);
-	oled_dev->cs(BIT_LOW);
-	for(i=0;i<8;i++)
-	{
-		oled_dev->sclk(BIT_LOW);
-		if(data&0x80)
-			oled_dev->sdin(BIT_HIGH);
-		else
-			oled_dev->sdin(BIT_LOW);
-		oled_dev->sclk(BIT_HIGH);
-		data<<=1;
-	}
-	oled_dev->cs(BIT_HIGH);
-	oled_dev->dc(BIT_HIGH);
+    unsigned char i;
+    
+    oled_dev->dc(PIN_RESET);
+    oled_dev->cs(PIN_RESET);
+    
+    for(i=0;i<8;i++)
+    {
+        oled_dev->sclk(PIN_RESET);
+        if(cmd&0x80)
+            oled_dev->sdin(PIN_SET);
+        else
+            oled_dev->sdin(PIN_RESET);
+        oled_dev->sclk(PIN_SET);
+        cmd<<=1;
+    }
+    oled_dev->cs(PIN_SET);
+    oled_dev->dc(PIN_SET); 
 }
 
-void oled_set_pos(unsigned char x, unsigned char y)
+void oled_write_data(unsigned char data)
 {
-	oled_write_byte(0xb0+y,OLED_CMD);
-	oled_write_byte(((x&0xf0)>>4)|0x10,OLED_CMD);
-	oled_write_byte((x&0x0f)|0x01,OLED_CMD); 
+    unsigned char i;
+    
+    oled_dev->dc(PIN_SET);
+    oled_dev->cs(PIN_RESET);
+    
+    for(i=0;i<8;i++)
+    {
+        oled_dev->sclk(PIN_RESET);
+        if(data&0x80)
+            oled_dev->sdin(PIN_SET);
+        else
+            oled_dev->sdin(PIN_RESET);
+        oled_dev->sclk(PIN_SET);
+        data<<=1;
+    }
+    oled_dev->cs(PIN_SET);
+    oled_dev->dc(PIN_SET);
 }
 
-void oled_display_on()
+
+
+void oled_disable_refresh(void)
 {
-	oled_write_byte(0X8D,OLED_CMD);  //SET DCDC命令
-	oled_write_byte(0X14,OLED_CMD);  //DCDC ON
-	oled_write_byte(0XAF,OLED_CMD);  //DISPLAY ON
+    isOledRefreshEn = 0;
 }
 
-void oled_display_off()
+void oled_enable_refresh(void)
 {
-	oled_write_byte(0X8D,OLED_CMD);  //SET DCDC命令
-	oled_write_byte(0X10,OLED_CMD);  //DCDC OFF
-	oled_write_byte(0XAE,OLED_CMD);  //DISPLAY OFF
+    isOledRefreshEn = 1;
+    oled_refresh_gram();
 }
-
-//清屏函数,清完屏,整个屏幕是黑色的!和没点亮一样!!!	  
-void oled_clear(void)  
-{  
-	UInt8 i,n;		    
-	for(i=0;i<8;i++)  
-	{  
-		oled_write_byte (0xb0+i,OLED_CMD);    //设置页地址（0~7）
-		oled_write_byte (0x00,OLED_CMD);      //设置显示位置—列低地址
-		oled_write_byte (0x10,OLED_CMD);      //设置显示位置—列高地址   
-		for(n=0;n<128;n++)oled_write_byte(0,OLED_DATA); 
-	} //更新显示
-}
-
-void oled_show_char(UInt8 x, UInt8 y, UInt8 chr)
+void oled_page_clear(UInt8 page, UInt8 data)
 {
-	UInt8 c=0;
-	UInt8 i=0;
+    UInt8 page_addr;
+    UInt8 col;
 
-	c = chr-' ';
-	if(x>Max_Column-1){x=0;y=y+2;}
-	if(SIZE ==16)
-	{
-		oled_set_pos(x,y);	
-		for(i=0;i<8;i++)
-			oled_write_byte(F8X16[c*16+i],OLED_DATA);
-		oled_set_pos(x,y+1);
-		for(i=0;i<8;i++)
-			oled_write_byte(F8X16[c*16+i+8],OLED_DATA);
-	}
-	else 
-	{	
-		oled_set_pos(x,y+1);
-		for(i=0;i<6;i++)
-			oled_write_byte(F6x8[c][i],OLED_DATA);
-				
-	}
-	
+    page_addr = OLED_SET_PAGEXX+page;
+    oled_write_cmd(page_addr);
+    oled_write_cmd(OLED_SET_UCOLXX);
+    oled_write_cmd(OLED_SET_DCOLXX);
+    for(col=0;col<OLED_COLS;col++)
+    {
+        oled_write_data(data);
+    }
 }
 
-//m^n函数
-UInt32 oled_pow(UInt8 m,UInt8 n)
+void oled_set_page(UInt8 page)
 {
-	UInt32 result=1;	 
-	while(n--)result*=m;    
-	return result;
+    oled_write_cmd(OLED_SET_PAGEXX|page);
 }
 
-void oled_show_num(UInt8 x, UInt8 y, UInt32 num, UInt8 len, UInt8 size)
+void oled_set_column(UInt8 col)
 {
-	UInt8 t,temp;
-	UInt8 enshow=0;						   
-	for(t=0;t<len;t++)
-	{
-		temp=(num/oled_pow(10,len-t-1))%10;
-		if(enshow==0&&t<(len-1))
-		{
-			if(temp==0)
-			{
-				OLED_ShowChar(x+(size/2)*t,y,' ');
-				continue;
-			}else enshow=1; 
-		 	 
-		}
-	 	OLED_ShowChar(x+(size/2)*t,y,temp+'0'); 
-	}
+    UInt8 tmp;
+    tmp=col&0x0F;
+    oled_write_cmd(OLED_SET_DCOLXX|tmp);
+    tmp = col>>4;
+    oled_write_cmd(OLED_SET_UCOLXX|tmp);
+
 }
 
-void oled_show_string(UInt8 x, UInt8 y, UInt8 *str)
+void oled_draw_page(UInt8 page, UInt8 col, UInt8 page_data){
+    oled_set_page(page);
+    oled_set_column(col);
+    oled_write_data(page_data);
+    
+}
+
+void oled_refresh_gram(void)
 {
-	unsigned char j=0;
-	while (str[j]!='\0')
-	{		OLED_ShowChar(x,y,str[j]);
-			x+=8;
-		if(x>120){x=0;y+=2;}
-			j++;
-	}
+    UInt8 i, j;
+    UInt8 *pBuf=OLED_GRAM;
+
+    for(i=0;i<OLED_GRAM_HIGH;i++)
+    {
+        oled_set_page(i);
+        oled_set_column(0);
+        for(j=0;j<OLED_GRAM_WIDTH;j++)
+        {
+            oled_write_data(*pBuf);
+            pBuf++;
+        }
+    }
 }
 
-void oled_show_chinese(UInt8 x, UInt8 y, UInt8 no)
+void oled_draw_pixel(UInt16 x, UInt16 y, UInt8 color)
 {
-	
+    UInt8 page =0;
+    UInt8 page_data;
+
+    if((x>=OLED_WIDTH)||(y>=OLED_HIGH))
+        return;
+    page = y/8;
+    
+    page_data = OLED_GRAM[page*OLED_GRAM_WIDTH+x];
+    if(color)
+        page_data |= (1<<(y%8));
+    else
+        page_data &=~(1<<(y%8));
+    OLED_GRAM[page*OLED_GRAM_WIDTH+x]=page_data;
+
+    if(isOledRefreshEn==1)
+    {
+        oled_draw_page(page, x, page_data);
+    }
 }
 
-void oled_draw_bmp(UInt8 x0, UInt8 y0, UInt8 x1, UInt8 y1, UInt8 *bmp)
+UInt8 oled_get_pixel(UInt16 x, UInt16 y)
 {
-	unsigned int j=0;
-	unsigned char x,y;
-  
-	if(y1%8==0) y=y1/8;      
-	else y=y1/8+1;
-	for(y=y0;y<y1;y++)
-	{
-		oled_set_pos(x0,y);
-		for(x=x0;x<x1;x++)
-	    {      
-	    	oled_write_byte(bmp[j++],OLED_DATA);	    	
-	    }
-	}
+    UInt8 page =0;
+    UInt8 page_data;
+
+    if((x>=OLED_WIDTH)||(y>=OLED_HIGH))
+        return 0;
+    page = y/8;
+    
+    page_data = OLED_GRAM[page*OLED_GRAM_WIDTH+x];
+    if(page_data &(1<<(y%8)))
+        return 1;
+    else
+        return 0;
 }
 
-static void _oled_init()
+void    oled_draw_point(UInt16 x, UInt16 y, UInt8 pad){
+    UInt8 page =0;
+    UInt8 page_data;
+
+    if((x>=OLED_WIDTH)||(y>=OLED_HIGH))
+        return;
+    page = y/8;
+    
+    page_data = OLED_GRAM[page*OLED_GRAM_WIDTH+x];
+    if(pad)
+        page_data |= (1<<(y%8));
+    else
+        page_data &=~(1<<(y%8));
+    OLED_GRAM[page*OLED_GRAM_WIDTH+x]=page_data;
+}
+
+void oled_fill(UInt8 x1, UInt8 y1, UInt8 x2, UInt8 y2, UInt8 pad)
 {
-	oled_dev->reset(BIT_HIGH);
-	delay_ms(100);
-	oled_dev->reset(BIT_LOW);
-	delay_ms(200);
-	oled_dev->reset(BIT_HIGH);
-	
-	oled_write_byte(0xAE,OLED_CMD);//--turn off oled panel
-	oled_write_byte(0x00,OLED_CMD);//---set low column address
-	oled_write_byte(0x10,OLED_CMD);//---set high column address
-	oled_write_byte(0x40,OLED_CMD);//--set start line address  Set Mapping RAM Display Start Line (0x00~0x3F)
-	oled_write_byte(0x81,OLED_CMD);//--set contrast control register
-	oled_write_byte(0xCF,OLED_CMD); // Set SEG Output Current Brightness
-	oled_write_byte(0xA1,OLED_CMD);//--Set SEG/Column Mapping     0xa0左右反置 0xa1正常
-	oled_write_byte(0xC8,OLED_CMD);//Set COM/Row Scan Direction   0xc0上下反置 0xc8正常
-	oled_write_byte(0xA6,OLED_CMD);//--set normal display
-	oled_write_byte(0xA8,OLED_CMD);//--set multiplex ratio(1 to 64)
-	oled_write_byte(0x3f,OLED_CMD);//--1/64 duty
-	oled_write_byte(0xD3,OLED_CMD);//-set display offset	Shift Mapping RAM Counter (0x00~0x3F)
-	oled_write_byte(0x00,OLED_CMD);//-not offset
-	oled_write_byte(0xd5,OLED_CMD);//--set display clock divide ratio/oscillator frequency
-	oled_write_byte(0x80,OLED_CMD);//--set divide ratio, Set Clock as 100 Frames/Sec
-	oled_write_byte(0xD9,OLED_CMD);//--set pre-charge period
-	oled_write_byte(0xF1,OLED_CMD);//Set Pre-Charge as 15 Clocks & Discharge as 1 Clock
-	oled_write_byte(0xDA,OLED_CMD);//--set com pins hardware configuration
-	oled_write_byte(0x12,OLED_CMD);
-	oled_write_byte(0xDB,OLED_CMD);//--set vcomh
-	oled_write_byte(0x40,OLED_CMD);//Set VCOM Deselect Level
-	oled_write_byte(0x20,OLED_CMD);//-Set Page Addressing Mode (0x00/0x01/0x02)
-	oled_write_byte(0x02,OLED_CMD);//
-	oled_write_byte(0x8D,OLED_CMD);//--set Charge Pump enable/disable
-	oled_write_byte(0x14,OLED_CMD);//--set(0x10) disable
-	oled_write_byte(0xA4,OLED_CMD);// Disable Entire Display On (0xa4/0xa5)
-	oled_write_byte(0xA6,OLED_CMD);// Disable Inverse Display On (0xa6/a7) 
-	oled_write_byte(0xAF,OLED_CMD);//--turn on oled panel
-	
-	oled_write_byte(0xAF,OLED_CMD); /*display ON*/ 
-	oled_clear();
-	oled_set_pos(0,0); 		
+    UInt8 x, y;
+
+    for(x=x1;x<x2; x++)
+    {
+        for(y=y1;y<y2;y++)
+        {
+            //oled_draw_point(x, y, pad);
+            oled_draw_pixel(x, y, pad);
+        }
+    }
 }
 
+
+void oled_draw_line(UInt16 x1, UInt16 y1, UInt16 x2, UInt16 y2, UInt8 color){
+    Int32 dx, dy;
+    Int32 tx, ty;
+    Int32 inc1, inc2;
+    Int32 d, iTag;
+    Int32 x, y;
+
+    oled_draw_pixel(x1, y1, color);
+
+    if((x1==x2)&&(y1==y2))
+        return;
+    iTag = 0;
+
+    if(x2>=x1)
+        dx=x2-x1;
+    else
+        dx = x1-x2;
+
+    if(y2>=y1)
+        dy = y2-y1;
+    else
+        dy = y1-y2;
+
+    if(dx<dy)
+    {
+        UInt16 temp;
+        iTag = 1;
+        temp = x1;
+        x1 = y1;
+        y1 = temp;
+
+        temp = x2;
+        x2 = y2;
+        y2 = temp;
+
+        temp = dx;
+        dx = dy;
+        dy = temp;
+    }
+
+    tx = x2>x1?1:-1;
+    ty = y2>y1?1:-1;
+
+    x = x1;
+    y = y1;
+
+    inc1 = 2*dy;
+    inc2 = 2*(dy-dx);
+
+    d = inc1-dx;
+    while(x!=x2)
+    {
+        if(d<0)
+            d+=inc1;
+        else
+        {
+            y+=ty;
+            d+=inc2;
+        }
+        if(iTag)
+            oled_draw_pixel(y, x, color);
+        else
+            oled_draw_pixel(x, y, color);
+        x+=tx;
+    }
+
+}
+
+void oled_draw_points(UInt16 *x, UInt16 *y, UInt16 size, UInt8 color)
+{
+    UInt16 i;
+
+    for(i=0;i<size-1;i++)
+    {
+        oled_draw_line(x[i], y[i], x[i+1], y[i+1], color);
+    }
+}
+
+
+void oled_draw_rect(UInt16 x, UInt16 y, UInt16 width, UInt16 height, UInt8 color)
+{
+    oled_draw_line(x, y, x+width-1, y, color);
+    oled_draw_line(x, y, x, y+height-1, color);
+    oled_draw_line(x, y+height-1, x+width-1, y+height-1, color);
+    oled_draw_line(x+width-1, y, x+width-1, y+height-1, color);
+}
+void oled_draw_circle(UInt16 x, UInt16 y, UInt16 _usRadius, uint8_t _ucColor)
+{
+    Int32 D;            /* Decision Variable */
+    UInt32 CurX;        /* 当前 X 值 */
+    UInt32 CurY;        /* 当前 Y 值 */
+
+    D = 3 - (_usRadius << 1);
+    CurX = 0;
+    CurY = _usRadius;
+
+    while (CurX <= CurY)
+    {
+        oled_draw_pixel(x + CurX, y + CurY, _ucColor);
+        oled_draw_pixel(x + CurX, y - CurY, _ucColor);
+        oled_draw_pixel(x - CurX, y + CurY, _ucColor);
+        oled_draw_pixel(x - CurX, y - CurY, _ucColor);
+        oled_draw_pixel(x + CurY, y + CurX, _ucColor);
+        oled_draw_pixel(x + CurY, y - CurX, _ucColor);
+        oled_draw_pixel(x - CurY, y + CurX, _ucColor);
+        oled_draw_pixel(x - CurY, y - CurX, _ucColor);
+
+        if (D < 0)
+        {
+            D += (CurX << 2) + 6;
+        }
+        else
+        {
+            D += ((CurX - CurY) << 2) + 10;
+            CurY--;
+        }
+        CurX++;
+    }
+}
+
+void oled_draw_bmp(UInt16 _usX, UInt16 _usY, UInt16 _usHeight, UInt16 _usWidth, uint8_t *_ptr)
+{
+    UInt16 x, y;
+
+    for (x = 0; x < _usWidth; x++)
+    {
+        for (y = 0; y < _usHeight; y++)
+        {
+            oled_draw_pixel(_usX + x, _usY + y, *_ptr);
+        }
+    }
+}
+
+
+void oled_draw_char(UInt8 x, UInt8 y, UInt8 chr, UInt8 font, UInt8 color)
+{
+    UInt8 *pC;
+
+    UInt8 font_size;
+
+    UInt8 i, j;
+    UInt8 x0=x;
+    UInt8 y0 = y;
+    UInt8 y_base = y;
+    UInt8 temp;
+
+    font_size = (font/8+((font%8)?1:0))*(font/2);
+
+    
+
+    switch(font)
+    {
+    case FONT16:
+        pC = (UInt8 *)&ascii16[font_size*chr];
+        break;
+    case FONT12:
+        pC = (UInt8 *)&ascii12[font_size*chr];
+        break;
+    }
+    
+    for(i=0;i<font_size;i++)
+    {
+        temp = *pC;
+        for(j=0;j<8;j++)
+        {
+            if(temp&0x01)
+                oled_draw_pixel(x, y, color);
+            else
+                oled_draw_pixel(x, y, !color);
+            temp>>=1;
+            y++;
+            if(y-y_base>=font)
+                break;
+        }
+        x++;
+        if(x-x0>=font/2)
+        {
+            x=x0;
+            y0+=8;
+        }
+        y=y0;
+        pC++;
+    }
+    
+}
+
+UInt32 oled_pow(UInt8 m, UInt8 n)
+{
+    UInt32 result = 1;
+    while(n--)
+        result*=m;
+    return result;
+}
+
+void oled_draw_num(UInt8 x, UInt8 y, UInt32 num, UInt8 len, UInt8 font)
+{
+    UInt8 temp, i;
+    UInt8 enshow = 0;
+
+    for(i=0;i<len;i++)
+    {
+        temp = (num/oled_pow(10, len-i-1))%10;
+        if((enshow==0)&&(i<(len-1)))
+        {
+            if(temp==0)
+            {
+                oled_draw_char(x+(font/2)*i, y, ' ', font, 1);
+            }
+            else
+                enshow = 1;
+        }
+        oled_draw_char(x+(font/2)*i, y, temp+'0', font, 1);
+    }
+    
+}
+
+
+void oled_draw_string(char *str, UInt8 x, UInt8 y, UInt8 font)
+{
+    UInt16 len = strlen(str);
+
+    UInt8 font_width;
+
+    font_width = font/2;
+    while(*str!='\0')
+    {
+        oled_draw_char(x, y, *str, font,1);
+        x+=font_width;
+        str++;
+    }
+}
+
+
+
+void oled_clear(UInt8 data){
+
+    UInt8 page;
+    UInt8 col;
+    UInt8 *pGram = OLED_GRAM;
+    
+
+    for(page=0;page<8;page++){
+        oled_set_page(page);
+        oled_set_column(0);
+        for(col=0;col<OLED_COLS;col++){
+            oled_write_data(data);
+            *pGram++=0;
+        }
+    }
+}
+
+static void _oled_init(void)
+{
+
+    oled_dev->reset(PIN_SET);
+    oled_dev->cs(PIN_SET);
+    oled_dev->dc(PIN_SET);
+    oled_dev->sdin(PIN_SET);
+    oled_dev->sclk(PIN_SET);
+    
+    oled_dev->reset(PIN_SET);
+    delay_ms(100);
+    oled_dev->reset(PIN_RESET);
+    delay_ms(200);
+    oled_dev->reset(PIN_SET);
+    
+    oled_write_cmd(0xAE);//--turn off oled panel
+    oled_write_cmd(0x00);//---set low column address
+    oled_write_cmd(0x10);//---set high column address
+    oled_write_cmd(0x40);//--set start line address  Set Mapping RAM Display Start Line (0x00~0x3F)
+    oled_write_cmd(0x81);//--set contrast control register
+    oled_write_cmd(0xCF); // Set SEG Output Current Brightness
+    oled_write_cmd(0xA1);//--Set SEG/Column Mapping     0xa0左右反置 0xa1正常
+    oled_write_cmd(0xC8);//Set COM/Row Scan Direction   0xc0上下反置 0xc8正常
+    oled_write_cmd(0xA6);//--set normal display
+    oled_write_cmd(0xA8);//--set multiplex ratio(1 to 64)
+    oled_write_cmd(0x3f);//--1/64 duty
+    oled_write_cmd(0xD3);//-set display offset    Shift Mapping RAM Counter (0x00~0x3F)
+    oled_write_cmd(0x00);//-not offset
+    oled_write_cmd(0xd5);//--set display clock divide ratio/oscillator frequency
+    oled_write_cmd(0x80);//--set divide ratio, Set Clock as 100 Frames/Sec
+    oled_write_cmd(0xD9);//--set pre-charge period
+    oled_write_cmd(0xF1);//Set Pre-Charge as 15 Clocks & Discharge as 1 Clock
+    oled_write_cmd(0xDA);//--set com pins hardware configuration
+    oled_write_cmd(0x12);
+    oled_write_cmd(0xDB);//--set vcomh
+    oled_write_cmd(0x40);//Set VCOM Deselect Level
+    oled_write_cmd(0x20);//-Set Page Addressing Mode (0x00/0x01/0x02)
+    oled_write_cmd(0x02);//
+    oled_write_cmd(0x8D);//--set Charge Pump enable/disable
+    oled_write_cmd(0x14);//--set(0x10) disable
+    oled_write_cmd(0xA4);// Disable Entire Display On (0xa4/0xa5)
+    oled_write_cmd(0xA6);// Disable Inverse Display On (0xa6/a7) 
+    oled_write_cmd(0xAF);//--turn on oled panel
+    
+    oled_write_cmd(0xAF); /*display ON*/ 
+    
+    oled_enable_refresh();
+    oled_clear(0x00);
+    oled_draw_rect(0, 0, 127, 64, 1);
+}

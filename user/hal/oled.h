@@ -3,6 +3,10 @@
 #include "ecode.h"
 
 
+#define FONT32      32
+#define FONT16	16
+#define FONT12	12
+
 struct oled_dev{
 	int (*init)(void);
 	void (*reset)(unsigned char status);
@@ -13,27 +17,22 @@ struct oled_dev{
 };
 
 
-#define SIZE 16
-#define XLevelL		0x00
-#define XLevelH		0x10
-#define Max_Column	128
-#define Max_Row		64
-#define	Brightness	0xFF 
-#define X_WIDTH 	128
-#define Y_WIDTH 	64	    
-
-#define OLED_CMD  0	//写命令
-#define OLED_DATA 1	//写数据
-
 int oled_register(struct oled_dev *dev);
-void oled_set_pos(unsigned char x, unsigned char y);
-void oled_display_on();
-void oled_display_off();
-void oled_clear(void);
-void oled_show_char(UInt8 x, UInt8 y, UInt8 chr);
-UInt32 oled_pow(UInt8 m,UInt8 n);
-void oled_show_num(UInt8 x, UInt8 y, UInt32 num, UInt8 len, UInt8 size);
-void oled_show_string(UInt8 x, UInt8 y, UInt8 *str);
-void oled_show_chinese(UInt8 x, UInt8 y, UInt8 no);
-void oled_draw_bmp(UInt8 x0, UInt8 y0, UInt8 x1, UInt8 y1, UInt8 *bmp);
+void oled_disable_refresh(void);
+void oled_enable_refresh(void);
+void oled_refresh_gram(void);
+void oled_draw_pixel(UInt16 x, UInt16 y, UInt8 color);
+UInt8 oled_get_pixel(UInt16 x, UInt16 y);
+void    oled_draw_point(UInt16 x, UInt16 y, UInt8 pad);
+void oled_fill(UInt8 x1, UInt8 y1, UInt8 x2, UInt8 y2, UInt8 pad);
+void oled_draw_line(UInt16 x1, UInt16 y1, UInt16 x2, UInt16 y2, UInt8 color);
+void oled_draw_points(UInt16 *x, UInt16 *y, UInt16 size, UInt8 color);
+void oled_draw_rect(UInt16 x, UInt16 y, UInt16 width, UInt16 height, UInt8 color);
+void oled_draw_circle(UInt16 x, UInt16 y, UInt16 _usRadius, uint8_t _ucColor);
+void oled_draw_bmp(UInt16 _usX, UInt16 _usY, UInt16 _usHeight, UInt16 _usWidth, uint8_t *_ptr);
+void oled_draw_char(UInt8 x, UInt8 y, UInt8 chr, UInt8 font, UInt8 color);
+void oled_draw_num(UInt8 x, UInt8 y, UInt32 num, UInt8 len, UInt8 font);
+void oled_draw_string(char *str, UInt8 x, UInt8 y, UInt8 font);
+void oled_clear(UInt8 data);
+
 #endif

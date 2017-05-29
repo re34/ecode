@@ -2,6 +2,7 @@
 #include "ecode.h"
 #include "tft_lcd.h"
 #include "oled.h"
+#include "user_oled.h"
 
 
 static struct tft_dev tft_dev;
@@ -26,7 +27,7 @@ static void tft_lcd_init();
 void user_driver_init()
 {
 	//tft_lcd_init();
-
+    user_oled_init();
 }
 
 
