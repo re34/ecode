@@ -1,6 +1,7 @@
 #include "board.h"
 #include "ecode.h"
 
+void init(void *args);
 
 extern void ecode_application_init(void);
 
@@ -12,16 +13,63 @@ void ecode_startup(void)
 
 void main(void)
 {
-	ecode_startup();
+    board_clock_configuration();
+    
+    rtos_start(init);
 }
 
-#if RTOS_EN==1
-void vApplicationTickHook( void ){
-	tick_inc();
+static struct ecode_cli_dev com_cli;
+static struct stdioex_device com_stdio;
+
+
+static inline int com_putchar(unsigned char data)
+{
+    //write(COM1, (char *)&data, 1);
+    serial_write(COM1, (char *)&data, 1);
+    return 0;
 }
-#if configCHECK_FOR_STACK_OVERFLOW==1
-void vApplicationStackOverflowHook(TaskHandle_t xTask, char * pcTaskName){
-	print_log("任务:%s发现栈溢出\r\n", pcTaskName);
+static inline int com_getchar(void)
+{
+    int data;
+    
+    data = serial_in_waiting(COM1);
+    if(data<=0)
+        return 0;
+    //read(COM1, (char *)&data, 1);
+    if(serial_read(COM1, (char *)&data, 1)<0)
+        return 0;
+    return data;
 }
-#endif
-#endif
+
+void cli_task(void *args);
+void init(void *args)
+{
+    ecode_startup();
+    xTaskCreate(cli_task,
+                "cli_task",
+                1024,
+                NULL,
+                2,
+                NULL);
+}
+
+
+
+
+void cli_task(void *args)
+{
+    cli_register_platform_commands();
+    
+    com_stdio.put_char = com_putchar;
+    com_stdio.get_char = com_getchar;
+    stdio_puts(&com_stdio, "ecode stdio inited\r\n");
+    com_cli.stdio = &com_stdio;
+    ecode_register_cli_device( &com_cli, "COM");
+    
+    LOG_DEBUG("cli task running...");
+    wait_system_on();
+    while(1)
+    {
+        ecode_cli_polling();
+    }
+}

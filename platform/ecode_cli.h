@@ -5,6 +5,7 @@
 #include "ecode_cli.h"
 #include "cli_errno.h"
 
+
 #define CLI_BUF_SIZE    512
 #define CLI_MAX_PARAM    100
 

@@ -13,5 +13,5 @@ void delay_ms(int ms)
 
 void delay_us(int us)
 {
-	tick_delay(us);
+	//tick_delay(us);
 }

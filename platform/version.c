@@ -59,7 +59,7 @@ void FirmwareInfoPrint(void)
     print_log("---------------------------------------------");
     print_log(fLogo);
     
-    print_log("Board Name: %s\r\n", TARGET_BOARD);
+    //print_log("Board Name: %s\r\n", TARGET_BOARD);
     print_log("Firmware Name: %s\r\n", fFirmwareName);
     print_log("Firmware version: %s\r\n", fFirmwareVersion);
     print_log("Author :%s\r\n", fAuthorName);

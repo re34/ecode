@@ -1,20 +1,17 @@
 #include "platform_cli_handles.h"
 #include "ecode_cli.h"
-#include "mcu.h"
 #include "timestamp.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "ecode.h"
 
 static int help(struct ecode_cli_dev *dev, char **args, int atgc);
-static int reset(struct ecode_cli_dev *dev, char **args, int argc);
 static int get_sys_time(struct ecode_cli_dev *dev, char **args, int argc);
 static int get_version(struct ecode_cli_dev *dev, char **args, int argc);
 static int ls(struct ecode_cli_dev *dev, char **args, int argc);
 
 static const struct cli_command platform_commands[]={
     {.name="help", help, "(), get the help info\r\n"},
-    {.name="reset", reset, "(), reset the system\r\n"},
     {.name="time", get_sys_time, "(), get system time from start up\r\n"},
     {.name="version", get_version, "(), print version information\r\n"},
     {.name="ls", ls, "(), list file or folder content\r\n"},
@@ -50,17 +47,6 @@ static int help(struct ecode_cli_dev *dev, char **args, int argc)
     cli_error(dev, ERROR_NONE);
 }
 
-static int reset(struct ecode_cli_dev *dev, char **args, int argc)
-{
-    
-    if(argc!=0)
-        cli_error(dev, ERROR_PARAM);
-    
-    mcu_reset();
-    
-    ecode_tick_delay_ms(50);
-    cli_error(dev, ERROR_NONE);
-}
 
 static int get_sys_time(struct ecode_cli_dev *dev, char **args, int argc)
 {

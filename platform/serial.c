@@ -1,4 +1,5 @@
 #include "serial.h"
+#include "ecode.h"
 
 
 static struct serial_dev *devs[COMn]={NULL};

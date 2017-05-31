@@ -1,6 +1,5 @@
 #ifndef __SERIAL_H__
 #define __SERIAL_H__
-#include "../common/includes.h"
 
 enum{
     COM1,

@@ -733,7 +733,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$TOOLKIT_DIR$\CONFIG\generic_cortex.icf</state>
+          <state>$TOOLKIT_DIR$\config\linker\ST\stm32f767xI.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -2054,6 +2054,9 @@
       <name>$PROJ_DIR$\..\..\..\platform\stdio_ex.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\..\platform\ticks.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\..\platform\timer.c</name>
     </file>
     <file>
@@ -2101,10 +2104,16 @@
         <name>$PROJ_DIR$\..\drivers\FreeRTOSConfig.h</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\drivers\startup_stm32f767xx.s</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\drivers\stm32f7xx_it.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\system_stm32f7xx.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\uart.c</name>
       </file>
     </group>
     <group>
@@ -2388,9 +2397,6 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\utils\link_list.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\utils\syscalls.c</name>
     </file>
   </group>
 </project>
