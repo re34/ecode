@@ -13,6 +13,8 @@ void ecode_startup(void)
 
 void main(void)
 {
+    __set_PRIMASK(0);
+    
     board_clock_configuration();
     
     rtos_start(init);

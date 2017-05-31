@@ -114,11 +114,11 @@ int uart_init(void)
 
 int uart_putc(unsigned char c)
 {
-    while(!LL_USART_IsActiveFlag_TXE(UART_INSTANCE));
-    
     LL_USART_TransmitData8(UART_INSTANCE, c);
     
-    return 0;
+    while(LL_USART_IsActiveFlag_TC(UART_INSTANCE)==RESET);
+    
+    return c;
 }
 
 static int uart_getc(void)
