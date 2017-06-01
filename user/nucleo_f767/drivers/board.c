@@ -23,6 +23,7 @@ void ecode_hw_board_init()
 #if RTOS_EN==1
 void vApplicationTickHook( void ){
 	tick_inc();
+    HAL_IncTick();
 }
 #if configCHECK_FOR_STACK_OVERFLOW==1
 void vApplicationStackOverflowHook(TaskHandle_t xTask, char * pcTaskName){

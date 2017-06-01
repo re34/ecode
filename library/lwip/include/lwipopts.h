@@ -54,8 +54,7 @@
 /*----- Value in opt.h for CHECKSUM_CHECK_ICMP6: 1 -----*/
 #define CHECKSUM_CHECK_ICMP6 0
 /*-----------------------------------------------------------------------------*/
-
-
+/* USER CODE BEGIN 1 */
 
 
 #endif /* LWIP_HDR_LWIPOPTS_H */

@@ -67,7 +67,20 @@ int lan8720_init(void)
 }
 
 
-
+int lan8720_get_packet_size(void)
+{
+    ETH_DMADescTypeDef *dma_rx_desc;
+    int frame_length = 0;
+    
+    dma_rx_desc = heth.RxDesc;
+    if(((dma_rx_desc->Status&ETH_DMARXDESC_OWN)==(uint32_t)RESET)&&
+    ((dma_rx_desc->Status&ETH_DMARXDESC_ES)==(uint32_t)RESET)&&
+    ((dma_rx_desc->Status&ETH_DMARXDESC_LS)!=(uint32_t)RESET))
+    {
+        frame_length = (dma_rx_desc->Status&ETH_DMARXDESC_FL)>>ETH_DMARXDESC_FRAME_LENGTHSHIFT;
+    }
+    return frame_length;
+}
 
 
 /* Private functions ---------------------------------------------------------*/

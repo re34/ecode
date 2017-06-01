@@ -13,7 +13,7 @@ void ecode_startup(void *args)
 
 void main(void)
 {
-    __set_PRIMASK(0);
+
     
     board_clock_configuration();
 

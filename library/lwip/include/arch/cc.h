@@ -6,6 +6,7 @@
 #define BYTE_ORDER	LITTLE_ENDIAN
 #endif
 
+//#define LWIP_NO_STDINT_H    1
 //typedef	unsigned char 	u8_t;
 //typedef signed char		s8_t;
 //typedef unsigned short		u16_t;

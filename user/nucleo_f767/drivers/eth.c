@@ -7,21 +7,47 @@
 #endif /* MDK ARM Compiler */
 
 
-
 struct netif gnetif;
 ip4_addr_t ipaddr;
 ip4_addr_t netmask;
 ip4_addr_t gw;
 
+uint8_t IP_ADDRESS[4];
+uint8_t NETMASK_ADDRESS[4];
+uint8_t GATEWAY_ADDRESS[4];
+
+
+void ethernet_task(void *args);
 
 void eth_init(void)
 {
 	lan8720_init();
 	
 	lwip_init();
+    
+#if LWIP_DHCP==1    
 	ipaddr.addr = 0;
 	netmask.addr = 0;
 	gw.addr = 0;
+#else
+    IP_ADDRESS[0] = 192;
+    IP_ADDRESS[1] = 168;
+    IP_ADDRESS[2] = 1;
+    IP_ADDRESS[3] = 103;
+    NETMASK_ADDRESS[0] = 255;
+    NETMASK_ADDRESS[1] = 255;
+    NETMASK_ADDRESS[2] = 255;
+    NETMASK_ADDRESS[3] = 0;
+    GATEWAY_ADDRESS[0] = 192;
+    GATEWAY_ADDRESS[1] = 168;
+    GATEWAY_ADDRESS[2] = 1;
+    GATEWAY_ADDRESS[3] = 1; 
+    
+    /* IP addresses initialization without DHCP (IPv4) */
+    IP4_ADDR(&ipaddr, IP_ADDRESS[0], IP_ADDRESS[1], IP_ADDRESS[2], IP_ADDRESS[3]);
+    IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[3]);
+    IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);
+#endif
 	
 	netif_add(&gnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &ethernet_input);
 
@@ -35,7 +61,17 @@ void eth_init(void)
 	{
 		netif_set_down(&gnetif);
 	}
+    
+#if LWIP_DHCP==1
 	dhcp_start(&gnetif);
+#endif
+
+	xTaskCreate(ethernet_task,
+            "ethernet_task",
+            1024,
+            NULL,
+            1,
+            NULL);
 }
 
 
@@ -43,7 +79,17 @@ void eth_init(void)
 
 void ethernet_process(void)
 {
-	ethernetif_input(&gnetif);
+    ethernetif_input(&gnetif);
+    sys_check_timeouts();
+
+}
+
+void ethernet_task(void *args)
+{
+    while(1)
+    {
+        ethernet_process();
+    }
 }
 
 

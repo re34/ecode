@@ -32,9 +32,13 @@ static inline int com_getchar(void)
 {
     int data;
     
-    data = serial_in_waiting(COM1);
-    if(data<=0)
-        return 0;
+    while((data=serial_in_waiting(COM1))<=0)
+    {
+        vTaskDelay(5);
+    }
+    //data = serial_in_waiting(COM1);
+    //if(data<=0)
+     //   return 0;
     //read(COM1, (char *)&data, 1);
     if(serial_read(COM1, (char *)&data, 1)<0)
         return 0;

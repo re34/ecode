@@ -4,4 +4,5 @@
 
 
 int lan8720_init(void);
+int lan8720_get_packet_size(void);
 #endif

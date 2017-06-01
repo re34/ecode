@@ -18,6 +18,7 @@
 #include "lwip/etharp.h"
 #include "lwip/dhcp.h"
 #include "netif/ppp/pppoe.h"
+#include "lwip/timeouts.h"
 
 struct ethernet_dev{
 	void (*low_level_init)(struct netif *netif);

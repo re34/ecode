@@ -3,4 +3,5 @@
 
 
 void eth_init(void);
+void ethernet_process(void);
 #endif
