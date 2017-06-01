@@ -41,7 +41,8 @@ static inline int print_log_putchar(char data);
 void print_log_register_io(struct print_log_interface fio)
 {
     fprint_log = fio;
-    print_log("print log inited!\r\n");//此处会进入hardfault,待查找原因
+	LOG_DEBUG("print log inited");
+    //print_log("print log inited!\r\n");//此处会进入hardfault,待查找原因
 }
 
 
@@ -111,11 +112,11 @@ PUTCHAR_PROTOTYPE
     return ch;
 }
 
-//#ifdef __GNU__
+#ifdef __GNU__
 
 int __io_getchar(void)
 {
     return print_log_getchar();
 }
 
-//#endif
+#endif

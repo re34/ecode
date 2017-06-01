@@ -2089,6 +2089,9 @@
     <group>
       <name>applications</name>
       <file>
+        <name>$PROJ_DIR$\..\applications\applications.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\applications\startup.c</name>
       </file>
     </group>
