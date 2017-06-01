@@ -100,6 +100,7 @@ void ecode_hw_board_init()
     
     print_log_register_io(fprint_log);
     
+    lan8720_init();
 }
 
 #if RTOS_EN==1

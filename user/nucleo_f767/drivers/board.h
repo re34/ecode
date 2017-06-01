@@ -14,6 +14,8 @@
 
 #include "stm_pin.h"
 
+#include "lan8720.h"
+
 void board_clock_configuration(void);
 void ecode_hw_board_init();
 #endif
