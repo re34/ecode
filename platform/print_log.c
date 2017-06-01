@@ -104,11 +104,10 @@ int print_level(int level, const char *fmt, ...)
     return ret;
 }
 
-
 PUTCHAR_PROTOTYPE
 {
     print_log_putchar(ch);
-  
+
     return ch;
 }
 
