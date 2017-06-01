@@ -14,6 +14,10 @@
 #include "ticks.h"
 #include "platform_cli_handles.h"
 
+#if CONFIG_USE_LWIP==1
+#include "ethernetif.h"
+#endif
+
 #if RTOS_EN==1
 #include "FreeRTOS.h"
 #include "FreeRTOSConfig.h"

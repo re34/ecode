@@ -1,7 +1,7 @@
 #include "lan8720.h"
-#include "ethernetif.h"
-#include "stm32f7xx_hal.h"
+#include "board_includes.h"
 #include <string.h>
+#include "ecode.h"
 
 #define RMII_MDC_Pin GPIO_PIN_1
 #define RMII_MDC_GPIO_Port GPIOC

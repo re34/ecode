@@ -2616,6 +2616,9 @@
         <name>$PROJ_DIR$\..\drivers\board.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\drivers\eth.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\drivers\FreeRTOSConfig.h</name>
       </file>
       <file>

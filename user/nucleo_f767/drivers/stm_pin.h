@@ -1,16 +1,9 @@
 #ifndef __STM_GPIO_H__
 #define __STM_GPIO_H__
-#include "stm32f7xx_hal.h"
+#include "board_includes.h"
 #include "pin_names.h"
 #include "port_names.h"
-#include "stm32f7xx_ll_bus.h"
-#include "stm32f7xx_ll_rcc.h"
 
-#include "stm32f7xx_ll_gpio.h"
-
-#include "stm32f7xx_ll_usart.h"
-
-#include "stm32f7xx_ll_tim.h"
 
 extern const uint32_t pin_defines[16];
 

@@ -320,6 +320,7 @@
           <state>$PROJ_DIR$\..\STM32F7xx_HAL_Driver\Inc</state>
           <state>$PROJ_DIR$\..\..\..\utils</state>
           <state>$PROJ_DIR$\..\..\..\library\lwip\include</state>
+          <state>$PROJ_DIR$\..\..\..\library\lwip\include\netif</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -2229,6 +2230,9 @@
       <name>drivers</name>
       <file>
         <name>$PROJ_DIR$\..\drivers\board.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\eth.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\FreeRTOSConfig.h</name>

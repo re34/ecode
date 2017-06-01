@@ -1,5 +1,6 @@
 #include "uart.h"
-#include "board.h"
+#include "board_includes.h"
+#include "ecode.h"
 
 #define UART_INSTANCE           USART3
 #define UART_CLK_ENABLE()     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART3)

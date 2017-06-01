@@ -1,5 +1,33 @@
 #include "board.h"
 #include "uart.h"
+#include "board_includes.h"
+
+void board_clock_configuration(void);
+/**
+ * This function will initial STM32 board.
+ */
+void ecode_hw_board_init()
+{
+    struct print_log_interface fprint_log;
+    
+    uart_init();
+    
+    fprint_log.put_char = uart_putc;
+    
+    print_log_register_io(fprint_log);
+    
+}
+
+#if RTOS_EN==1
+void vApplicationTickHook( void ){
+	tick_inc();
+}
+#if configCHECK_FOR_STACK_OVERFLOW==1
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char * pcTaskName){
+	print_log("任务:%s发现栈溢出\r\n", pcTaskName);
+}
+#endif
+#endif
 
 /**
  * @addtogroup STM32
@@ -75,29 +103,3 @@ void board_clock_configuration(void)
   /* SysTick_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
-
-/**
- * This function will initial STM32 board.
- */
-void ecode_hw_board_init()
-{
-    struct print_log_interface fprint_log;
-    
-    uart_init();
-    
-    fprint_log.put_char = uart_putc;
-    
-    print_log_register_io(fprint_log);
-    
-}
-
-#if RTOS_EN==1
-void vApplicationTickHook( void ){
-	tick_inc();
-}
-#if configCHECK_FOR_STACK_OVERFLOW==1
-void vApplicationStackOverflowHook(TaskHandle_t xTask, char * pcTaskName){
-	print_log("任务:%s发现栈溢出\r\n", pcTaskName);
-}
-#endif
-#endif
