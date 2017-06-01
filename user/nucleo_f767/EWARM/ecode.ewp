@@ -2089,6 +2089,9 @@
     <group>
       <name>applications</name>
       <file>
+        <name>$PROJ_DIR$\..\applications\applications.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\applications\startup.c</name>
       </file>
     </group>
@@ -2108,6 +2111,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\stm32f7xx_it.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\stm_pin.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\system_stm32f7xx.c</name>
