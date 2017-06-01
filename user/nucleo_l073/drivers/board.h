@@ -12,6 +12,8 @@
 
 #include "stm32l0xx_ll_tim.h"
 
+#include "stm_pin.h"
+
 void board_clock_configuration(void);
 void ecode_hw_board_init();
 #endif

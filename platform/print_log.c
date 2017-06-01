@@ -34,15 +34,15 @@ const LogStrItem_t tLogStrMap[]={
 };
 
 
-volatile struct print_log_interface fprint_log={0};
+struct print_log_interface fprint_log={NULL,NULL};
 
 static inline int print_log_putchar(char data);
 
 void print_log_register_io(struct print_log_interface fio)
 {
     fprint_log = fio;
-	LOG_DEBUG("print log inited");
-    //print_log("print log inited!\r\n");//此处会进入hardfault,待查找原因
+	
+    print_log("print log inited!\r\n");//此处会进入hardfault,待查找原因
 }
 
 
@@ -107,6 +107,7 @@ int print_level(int level, const char *fmt, ...)
 
 PUTCHAR_PROTOTYPE
 {
+
     print_log_putchar(ch);
 
     return ch;

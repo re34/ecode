@@ -3,7 +3,7 @@ static struct ecode_cli_dev com_cli;
 static struct stdioex_device com_stdio;
 
 void cli_task(void *args);
-
+void led_task(void *args);
 
 void ecode_application_init(void)
 {
@@ -13,7 +13,12 @@ void ecode_application_init(void)
             NULL,
             2,
             NULL);
-	
+	xTaskCreate(led_task,
+            "led_task",
+            1024,
+            NULL,
+            3,
+            NULL);	
 }
 
 
@@ -54,6 +59,18 @@ void cli_task(void *args)
         ecode_cli_polling();
     }
 }
+
+void led_task(void *args)
+{
+	stm_pin_init(LED1, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
+	
+	while(1)
+	{
+		stm_pin_toggle(LED1);
+		vTaskDelay(500);
+	}
+}
+
 
 #ifdef  USE_FULL_ASSERT
 

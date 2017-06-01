@@ -2499,6 +2499,9 @@
         <name>$PROJ_DIR$\..\drivers\stm32l0xx_it.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\drivers\stm_pin.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\drivers\system_stm32l0xx.c</name>
       </file>
       <file>
