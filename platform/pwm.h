@@ -11,6 +11,8 @@ typedef enum{
 
 struct pwm_operations{
     int (*init)(void);
+    void (*period)(unsigned int hz);
+    void (*pulseduty)(float duty);
     void (*pulsewidth_us)(int us);
     void (*period_us)(int us);
 };
@@ -24,6 +26,7 @@ struct pwm_device{
 int pwm_register(pwm_name_t pwm, struct pwm_device *dev);
 int pwm_write(pwm_name_t pwm, float duty);
 float pwm_read(pwm_name_t pwm);
+int pwm_period(pwm_name_t pwm, int hz);
 int pwm_period_ms(pwm_name_t pwm, int ms);
 int pwm_period_us(pwm_name_t pwm, int us);
 int pwm_pulsewidth(pwm_name_t pwm, float seconds);

@@ -29,4 +29,9 @@ enum{
 	BIT_HIGH=!BIT_LOW,
 };
 
+typedef enum{
+	PIN_RESET=0,
+	PIN_SET	= !PIN_RESET,
+}pin_state_t;
+
 #endif

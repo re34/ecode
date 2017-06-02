@@ -1,6 +1,10 @@
 #include "board.h"
 #include "uart.h"
+#include "uart2.h"
 #include "eth.h"
+#include "pwm2.h"
+#include "pwm3.h"
+#include "user_oled.h"
 
 void board_clock_configuration(void);
 
@@ -17,6 +21,14 @@ void ecode_hw_board_init()
     
     print_log_register_io(fprint_log);
     
+	uart2_init();
+	
+	pwm2_init();
+	
+	pwm3_init();
+	
+	user_oled_init();
+	
     eth_init();
 }
 

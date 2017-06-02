@@ -735,7 +735,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$TOOLKIT_DIR$\config\linker\ST\stm32f767xI.icf</state>
+          <state>$TOOLKIT_DIR$\config\linker\ST\stm32f303xE.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -2095,6 +2095,12 @@
   <group>
     <name>platform</name>
     <file>
+      <name>$PROJ_DIR$\..\..\..\platform\ascii12.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\platform\ascii16.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\..\platform\cli_errno.c</name>
     </file>
     <file>
@@ -2144,6 +2150,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\includes.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\platform\oled.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\platform_cli_handles.c</name>
@@ -2220,6 +2229,21 @@
         <name>$PROJ_DIR$\..\applications\applications.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\applications\bt_cli_handle.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\applications\bt_spp.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\applications\motor.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\applications\smart_car.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\applications\smart_car_handle.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\applications\startup.c</name>
       </file>
     </group>
@@ -2238,6 +2262,12 @@
         <name>$PROJ_DIR$\..\drivers\lan8720.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\drivers\pwm2.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\pwm3.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\drivers\startup_stm32f303xe.s</name>
       </file>
       <file>
@@ -2254,6 +2284,12 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\uart.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\uart2.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\user_oled.c</name>
       </file>
     </group>
     <group>

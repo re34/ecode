@@ -1,6 +1,7 @@
 #ifndef __STM_GPIO_H__
 #define __STM_GPIO_H__
 #include "board_includes.h"
+#include "types.h"
 #include "pin_names.h"
 #include "port_names.h"
 
@@ -24,10 +25,7 @@ typedef enum{
 	PIN_PUPD_DOWN,
 }pin_pupd_t;
 
-typedef enum{
-	PIN_RESET=0,
-	PIN_SET	= !PIN_RESET,
-}pin_state_t;
+
 
 GPIO_TypeDef *stm_gpio_set_clk(uint32_t port_idx);
 void stm_pin_init(pin_name_t pin, pin_mode_t mode, pin_pupd_t pull);

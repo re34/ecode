@@ -35,17 +35,17 @@ int pwm_register(pwm_name_t pwm, struct pwm_device *dev)
 int pwm_write(pwm_name_t pwm, float duty)
 {
     struct pwm_device *dev;
-    int us;
    
     dev = pwm_devs[pwm];
     
     if(dev==NULL)
         return -1;
-    us = (int)(dev->period_us*duty);
+    //us = (int)(dev->period_us*duty);
     
-    dev->ops->pulsewidth_us(us);
+    //dev->ops->pulsewidth_us(us);
+    dev->ops->pulseduty(duty);
     
-    dev->pulsewidth_us = us;
+    dev->pulsewidth_us = (int)(dev->period_us*duty);
     
     return 0;
 }
@@ -61,6 +61,23 @@ float pwm_read(pwm_name_t pwm)
     
     return dev->pulsewidth_us/dev->period_us;
 }
+
+int pwm_period(pwm_name_t pwm, int hz)
+{
+    struct pwm_device *dev;
+    
+    if(pwm_devs[pwm]==NULL)
+        return -1;
+    
+    dev = pwm_devs[pwm];
+    
+    dev->period_us = hz/1000000;
+    
+    dev->ops->period(hz);
+    
+    return 0;
+}
+
 
 int pwm_period_ms(pwm_name_t pwm, int ms)
 {

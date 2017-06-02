@@ -1,4 +1,8 @@
 #include "board.h"
+#include "bt_spp.h"
+#include "smart_car.h"
+
+
 static struct ecode_cli_dev com_cli;
 static struct stdioex_device com_stdio;
 
@@ -7,6 +11,10 @@ void led_task(void *args);
 
 void ecode_application_init(void)
 {
+	bt_spp_init();
+	
+	smart_car_init();	
+	
 	xTaskCreate(cli_task,
             "cli_task",
             1024,
