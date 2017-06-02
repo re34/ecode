@@ -115,7 +115,7 @@ void board_clock_configuration(void)
 
     /**Configure the Systick interrupt time 
     */
-  //HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
+  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
 
     /**Configure the Systick 
     */
