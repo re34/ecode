@@ -1,60 +1,97 @@
 #ifndef LWIP_HDR_LWIPOPTS_H
 #define LWIP_HDR_LWIPOPTS_H
 
-/* LwIP Stack Parameters (modified compared to initialization value in opt.h) -*/
-/* Parameters set in STM32CubeMX LwIP Configuration GUI -*/
-/*----- Value in opt.h for LWIP_DHCP: 0 -----*/
-#define LWIP_DHCP 1
-/*----- Value in opt.h for NO_SYS: 0 -----*/
-#define NO_SYS 1
-/*----- Value in opt.h for SYS_LIGHTWEIGHT_PROT: 1 -----*/
-#define SYS_LIGHTWEIGHT_PROT 0
-/*----- Value in opt.h for MEM_ALIGNMENT: 1 -----*/
-#define MEM_ALIGNMENT 4
-/*----- Value in opt.h for MEMP_NUM_SYS_TIMEOUT: (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + (PPP_SUPPORT*6*MEMP_NUM_PPP_PCB) + (LWIP_IPV6 ? (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD) : 0)) -*/
-#define MEMP_NUM_SYS_TIMEOUT 5
-/*----- Value in opt.h for LWIP_ETHERNET: LWIP_ARP || PPPOE_SUPPORT -*/
-#define LWIP_ETHERNET 1
-/*----- Value in opt.h for LWIP_DNS_SECURE: (LWIP_DNS_SECURE_RAND_XID | LWIP_DNS_SECURE_NO_MULTIPLE_OUTSTANDING | LWIP_DNS_SECURE_RAND_SRC_PORT) -*/
-#define LWIP_DNS_SECURE 7
-/*----- Value in opt.h for TCP_SND_QUEUELEN: (4*TCP_SND_BUF + (TCP_MSS - 1))/TCP_MSS -----*/
-#define TCP_SND_QUEUELEN 9
-/*----- Value in opt.h for TCP_SNDLOWAT: LWIP_MIN(LWIP_MAX(((TCP_SND_BUF)/2), (2 * TCP_MSS) + 1), (TCP_SND_BUF) - 1) -*/
-#define TCP_SNDLOWAT 1071
-/*----- Value in opt.h for TCP_SNDQUEUELOWAT: LWIP_MAX(TCP_SND_QUEUELEN)/2, 5) -*/
-#define TCP_SNDQUEUELOWAT 5
-/*----- Value in opt.h for TCP_WND_UPDATE_THRESHOLD: LWIP_MIN(TCP_WND/4, TCP_MSS*4) -----*/
-#define TCP_WND_UPDATE_THRESHOLD 536
-/*----- Value in opt.h for LWIP_NETCONN: 1 -----*/
-#define LWIP_NETCONN 0
-/*----- Value in opt.h for LWIP_SOCKET: 1 -----*/
+#define SYS_LIGHTWEIGHT_PROT 0  
+  
+#define NO_SYS 1  
+  
+#define NO_SYS_NO_TIMERS 1  
+  
+/* ---------- Memory options ---------- */  
+/* MEM_ALIGNMENT: should be set to the alignment of the CPU for which 
+   lwIP is compiled. 4 byte alignment -> define MEM_ALIGNMENT to 4, 2 
+   byte alignment -> define MEM_ALIGNMENT to 2. */  
+#define MEM_ALIGNMENT 4  
+  
+/* MEM_SIZE: the size of the heap memory. If the application will send 
+a lot of data that needs to be copied, this should be set high. */  
+#define MEM_SIZE (5*1024)  
+  
+/* MEMP_NUM_PBUF: the number of memp struct pbufs. If the application 
+   sends a lot of data out of ROM (or other static memory), this 
+   should be set high. */  
+#define MEMP_NUM_PBUF 10  
+/* MEMP_NUM_UDP_PCB: the number of UDP protocol control blocks. One 
+   per active UDP "connection". */  
+#define MEMP_NUM_UDP_PCB 6  
+/* MEMP_NUM_TCP_PCB: the number of simulatenously active TCP 
+   connections. */  
+#define MEMP_NUM_TCP_PCB 10  
+/* MEMP_NUM_TCP_PCB_LISTEN: the number of listening TCP 
+   connections. */  
+#define MEMP_NUM_TCP_PCB_LISTEN 6  
+/* MEMP_NUM_TCP_SEG: the number of simultaneously queued TCP 
+   segments. */  
+#define MEMP_NUM_TCP_SEG 12  
+/* MEMP_NUM_SYS_TIMEOUT: the number of simulateously active 
+   timeouts. */  
+#define MEMP_NUM_SYS_TIMEOUT 3  
+  
+  
+/* ---------- Pbuf options ---------- */  
+/* PBUF_POOL_SIZE: the number of buffers in the pbuf pool. */  
+#define PBUF_POOL_SIZE 10  
+  
+/* PBUF_POOL_BUFSIZE: the size of each pbuf in the pbuf pool. */  
+#define PBUF_POOL_BUFSIZE 1500  
+  
+  
+/* ---------- TCP options ---------- */  
+#define LWIP_TCP 1  
+#define TCP_TTL 255  
+  
+/* Controls if TCP should queue segments that arrive out of 
+   order. Define to 0 if your device is low on memory. */  
+#define TCP_QUEUE_OOSEQ 0  
+  
+/* TCP Maximum segment size. */  
+#define TCP_MSS (1500 - 40)  /* TCP_MSS = (Ethernet MTU - IP header size - TCP header size) */  
+  
+/* TCP sender buffer space (bytes). */  
+#define TCP_SND_BUF (2*TCP_MSS)  
+  
+/* TCP sender buffer space (pbufs). This must be at least = 2 * 
+   TCP_SND_BUF/TCP_MSS for things to work. */  
+#define TCP_SND_QUEUELEN (6 * TCP_SND_BUF)/TCP_MSS  
+  
+/* TCP receive window. */  
+#define TCP_WND (2*TCP_MSS)  
+  
+  
+/* ---------- ICMP options ---------- */  
+#define LWIP_ICMP 1  
+  
+/* ---------- DHCP options ---------- */  
+/* Define LWIP_DHCP to 1 if you want DHCP configuration of 
+   interfaces. DHCP is not implemented in lwIP 0.5.1, however, so 
+   turning this on does currently not work. */  
+#define LWIP_DHCP 0  
+  
+/* ---------- UDP options ---------- */  
+#define LWIP_UDP 1  
+#define UDP_TTL 255  
+  
+/* ---------- Statistics options ---------- */  
+#define LWIP_STATS 0  
+#define LWIP_PROVIDE_ERRNO 1  
+  
+/** 
+ * LWIP_NETCONN==1: Enable Netconn API (require to use api_lib.c) 
+ */  
+#define LWIP_NETCONN 0  
+  
+/** 
+ * LWIP_SOCKET==1: Enable Socket API (require to use sockets.c) 
+ */  
 #define LWIP_SOCKET 0
-/*----- Value in opt.h for RECV_BUFSIZE_DEFAULT: INT_MAX -----*/
-#define RECV_BUFSIZE_DEFAULT 2000000000
-/*----- Value in opt.h for LWIP_STATS: 1 -----*/
-#define LWIP_STATS 0
-/*----- Value in opt.h for CHECKSUM_GEN_IP: 1 -----*/
-#define CHECKSUM_GEN_IP 0
-/*----- Value in opt.h for CHECKSUM_GEN_UDP: 1 -----*/
-#define CHECKSUM_GEN_UDP 0
-/*----- Value in opt.h for CHECKSUM_GEN_TCP: 1 -----*/
-#define CHECKSUM_GEN_TCP 0
-/*----- Value in opt.h for CHECKSUM_GEN_ICMP: 1 -----*/
-#define CHECKSUM_GEN_ICMP 0
-/*----- Value in opt.h for CHECKSUM_GEN_ICMP6: 1 -----*/
-#define CHECKSUM_GEN_ICMP6 0
-/*----- Value in opt.h for CHECKSUM_CHECK_IP: 1 -----*/
-#define CHECKSUM_CHECK_IP 0
-/*----- Value in opt.h for CHECKSUM_CHECK_UDP: 1 -----*/
-#define CHECKSUM_CHECK_UDP 0
-/*----- Value in opt.h for CHECKSUM_CHECK_TCP: 1 -----*/
-#define CHECKSUM_CHECK_TCP 0
-/*----- Value in opt.h for CHECKSUM_CHECK_ICMP: 1 -----*/
-#define CHECKSUM_CHECK_ICMP 0
-/*----- Value in opt.h for CHECKSUM_CHECK_ICMP6: 1 -----*/
-#define CHECKSUM_CHECK_ICMP6 0
-/*-----------------------------------------------------------------------------*/
-/* USER CODE BEGIN 1 */
-
-
 #endif /* LWIP_HDR_LWIPOPTS_H */

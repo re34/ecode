@@ -80,7 +80,7 @@ void eth_init(void)
 void ethernet_process(void)
 {
     ethernetif_input(&gnetif);
-    sys_check_timeouts();
+    //sys_check_timeouts();
 
 }
 
