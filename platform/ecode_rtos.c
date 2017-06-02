@@ -1,6 +1,8 @@
 #include "ecode_rtos.h"
 #include "ecode.h"
 
+extern void xPortSysTickHandler( void );
+
 rtos_task_run_t finit_run = NULL;
 static int is_system_on = 0;
 
@@ -38,5 +40,15 @@ void rtos_start(rtos_task_run_t run)
                 NULL);
                 
     vTaskStartScheduler();
+}
+
+void rtos_start_scheduler(void)
+{
+  vTaskStartScheduler();
+}
+
+void rtos_systick(void)
+{
+   xPortSysTickHandler();
 }
 

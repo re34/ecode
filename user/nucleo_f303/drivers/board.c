@@ -15,6 +15,8 @@ void ecode_hw_board_init()
 {
     struct print_log_interface fprint_log;
     
+	__set_PRIMASK(1);
+	
     uart_init();
     
     fprint_log.put_char = uart_putc;

@@ -10,7 +10,11 @@ void board_clock_configuration(void);
 void ecode_hw_board_init()
 {
     struct print_log_interface fprint_log;
-    
+	
+	__set_PRIMASK(1);
+	
+    board_clock_configuration();
+	
     uart_init();
     
     fprint_log.put_char = uart_putc;

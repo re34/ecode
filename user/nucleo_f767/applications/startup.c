@@ -4,9 +4,10 @@
 
 extern void ecode_application_init(void);
 
-void ecode_startup(void *args)
+void ecode_startup(void)
 {
 	ecode_hw_board_init();
+	
 	ecode_application_init();
 }
 
@@ -14,10 +15,9 @@ void ecode_startup(void *args)
 void main(void)
 {
 
-    
-    board_clock_configuration();
+	ecode_startup();
 
-    rtos_start(ecode_startup);
+	rtos_start_scheduler();
 }
 
 

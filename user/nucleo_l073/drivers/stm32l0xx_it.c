@@ -39,7 +39,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l0xx_it.h"
-   
+#include "ecode.h"
 /** @addtogroup STM32L0xx_HAL_Examples
   * @{
   */
@@ -153,10 +153,11 @@ void DebugMon_Handler(void)
   * @param  None
   * @retval None
   */
-//void SysTick_Handler(void)
-//{
+void SysTick_Handler(void)
+{
 //  HAL_IncTick();
-//}
+	rtos_systick();
+}
 
 /******************************************************************************/
 /*                 STM32L0xx Peripherals Interrupt Handlers                   */

@@ -5,6 +5,5 @@
 #include "stm_pin.h"
 
 
-void board_clock_configuration(void);
 void ecode_hw_board_init();
 #endif

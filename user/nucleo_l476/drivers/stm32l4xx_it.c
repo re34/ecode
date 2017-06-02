@@ -39,8 +39,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_it.h"
-#include "stm32l4xx_hal.h"
-#include <stdio.h>
+#include "ecode.h"
 
 /** @addtogroup STM32L4xx_HAL_Examples
   * @{
@@ -156,10 +155,11 @@ void UsageFault_Handler(void)
   * @param  None
   * @retval None
   */
-//void SysTick_Handler(void)
-//{
-//  HAL_IncTick();
-//}
+void SysTick_Handler(void)
+{
+  //HAL_IncTick();
+  rtos_systick();
+}
 
 /******************************************************************************/
 /*                 STM32L4xx Peripherals Interrupt Handlers                   */

@@ -9,7 +9,11 @@ void board_clock_configuration(void);
 void ecode_hw_board_init()
 {
     struct print_log_interface fprint_log;
-    
+	
+	__set_PRIMASK(1);
+	
+    board_clock_configuration();
+	
     uart_init();
     
     fprint_log.put_char = uart_putc;
@@ -17,6 +21,10 @@ void ecode_hw_board_init()
     print_log_register_io(fprint_log);
     
 }
+
+
+
+
 
 #if RTOS_EN==1
 void vApplicationTickHook( void ){
@@ -91,15 +99,4 @@ void board_clock_configuration(void)
   {
     Error_Handler();
   }
-
-    /**Configure the Systick interrupt time 
-    */
-  //HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
-
-    /**Configure the Systick 
-    */
-  HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
-
-  /* SysTick_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }

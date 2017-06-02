@@ -39,6 +39,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f3xx_it.h"
+#include "ecode.h"
 
 /** @addtogroup STM32F3xx_LL_Examples
   * @{
@@ -153,9 +154,10 @@ void DebugMon_Handler(void)
   * @param  None
   * @retval None
   */
-//void SysTick_Handler(void)
-//{
-//}
+void SysTick_Handler(void)
+{
+	rtos_systick();
+}
 
 /******************************************************************************/
 /*                 STM32F3xx Peripherals Interrupt Handlers                   */
