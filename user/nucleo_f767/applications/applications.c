@@ -11,7 +11,7 @@ void ecode_application_init(void)
             "cli_task",
             1024,
             NULL,
-            2,
+            1,
             NULL);
 	xTaskCreate(led_task,
             "led_task",
@@ -57,7 +57,7 @@ void cli_task(void *args)
     ecode_register_cli_device( &com_cli, "COM");
     
     LOG_DEBUG("cli task running...");
-    wait_system_on();
+
     while(1)
     {
         ecode_cli_polling();

@@ -2608,9 +2608,6 @@
       </file>
     </group>
     <group>
-      <name>CMSIS</name>
-    </group>
-    <group>
       <name>drivers</name>
       <file>
         <name>$PROJ_DIR$\..\drivers\board.c</name>

@@ -3,6 +3,6 @@
 
 
 
-void delay_ms(int ms);
+void delay_ms(unsigned int ms);
 void delay_us(int us);
 #endif

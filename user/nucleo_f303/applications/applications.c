@@ -65,7 +65,7 @@ void cli_task(void *args)
     ecode_register_cli_device( &com_cli, "COM");
     
     LOG_DEBUG("cli task running...");
-    wait_system_on();
+
     while(1)
     {
         ecode_cli_polling();

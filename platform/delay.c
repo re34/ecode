@@ -2,10 +2,22 @@
 #include "ecode.h"
 
 
-void delay_ms(int ms)
+void delay_ms(unsigned int ms)
 {
 #if RTOS_EN==1
-	vTaskDelay(ms);
+    TickType_t ticks = ms/portTICK_PERIOD_MS;
+#if (INCLUDE_xTaskGetSchedulerState == 1)
+    if(xTaskGetSchedulerState()!=taskSCHEDULER_NOT_STARTED)
+    {
+        tick_delay_ms(ms);
+    }
+    else
+    {
+        vTaskDelay(ticks?ticks:1);
+    }
+#else
+    vTaskDelay(ticks?ticks:1);
+#endif	
 #else
 	tick_delay_ms(ms);
 #endif

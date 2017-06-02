@@ -154,11 +154,11 @@ void DebugMon_Handler(void)
   * @param  None
   * @retval None
   */
-void SysTick_Handler(void)
-{
+//void SysTick_Handler(void)
+//{
 //  HAL_IncTick();
-	rtos_systick();
-}
+//	rtos_systick();
+//}
 
 /******************************************************************************/
 /*                 STM32F7xx Peripherals Interrupt Handlers                   */
