@@ -2235,6 +2235,9 @@
         <name>$PROJ_DIR$\..\applications\bt_spp.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\applications\measure_dist.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\applications\motor.c</name>
       </file>
       <file>
@@ -2257,6 +2260,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\FreeRTOSConfig.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\hcsr04.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\lan8720.c</name>

@@ -31,6 +31,8 @@ void ecode_hw_board_init()
 	
 	user_oled_init();
 	
+	hcsr04_hw_init();
+	
     eth_init();
 }
 
