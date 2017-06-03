@@ -2619,7 +2619,7 @@
         <name>$PROJ_DIR$\..\drivers\FreeRTOSConfig.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\drivers\lan8720.c</name>
+        <name>$PROJ_DIR$\..\drivers\lan8742.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\startup_stm32f767xx.s</name>

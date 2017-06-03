@@ -34,7 +34,7 @@ static inline int com_getchar(void)
     
     while((data=serial_in_waiting(COM1))<=0)
     {
-        vTaskDelay(5);
+        delay_ms(5);
     }
     //data = serial_in_waiting(COM1);
     //if(data<=0)
@@ -66,12 +66,12 @@ void cli_task(void *args)
 
 void led_task(void *args)
 {
-	//stm_pin_init(LED1, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
+	stm_pin_init(LED1, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
 	
 	while(1)
 	{
-		//stm_pin_toggle(LED1);
-		vTaskDelay(500);
+		stm_pin_toggle(LED1);
+		delay_ms(500);
 	}
 }
 

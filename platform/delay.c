@@ -7,7 +7,7 @@ void delay_ms(unsigned int ms)
 #if RTOS_EN==1
     TickType_t ticks = ms/portTICK_PERIOD_MS;
 #if (INCLUDE_xTaskGetSchedulerState == 1)
-    if(xTaskGetSchedulerState()!=taskSCHEDULER_NOT_STARTED)
+    if(xTaskGetSchedulerState()==taskSCHEDULER_NOT_STARTED)
     {
         tick_delay_ms(ms);
     }

@@ -1,4 +1,4 @@
-#include "lan8720.h"
+#include "lan8742.h"
 #include "board_includes.h"
 #include <string.h>
 #include "ecode.h"
@@ -23,6 +23,10 @@
 #define RMII_TXD0_GPIO_Port GPIOG
 
 
+/* USER CODE BEGIN 1 */
+
+/* USER CODE END 1 */
+
 /* Private variables ---------------------------------------------------------*/
 #if defined ( __ICCARM__ ) /*!< IAR Compiler */
   #pragma data_alignment=4   
@@ -44,10 +48,16 @@ __ALIGN_BEGIN uint8_t Rx_Buff[ETH_RXBUFNB][ETH_RX_BUF_SIZE] __ALIGN_END; /* Ethe
 #endif
 __ALIGN_BEGIN uint8_t Tx_Buff[ETH_TXBUFNB][ETH_TX_BUF_SIZE] __ALIGN_END; /* Ethernet Transmit Buffer */
 
+/* USER CODE BEGIN 2 */
+
+/* USER CODE END 2 */
 
 /* Global Ethernet handle */
 ETH_HandleTypeDef heth;
 
+/* USER CODE BEGIN 3 */
+
+/* USER CODE END 3 */
 
 
 static void low_level_init(struct netif *netif);
@@ -56,7 +66,7 @@ static struct pbuf * low_level_input(struct netif *netif);
 
 static struct ethernet_dev ethernet_dev;
 
-int lan8720_init(void)
+int lan8742_init(void)
 {
   ethernet_dev.low_level_init = low_level_init;
   ethernet_dev.low_level_output = low_level_output;
@@ -68,7 +78,7 @@ int lan8720_init(void)
 }
 
 
-int lan8720_get_packet_size(void)
+int lan8742_get_packet_size(void)
 {
     ETH_DMADescTypeDef *dma_rx_desc;
     int frame_length = 0;
@@ -84,6 +94,8 @@ int lan8720_get_packet_size(void)
 }
 
 
+
+
 /* Private functions ---------------------------------------------------------*/
 
 void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
@@ -92,7 +104,10 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
   if(ethHandle->Instance==ETH)
   {
   /* USER CODE BEGIN ETH_MspInit 0 */
-
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
   /* USER CODE END ETH_MspInit 0 */
     /* Enable Peripheral clock */
     __HAL_RCC_ETH_CLK_ENABLE();
@@ -137,7 +152,7 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
     HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
     /* Peripheral interrupt init */
-    HAL_NVIC_SetPriority(ETH_IRQn, 5, 0);
+    HAL_NVIC_SetPriority(ETH_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(ETH_IRQn);
   /* USER CODE BEGIN ETH_MspInit 1 */
 
@@ -183,6 +198,9 @@ void HAL_ETH_MspDeInit(ETH_HandleTypeDef* ethHandle)
   }
 }
 
+/* USER CODE BEGIN 4 */
+
+/* USER CODE END 4 */
 
 static void low_level_init(struct netif *netif)
 {
@@ -206,6 +224,9 @@ static void low_level_init(struct netif *netif)
   heth.Init.ChecksumMode = ETH_CHECKSUM_BY_HARDWARE;
   heth.Init.MediaInterface = ETH_MEDIA_INTERFACE_RMII;
 
+  /* USER CODE BEGIN MACADDRESS */
+    
+  /* USER CODE END MACADDRESS */
 
   hal_eth_init_status = HAL_ETH_Init(&heth);
 
@@ -247,7 +268,11 @@ static void low_level_init(struct netif *netif)
   /* Enable MAC and DMA transmission and reception */
   HAL_ETH_Start(&heth);
 
+/* USER CODE BEGIN PHY_PRE_CONFIG */ 
+    
+/* USER CODE END PHY_PRE_CONFIG */
   
+
   /* Read Register Configuration */
   HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR, &regvalue);
   regvalue |= (PHY_ISFR_INT4);
@@ -258,7 +283,15 @@ static void low_level_init(struct netif *netif)
   /* Read Register Configuration */
   HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR , &regvalue);
 
+/* USER CODE BEGIN PHY_POST_CONFIG */ 
+    
+/* USER CODE END PHY_POST_CONFIG */
+
 #endif /* LWIP_ARP || LWIP_ETHERNET */
+
+/* USER CODE BEGIN LOW_LEVEL_INIT */ 
+    
+/* USER CODE END LOW_LEVEL_INIT */
 
 }
 

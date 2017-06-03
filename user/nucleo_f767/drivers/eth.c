@@ -1,6 +1,6 @@
 #include "eth.h"
 #include "ecode.h"
-#include "lan8720.h"
+#include "lan8742.h"
 
 #if defined ( __CC_ARM )  /* MDK ARM Compiler */
 #include "lwip/sio.h"
@@ -21,7 +21,7 @@ void ethernet_task(void *args);
 
 void eth_init(void)
 {
-	lan8720_init();
+	lan8742_init();
 	
 	lwip_init();
     
