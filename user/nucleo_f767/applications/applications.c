@@ -1,4 +1,6 @@
 #include "board.h"
+#include "tcp_server.h"
+
 static struct ecode_cli_dev com_cli;
 static struct stdioex_device com_stdio;
 
@@ -7,6 +9,7 @@ void led_task(void *args);
 
 void ecode_application_init(void)
 {
+    tcp_server_init();
 	xTaskCreate(cli_task,
             "cli_task",
             1024,

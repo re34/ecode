@@ -21,10 +21,15 @@ uint8_t NETMASK_ADDRESS[4];
 uint8_t GATEWAY_ADDRESS[4];
 
 
+//static SemaphoreHandle_t xSemaphore;
+
 void ethernet_task(void *args);
 
 void eth_init(void)
 {
+    
+    //xSemaphore = xSemaphoreCreateBinary();
+    
 	lan8742_init();
 	
 	lwip_init();
@@ -69,7 +74,7 @@ void eth_init(void)
 #if LWIP_DHCP==1
 	dhcp_start(&gnetif);
 #endif
-
+    
 	xTaskCreate(ethernet_task,
             "ethernet_task",
             1024,
@@ -83,36 +88,38 @@ void eth_init(void)
 
 void ethernet_process(void)
 {
-    ethernetif_input(&gnetif);
+    if(lan8742_get_packet_size()>0)
+        ethernetif_input(&gnetif);
     sys_check_timeouts();
 
 }
 
 void ethernet_task(void *args)
 {
-    unsigned int tcp_timer = 0;
-    unsigned int arp_timer = 0;
-    unsigned int jiffies = 0;
+   // unsigned int tcp_timer = 0;
+    //unsigned int arp_timer = 0;
+    //unsigned int jiffies = 0;
     
-    jiffies = get_ticks();
-    tcp_timer = jiffies;
-    arp_timer = jiffies;
+    //jiffies = get_ticks();
+    //tcp_timer = jiffies;
+    //arp_timer = jiffies;
     while(1)
     {
         ethernet_process();
-        /*
-        jiffies = get_ticks();
-        if(time_after(jiffies, tcp_timer+TCP_TIMER_INTERVAL))
-        {
-            tcp_timer = jiffies;
-            tcp_tmr();
-        }
-        if(time_after(jiffies, arp_timer+ARP_TIMER_INTERVAL))
-        {
-            arp_timer = jiffies;
-            etharp_tmr();
-        }
-        */
+        //delay_ms(2);
+        
+        //jiffies = get_ticks();
+        //if(time_after(jiffies, tcp_timer+TCP_TIMER_INTERVAL))
+        //{
+        //    tcp_timer = jiffies;
+        //    tcp_tmr();
+        //}
+        //if(time_after(jiffies, arp_timer+ARP_TIMER_INTERVAL))
+        //{
+         //   arp_timer = jiffies;
+         //   etharp_tmr();
+        //}
+        
     }
 }
 

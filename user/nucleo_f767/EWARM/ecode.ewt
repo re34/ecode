@@ -2606,6 +2606,9 @@
       <file>
         <name>$PROJ_DIR$\..\applications\startup.c</name>
       </file>
+      <file>
+        <name>$PROJ_DIR$\..\applications\tcp_server.c</name>
+      </file>
     </group>
     <group>
       <name>drivers</name>

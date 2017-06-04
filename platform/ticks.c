@@ -82,7 +82,7 @@ void tick_delay_ms(UInt32 ms)
     UInt32 jiffies = get_ticks();
 
     
-    while(time_before(jiffies+ms, get_ticks()));
+    while(time_before(get_ticks(), jiffies+ms));
 
 }
 
