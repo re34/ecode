@@ -1,10 +1,14 @@
 #include "eth.h"
 #include "ecode.h"
 #include "lan8742.h"
+#include "etharp.h"
 
 #if defined ( __CC_ARM )  /* MDK ARM Compiler */
 #include "lwip/sio.h"
 #endif /* MDK ARM Compiler */
+
+#define TCP_TIMER_INTERVAL          250
+#define ARP_TIMER_INTERVAL          5000
 
 
 struct netif gnetif;
@@ -32,15 +36,15 @@ void eth_init(void)
 #else
     IP_ADDRESS[0] = 192;
     IP_ADDRESS[1] = 168;
-    IP_ADDRESS[2] = 1;
-    IP_ADDRESS[3] = 103;
+    IP_ADDRESS[2] = 0;
+    IP_ADDRESS[3] = 105;
     NETMASK_ADDRESS[0] = 255;
     NETMASK_ADDRESS[1] = 255;
     NETMASK_ADDRESS[2] = 255;
     NETMASK_ADDRESS[3] = 0;
     GATEWAY_ADDRESS[0] = 192;
     GATEWAY_ADDRESS[1] = 168;
-    GATEWAY_ADDRESS[2] = 1;
+    GATEWAY_ADDRESS[2] = 0;
     GATEWAY_ADDRESS[3] = 1; 
     
     /* IP addresses initialization without DHCP (IPv4) */
@@ -80,15 +84,35 @@ void eth_init(void)
 void ethernet_process(void)
 {
     ethernetif_input(&gnetif);
-    //sys_check_timeouts();
+    sys_check_timeouts();
 
 }
 
 void ethernet_task(void *args)
 {
+    unsigned int tcp_timer = 0;
+    unsigned int arp_timer = 0;
+    unsigned int jiffies = 0;
+    
+    jiffies = get_ticks();
+    tcp_timer = jiffies;
+    arp_timer = jiffies;
     while(1)
     {
         ethernet_process();
+        /*
+        jiffies = get_ticks();
+        if(time_after(jiffies, tcp_timer+TCP_TIMER_INTERVAL))
+        {
+            tcp_timer = jiffies;
+            tcp_tmr();
+        }
+        if(time_after(jiffies, arp_timer+ARP_TIMER_INTERVAL))
+        {
+            arp_timer = jiffies;
+            etharp_tmr();
+        }
+        */
     }
 }
 

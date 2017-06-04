@@ -111,7 +111,7 @@ int uart2_init(void)
     serial.put_c = uart2_putc;
     serial.get_c = uart2_getc;
     serial.in_waiting = uart2_in_waiting;
-    if(serial_register(COM1, &serial)<0)
+    if(serial_register(COM2, &serial)<0)
         return -2;
 
     return 0;

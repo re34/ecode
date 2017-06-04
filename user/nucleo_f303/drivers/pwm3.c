@@ -15,7 +15,7 @@ void pwm3_pulsewidth_us(int us);
 
 int pwm3_init(void)
 {
-    pwm3_ops.init = pwm3_init;
+    pwm3_ops.init = pwm3_hw_init;
     pwm3_ops.period = pwm3_period;
     pwm3_ops.pulseduty = pwm3_duty;
     pwm3_ops.period_us = pwm3_period_us;

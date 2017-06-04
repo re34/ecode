@@ -82,10 +82,16 @@
  *----------------------------------------------------------*/
 
 
+#if defined(__ICCARM__) || defined(__CC_ARM) || defined(__GNUC__)
+    #include <stdint.h>
+    #include "board_includes.h" 
+    extern uint32_t SystemCoreClock;
+#endif
+
 #define configUSE_PREEMPTION		1
 #define configUSE_IDLE_HOOK			0
 #define configUSE_TICK_HOOK			0
-#define configCPU_CLOCK_HZ			( ( unsigned long ) 216000000 )	
+#define configCPU_CLOCK_HZ			( SystemCoreClock )	
 #define configTICK_RATE_HZ			( ( TickType_t ) 1000 )
 #define configMAX_PRIORITIES		( 8 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned short ) 128 )

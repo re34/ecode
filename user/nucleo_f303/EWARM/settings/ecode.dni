@@ -25,10 +25,10 @@ MultiCoreRunAll=1
 [StLinkDriver]
 CStepIntDis=_ 0
 LeaveTargetRunning=_ 0
-stlinkserialNo=67032755
-stlinkfoundProbes=
+stlinkserialNo=67192820
+stlinkfoundProbes=67032755:67192820:
 [DebugChecksum]
-Checksum=-302275760
+Checksum=647105337
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0

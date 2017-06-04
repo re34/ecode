@@ -1,7 +1,6 @@
 #include "board.h"
 #include "uart.h"
 #include "uart2.h"
-#include "eth.h"
 #include "pwm2.h"
 #include "pwm3.h"
 #include "user_oled.h"
@@ -17,6 +16,8 @@ void ecode_hw_board_init()
     
 	//__set_PRIMASK(1);
 	
+    board_clock_configuration();
+    
     uart_init();
     
     fprint_log.put_char = uart_putc;
@@ -32,8 +33,6 @@ void ecode_hw_board_init()
 	user_oled_init();
 	
 	hcsr04_hw_init();
-	
-    eth_init();
 }
 
 void SysTick_Handler(void)
@@ -87,7 +86,7 @@ void board_clock_configuration(void)
   RCC_OscInitStruct.HSICalibrationValue = 16;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL8;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
   RCC_OscInitStruct.PLL.PREDIV = RCC_PREDIV_DIV1;
   HAL_RCC_OscConfig(&RCC_OscInitStruct);
 
@@ -98,7 +97,7 @@ void board_clock_configuration(void)
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
   HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2);
 
-  //HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
+  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
 
   HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
 
