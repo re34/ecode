@@ -321,6 +321,7 @@
           <state>$PROJ_DIR$\..\..\..\utils</state>
           <state>$PROJ_DIR$\..\..\..\library\lwip\include</state>
           <state>$PROJ_DIR$\..\..\..\library\lwip\include\netif</state>
+          <state>$PROJ_DIR$\..\..\..\library\lwip</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1995,6 +1996,12 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\library\lwip\api\tcpip.c</name>
+        </file>
+      </group>
+      <group>
+        <name>arch</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\lwip\arch\sys_arch.c</name>
         </file>
       </group>
       <group>

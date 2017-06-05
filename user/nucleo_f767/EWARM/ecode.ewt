@@ -2382,6 +2382,12 @@
         </file>
       </group>
       <group>
+        <name>arch</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\lwip\arch\sys_arch.c</name>
+        </file>
+      </group>
+      <group>
         <name>core</name>
         <group>
           <name>ipv4</name>
