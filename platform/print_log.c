@@ -105,6 +105,24 @@ int print_level(int level, const char *fmt, ...)
     return ret;
 }
 
+int print_hex(const char *data, int len, char delim)
+{
+	int ret = 0;
+        int i;
+	char *pdata = (char *)data;
+	
+	for(i=0;i<len;i++)
+	{
+		ret+=printf("%x", *pdata++);
+		if(i==len-1)
+			break;
+		ret+=printf("%c",delim);
+	}
+	ret+=printf("\r\n");
+	
+	return ret;
+}
+
 PUTCHAR_PROTOTYPE
 {
 

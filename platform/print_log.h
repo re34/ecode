@@ -18,6 +18,7 @@ struct print_log_interface{
 
 int print_level(int level, const char *fmt, ...);
 void print_log_register_io(struct print_log_interface fio);
+int print_hex(const char *data, int len, char delim);
 
 #define LOG_LEVEL       LOG_LEVEL_DEBUG
 
