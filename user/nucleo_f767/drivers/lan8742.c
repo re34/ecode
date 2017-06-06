@@ -23,34 +23,49 @@
 #define RMII_TXD0_GPIO_Port GPIOG
 
 
-/* USER CODE BEGIN 1 */
+/*
+  @Note: The DMARxDscrTab and DMATxDscrTab must be declared in a non cacheable memory region
+         In this example they are declared in the first 256 Byte of SRAM1 memory, so this
+         memory region is configured by MPU as a device memory (please refer to MPU_Config() in main.c).
 
-/* USER CODE END 1 */
+         In this example the ETH buffers are located in the SRAM2 memory, 
+         since the data cache is enabled, so cache maintenance operations are mandatory.
+ */
+#if defined ( __CC_ARM   )
+ETH_DMADescTypeDef  DMARxDscrTab[ETH_RXBUFNB] __attribute__((at(0x20020000)));/* Ethernet Rx DMA Descriptors */
 
-/* Private variables ---------------------------------------------------------*/
-#if defined ( __ICCARM__ ) /*!< IAR Compiler */
-  #pragma data_alignment=4   
+ETH_DMADescTypeDef  DMATxDscrTab[ETH_TXBUFNB] __attribute__((at(0x20020080)));/* Ethernet Tx DMA Descriptors */
+
+uint8_t Rx_Buff[ETH_RXBUFNB][ETH_RX_BUF_SIZE] __attribute__((at(0x2007C000))); /* Ethernet Receive Buffers */
+
+uint8_t Tx_Buff[ETH_TXBUFNB][ETH_TX_BUF_SIZE] __attribute__((at(0x2007D7D0))); /* Ethernet Transmit Buffers */
+
+#elif defined ( __ICCARM__ ) /*!< IAR Compiler */
+  #pragma data_alignment=4 
+
+#pragma location=0x20020000
+__no_init ETH_DMADescTypeDef  DMARxDscrTab[ETH_RXBUFNB];/* Ethernet Rx DMA Descriptors */
+
+#pragma location=0x20020080
+__no_init ETH_DMADescTypeDef  DMATxDscrTab[ETH_TXBUFNB];/* Ethernet Tx DMA Descriptors */
+
+#pragma location=0x2007C000
+__no_init uint8_t Rx_Buff[ETH_RXBUFNB][ETH_RX_BUF_SIZE]; /* Ethernet Receive Buffers */
+
+#pragma location=0x2007D7D0
+__no_init uint8_t Tx_Buff[ETH_TXBUFNB][ETH_TX_BUF_SIZE]; /* Ethernet Transmit Buffers */
+
+#elif defined ( __GNUC__ ) /*!< GNU Compiler */
+
+ETH_DMADescTypeDef  DMARxDscrTab[ETH_RXBUFNB] __attribute__((section(".RxDecripSection")));/* Ethernet Rx DMA Descriptor */
+
+ETH_DMADescTypeDef  DMATxDscrTab[ETH_TXBUFNB] __attribute__((section(".TxDescripSection")));/* Ethernet Tx DMA Descriptors */
+
+uint8_t Rx_Buff[ETH_RXBUFNB][ETH_RX_BUF_SIZE] __attribute__((section(".RxarraySection"))); /* Ethernet Receive Buffers */
+
+uint8_t Tx_Buff[ETH_TXBUFNB][ETH_TX_BUF_SIZE] __attribute__((section(".TxarraySection"))); /* Ethernet Transmit Buffers */
+
 #endif
-__ALIGN_BEGIN ETH_DMADescTypeDef  DMARxDscrTab[ETH_RXBUFNB] __ALIGN_END;/* Ethernet Rx MA Descriptor */
-
-#if defined ( __ICCARM__ ) /*!< IAR Compiler */
-  #pragma data_alignment=4   
-#endif
-__ALIGN_BEGIN ETH_DMADescTypeDef  DMATxDscrTab[ETH_TXBUFNB] __ALIGN_END;/* Ethernet Tx DMA Descriptor */
-
-#if defined ( __ICCARM__ ) /*!< IAR Compiler */
-  #pragma data_alignment=4   
-#endif
-__ALIGN_BEGIN uint8_t Rx_Buff[ETH_RXBUFNB][ETH_RX_BUF_SIZE] __ALIGN_END; /* Ethernet Receive Buffer */
-
-#if defined ( __ICCARM__ ) /*!< IAR Compiler */
-  #pragma data_alignment=4   
-#endif
-__ALIGN_BEGIN uint8_t Tx_Buff[ETH_TXBUFNB][ETH_TX_BUF_SIZE] __ALIGN_END; /* Ethernet Transmit Buffer */
-
-/* USER CODE BEGIN 2 */
-
-/* USER CODE END 2 */
 
 /* Global Ethernet handle */
 ETH_HandleTypeDef heth;
@@ -109,8 +124,7 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOG_CLK_ENABLE();
   /* USER CODE END ETH_MspInit 0 */
-    /* Enable Peripheral clock */
-    __HAL_RCC_ETH_CLK_ENABLE();
+
   
     /**ETH GPIO Configuration    
     PC1     ------> ETH_MDC
@@ -152,10 +166,11 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
     HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
     /* Peripheral interrupt init */
-    HAL_NVIC_SetPriority(ETH_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(ETH_IRQn);
+    //HAL_NVIC_SetPriority(ETH_IRQn, 0, 0);
+    //HAL_NVIC_EnableIRQ(ETH_IRQn);
   /* USER CODE BEGIN ETH_MspInit 1 */
-
+    /* Enable Peripheral clock */
+    __HAL_RCC_ETH_CLK_ENABLE();
   /* USER CODE END ETH_MspInit 1 */
   }
 }
@@ -211,15 +226,17 @@ static void low_level_init(struct netif *netif)
 
    uint8_t MACAddr[6] ;
   heth.Instance = ETH;
-  heth.Init.AutoNegotiation = ETH_AUTONEGOTIATION_ENABLE;
-  heth.Init.PhyAddress = LAN8742A_PHY_ADDRESS;
   MACAddr[0] = 0x00;
   MACAddr[1] = 0x80;
   MACAddr[2] = 0xE1;
   MACAddr[3] = 0x00;
   MACAddr[4] = 0x00;
   MACAddr[5] = 0x00;
-  heth.Init.MACAddr = &MACAddr[0];
+  
+  heth.Init.MACAddr = &MACAddr[0]; 
+  heth.Init.AutoNegotiation = ETH_AUTONEGOTIATION_ENABLE;
+  heth.Init.PhyAddress = LAN8742A_PHY_ADDRESS;
+  heth.Init.DuplexMode = ETH_MODE_FULLDUPLEX;
   heth.Init.RxMode = ETH_RXPOLLING_MODE;
   heth.Init.ChecksumMode = ETH_CHECKSUM_BY_HARDWARE;
   heth.Init.MediaInterface = ETH_MEDIA_INTERFACE_RMII;
@@ -241,7 +258,6 @@ static void low_level_init(struct netif *netif)
   /* Initialize Rx Descriptors list: Chain Mode  */
   HAL_ETH_DMARxDescListInit(&heth, DMARxDscrTab, &Rx_Buff[0][0], ETH_RXBUFNB);
  
-#if LWIP_ARP || LWIP_ETHERNET 
 
   /* set MAC hardware address length */
   netif->hwaddr_len = ETH_HWADDR_LEN;
@@ -259,11 +275,8 @@ static void low_level_init(struct netif *netif)
   
   /* Accept broadcast address and ARP traffic */
   /* don't set NETIF_FLAG_ETHARP if this device is not an ethernet one */
-  #if LWIP_ARP
+
     netif->flags |= NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP;
-  #else 
-    netif->flags |= NETIF_FLAG_BROADCAST;
-  #endif /* LWIP_ARP */
   
   /* Enable MAC and DMA transmission and reception */
   HAL_ETH_Start(&heth);
@@ -274,20 +287,19 @@ static void low_level_init(struct netif *netif)
   
 
   /* Read Register Configuration */
-  HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR, &regvalue);
-  regvalue |= (PHY_ISFR_INT4);
+  //HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR, &regvalue);
+  //regvalue |= (PHY_ISFR_INT4);
 
   /* Enable Interrupt on change of link status */ 
-  HAL_ETH_WritePHYRegister(&heth, PHY_ISFR , regvalue );
+  //HAL_ETH_WritePHYRegister(&heth, PHY_ISFR , regvalue );
   
   /* Read Register Configuration */
-  HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR , &regvalue);
+  //HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR , &regvalue);
 
 /* USER CODE BEGIN PHY_POST_CONFIG */ 
     
 /* USER CODE END PHY_POST_CONFIG */
 
-#endif /* LWIP_ARP || LWIP_ETHERNET */
 
 /* USER CODE BEGIN LOW_LEVEL_INIT */ 
     
@@ -367,7 +379,8 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
       bufferoffset = bufferoffset + byteslefttocopy;
       framelength = framelength + byteslefttocopy;
     }
-  
+
+    
   /* Prepare transmit descriptors to give to DMA */ 
   HAL_ETH_TransmitFrame(&heth, framelength);
   
@@ -421,7 +434,8 @@ static struct pbuf * low_level_input(struct netif *netif)
     /* We allocate a pbuf chain of pbufs from the Lwip buffer pool */
     p = pbuf_alloc(PBUF_RAW, len, PBUF_POOL);
   }
-  
+
+
   if (p != NULL)
   {
     dmarxdesc = heth.RxFrameInfos.FSRxDesc;
@@ -475,109 +489,5 @@ static struct pbuf * low_level_input(struct netif *netif)
   return p;
 }
 
-#if LWIP_NETIF_LINK_CALLBACK
-/**
-  * @brief  Link callback function, this function is called on change of link status
-  *         to update low level driver configuration.
-* @param  netif: The network interface
-  * @retval None
-  */
-void ethernetif_update_config(struct netif *netif)
-{
-  __IO uint32_t tickstart = 0;
-  uint32_t regvalue = 0;
-  
-  if(netif_is_link_up(netif))
-  { 
-    /* Restart the auto-negotiation */
-    if(heth.Init.AutoNegotiation != ETH_AUTONEGOTIATION_DISABLE)
-    {
-      /* Enable Auto-Negotiation */
-      HAL_ETH_WritePHYRegister(&heth, PHY_BCR, PHY_AUTONEGOTIATION);
-      
-      /* Get tick */
-      tickstart = HAL_GetTick();
-      
-      /* Wait until the auto-negotiation will be completed */
-      do
-      {
-        HAL_ETH_ReadPHYRegister(&heth, PHY_BSR, &regvalue);
-        
-        /* Check for the Timeout ( 1s ) */
-        if((HAL_GetTick() - tickstart ) > 1000)
-        {     
-          /* In case of timeout */ 
-          goto error;
-        }   
-      } while (((regvalue & PHY_AUTONEGO_COMPLETE) != PHY_AUTONEGO_COMPLETE));
-      
-      /* Read the result of the auto-negotiation */
-      HAL_ETH_ReadPHYRegister(&heth, PHY_SR, &regvalue);
-      
-      /* Configure the MAC with the Duplex Mode fixed by the auto-negotiation process */
-      if((regvalue & PHY_DUPLEX_STATUS) != (uint32_t)RESET)
-      {
-        /* Set Ethernet duplex mode to Full-duplex following the auto-negotiation */
-        heth.Init.DuplexMode = ETH_MODE_FULLDUPLEX;  
-      }
-      else
-      {
-        /* Set Ethernet duplex mode to Half-duplex following the auto-negotiation */
-        heth.Init.DuplexMode = ETH_MODE_HALFDUPLEX;           
-      }
-      /* Configure the MAC with the speed fixed by the auto-negotiation process */
-      if(regvalue & PHY_SPEED_STATUS)
-      {  
-        /* Set Ethernet speed to 10M following the auto-negotiation */
-        heth.Init.Speed = ETH_SPEED_10M; 
-      }
-      else
-      {   
-        /* Set Ethernet speed to 100M following the auto-negotiation */ 
-        heth.Init.Speed = ETH_SPEED_100M;
-      }
-    }
-    else /* AutoNegotiation Disable */
-    {
-    error :
-      /* Check parameters */
-      assert_param(IS_ETH_SPEED(heth.Init.Speed));
-      assert_param(IS_ETH_DUPLEX_MODE(heth.Init.DuplexMode));
-      
-      /* Set MAC Speed and Duplex Mode to PHY */
-      HAL_ETH_WritePHYRegister(&heth, PHY_BCR, ((uint16_t)(heth.Init.DuplexMode >> 3) |
-                                                     (uint16_t)(heth.Init.Speed >> 1))); 
-    }
-
-    /* ETHERNET MAC Re-Configuration */
-    HAL_ETH_ConfigMAC(&heth, (ETH_MACInitTypeDef *) NULL);
-
-    /* Restart MAC interface */
-    HAL_ETH_Start(&heth);   
-  }
-  else
-  {
-    /* Stop MAC interface */
-    HAL_ETH_Stop(&heth);
-  }
-
-  ethernetif_notify_conn_changed(netif);
-}
-
-/* USER CODE BEGIN 8 */
-/**
-  * @brief  This function notify user about link status changement.
-  * @param  netif: the network interface
-  * @retval None
-  */
-__weak void ethernetif_notify_conn_changed(struct netif *netif)
-{
-  /* NOTE : This is function could be implemented in user file 
-            when the callback is needed,
-  */
-
-}
-/* USER CODE END 8 */ 
-#endif /* LWIP_NETIF_LINK_CALLBACK */
 
 

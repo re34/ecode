@@ -91,7 +91,6 @@ void ethernet_process(void)
     if(lan8742_get_packet_size()>0)
         ethernetif_input(&gnetif);
     sys_check_timeouts();
-
 }
 
 void ethernet_task(void *args)

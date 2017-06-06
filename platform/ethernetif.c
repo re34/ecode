@@ -44,27 +44,6 @@ void ethernetif_input(struct netif *netif)
   }while(p!=NULL);
 }
 
-#if !LWIP_ARP
-/**
- * This function has to be completed by user in case of ARP OFF.
- *
- * @param netif the lwip network interface structure for this ethernetif
- * @return ERR_OK if ...
- */
-static err_t low_level_output_arp_off(struct netif *netif, struct pbuf *q, ip_addr_t *ipaddr)
-{  
-  err_t errval;
-  errval = ERR_OK;
-    
-/* USER CODE BEGIN 5 */ 
-    
-/* USER CODE END 5 */  
-    
-  return errval;
-  
-}
-#endif /* LWIP_ARP */ 
-
 /**
  * Should be called at the beginning of the program to set up the
  * network interface. It calls the function low_level_init() to do the
@@ -93,22 +72,8 @@ err_t ethernetif_init(struct netif *netif)
    * from it if you have to do some checks before sending (e.g. if link
    * is available...) */
 
-#if LWIP_IPV4
-#if LWIP_ARP || LWIP_ETHERNET
-#if LWIP_ARP
-  netif->output = etharp_output;
-#else
-  /* The user should write ist own code in low_level_output_arp_off function */
-  netif->output = low_level_output_arp_off;
-#endif /* LWIP_ARP */
-#endif /* LWIP_ARP || LWIP_ETHERNET */
-#endif /* LWIP_IPV4 */
- 
-#if LWIP_IPV6
-  netif->output_ip6 = ethip6_output;
-#endif /* LWIP_IPV6 */
-
   //netif->linkoutput = low_level_output;
+  netif->output =  etharp_output;
   netif->linkoutput = ethernet_dev->low_level_output;
 
   /* initialize the hardware */
