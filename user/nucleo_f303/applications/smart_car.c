@@ -1,6 +1,7 @@
 #include "smart_car.h"
 #include "motor.h"
 #include "smart_car_handle.h"
+#include "speed.h"
 
 
 struct smart_car{
@@ -17,7 +18,7 @@ int smart_car_init()
 {
     cli_register_smart_car_commands();
     smart_car_set_speed(0,0);
-    
+    speed_init();
     return 0;
 }
 

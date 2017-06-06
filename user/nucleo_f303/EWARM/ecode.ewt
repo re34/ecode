@@ -2505,6 +2505,9 @@
         <name>$PROJ_DIR$\..\applications\smart_car_handle.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\applications\speed.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\applications\startup.c</name>
       </file>
     </group>
@@ -2512,6 +2515,12 @@
       <name>drivers</name>
       <file>
         <name>$PROJ_DIR$\..\drivers\board.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\exti15_10.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\exti4.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\FreeRTOSConfig.h</name>

@@ -14,8 +14,8 @@ void tick_set_callback(tick_callback_t callback)
     ftick_callback = callback;
 }
 
-/*
-void tick_attach_timeout(struct timeout *timeout, timeout_callback_t callback,int ms)
+
+void timeout_attach(struct timeout *timeout, timeout_callback_t callback,int ms)
 {
     timeout->base = _ticks+ms;
     timeout->callback = callback;
@@ -38,7 +38,7 @@ void timeout_polling(void)
         }
     }
 }
-*/
+
 void tick_inc(void)
 {
     _ticks++;
@@ -46,7 +46,7 @@ void tick_inc(void)
     {
         ftick_callback(1);
     }
-    //timeout_polling();
+    timeout_polling();
 }
 
 UInt32 get_ticks(void)

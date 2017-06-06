@@ -13,7 +13,7 @@ void ecode_application_init(void)
 {
 	bt_spp_init();
 	
-	smart_car_init();	
+	smart_car_init();
 	
 	xTaskCreate(cli_task,
             "cli_task",
