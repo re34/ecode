@@ -26,9 +26,9 @@ MultiCoreRunAll=1
 CStepIntDis=_ 0
 LeaveTargetRunning=_ 0
 stlinkserialNo=67192820
-stlinkfoundProbes=67032755:67192820:
+stlinkfoundProbes=
 [DebugChecksum]
-Checksum=647105337
+Checksum=1160047390
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0

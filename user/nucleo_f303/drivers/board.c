@@ -4,6 +4,8 @@
 #include "pwm2.h"
 #include "pwm3.h"
 #include "user_oled.h"
+#include "timer1.h"
+#include "timer2.h"
 
 void board_clock_configuration(void);
 
@@ -33,6 +35,10 @@ void ecode_hw_board_init()
 	user_oled_init();
 	
 	hcsr04_hw_init();
+    
+    timer1_init();
+    
+    timer2_init();
 }
 
 void SysTick_Handler(void)

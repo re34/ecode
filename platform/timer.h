@@ -4,16 +4,15 @@
 
 enum{
   TIMER1,
+  TIMER2,
+  TIMER3,
   TIMERn,  
 };
 
 struct timer_device{
-    int (*init)(void);
     void (*start)(void);
     void (*stop)(void);
     void (*reset)(void);
-    float (*read)(void);
-    int (*read_ms)(void);
     int (*read_us)(void);
 };
 

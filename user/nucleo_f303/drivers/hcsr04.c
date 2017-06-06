@@ -1,6 +1,6 @@
 #include "hcsr04.h"
 #include "board_includes.h"
-#include "types.h"
+#include "ecode.h"
 
 static hcsr04_echo_callback_t _hcsr04_echo_callback = NULL;
 
@@ -23,6 +23,8 @@ void hcsr04_hw_init(void)
     
     HAL_NVIC_SetPriority(EXTI3_IRQn, 2, 0);
     HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+    
+    LOG_DEBUG("hcsr04 is inited!");
 }
 
 void hcsr04_set_echo_callback(hcsr04_echo_callback_t callback)

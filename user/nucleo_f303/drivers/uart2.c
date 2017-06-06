@@ -89,7 +89,7 @@ static void uart2_hw_init(int baudrate)
 
   /* (4) Enable USART *********************************************************/
   LL_USART_Enable(UART2_INSTANCE);
-  printf("uart2 is enabled\r\n");
+
   /* Polling USART initialisation */
   while((!(LL_USART_IsActiveFlag_TEACK(UART2_INSTANCE))) || (!(LL_USART_IsActiveFlag_REACK(UART2_INSTANCE))))
   { 

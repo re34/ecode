@@ -10,15 +10,9 @@ int timer_register(int fd, struct timer_device *dev)
     if(fd>TIMERn||dev==NULL)
         return -1;
     
-    if(dev->init==NULL)
-        return -2;
-    
-    if(dev->init()<0)
-        return -3;
-    
     if((dev->start==NULL)||(dev->stop==NULL)||(dev->reset==NULL)\
-        ||(dev->read==NULL)||(dev->read_ms==NULL)||(dev->read_us==NULL))
-        return -4;
+        ||(dev->read_us==NULL))
+        return -2;
     
     timer_devs[fd]=dev;
     
@@ -89,7 +83,7 @@ float timer_read(int fd)
     if(dev==NULL)
         return -2;
     
-    return dev->read();
+    return dev->read_us()*1.0f/1000000;
 }
 
 int timer_read_ms(int fd)
@@ -104,7 +98,7 @@ int timer_read_ms(int fd)
     if(dev==NULL)
         return -2;
     
-    return dev->read_ms();
+    return dev->read_us()/1000;
 }
 
 int timer_read_us(int fd)
