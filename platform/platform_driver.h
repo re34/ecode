@@ -2,30 +2,25 @@
 #define __PLATFROM_DRIVER_H__
 #include "includes.h"
 
-typedef enum{
-    SPI_1,
-    DEVICEn,
-}device_name_t;
-
 
 struct platform_device{
     struct list_head entry;
     const char *name;
+    int major;
+    int minor;
     void *ops;
 };
 
 
 struct device_operations{
-    int (*open)(struct platform_device *dev, int flags);
-    int (*close)(struct platform_device *dev);
     int (*read)(struct platform_device *dev, char *buf, int len);
     int (*write)(struct platform_device *dev, char *datas, int len);
     int (*ioctl)(struct platform_device *dev, int cmd, int arg);
 };
 
 
-int platform_driver_register(device_name_t name,struct platform_device *dev);
-int platform_driver_unregister(device_name_t name);
+int platform_driver_register(struct platform_device *dev);
+int platform_driver_unregister(struct platform_device *dev);
 int open(const char *name, int flags);
 int close(int fd);
 int write(int fd, char *datas, int len);
