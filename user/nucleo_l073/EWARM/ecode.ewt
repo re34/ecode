@@ -2404,6 +2404,9 @@
       <name>$PROJ_DIR$\..\..\..\platform\includes.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\..\platform\pin.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\..\platform\platform_cli_handles.c</name>
     </file>
     <file>

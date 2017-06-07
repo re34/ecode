@@ -2030,6 +2030,9 @@
       <name>$PROJ_DIR$\..\..\..\platform\pid.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\..\platform\pin.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\..\platform\platform_cli_handles.c</name>
     </file>
     <file>

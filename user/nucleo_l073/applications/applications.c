@@ -63,12 +63,15 @@ void cli_task(void *args)
 
 void led_task(void *args)
 {
-	stm_pin_init(LED1, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
+    int pin_val=PIN_LOW;
+	pin_mode(LED1, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
 	
 	while(1)
 	{
-		stm_pin_toggle(LED1);
-		vTaskDelay(500);
+		//stm_pin_toggle(LED1);
+        pin_write(LED1, pin_val);
+        pin_val = !pin_val;
+		delay_ms(500);
 	}
 }
 

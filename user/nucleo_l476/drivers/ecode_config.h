@@ -2,6 +2,6 @@
 #define __ECODE_CONFIG_H__
 
 
-#define CONFIG_USE_LWIP		1
+#define CONFIG_USE_LWIP		0
 
 #endif

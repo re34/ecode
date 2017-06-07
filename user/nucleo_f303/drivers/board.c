@@ -27,6 +27,8 @@ void ecode_hw_board_init()
     print_log_register_io(fprint_log);
     
 	uart2_init();
+    
+    stm_pin_init();
 	
 	pwm2_init();
 	

@@ -35,11 +35,11 @@ void user_oled_init()
 
 static int oled_init()
 {
-    stm_pin_init(CS, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
-    stm_pin_init(DC, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
-    stm_pin_init(RESET, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
-    stm_pin_init(SCLK, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
-    stm_pin_init(SDIN, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
+    pin_mode(CS, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
+    pin_mode(DC, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
+    pin_mode(RESET, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
+    pin_mode(SCLK, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
+    pin_mode(SDIN, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
     LOG_DEBUG("oled pin inited!");
     return 0;
 }
@@ -47,39 +47,39 @@ static int oled_init()
 static void oled_cs(unsigned char status)
 {
     if(status==PIN_SET)
-        stm_pin_set(CS);
+        pin_write(CS, PIN_HIGH);
     else
-        stm_pin_reset(CS);
+        pin_write(CS, PIN_LOW);
 }
 
 static void oled_dc(unsigned char status)
 {
     if(status==PIN_SET)
-        stm_pin_set(DC);
+        pin_write(DC, PIN_HIGH);
     else
-        stm_pin_reset(DC);
+        pin_write(DC, PIN_LOW);
 }
 
 static void oled_reset(unsigned char status)
 {
     if(status==PIN_SET)
-        stm_pin_set(RESET);
+        pin_write(RESET, PIN_HIGH);
     else
-        stm_pin_reset(RESET);
+        pin_write(RESET, PIN_LOW);
 }
 
 static void oled_sclk(unsigned char status)
 {
     if(status==PIN_SET)
-        stm_pin_set(SCLK);
+        pin_write(SCLK, PIN_HIGH);
     else
-        stm_pin_reset(SCLK);
+        pin_write(SCLK, PIN_LOW);
 }
 
 static void oled_sdin(unsigned char status)
 {
     if(status==PIN_SET)
-        stm_pin_set(SDIN);
+        pin_write(SDIN, PIN_HIGH);
     else
-        stm_pin_reset(SDIN);
+        pin_write(SDIN, PIN_LOW);
 }

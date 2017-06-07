@@ -1,6 +1,6 @@
 #include "board.h"
+#include "board_includes.h"
 #include "uart.h"
-#include "eth.h"
 
 void board_clock_configuration(void);
 
@@ -21,7 +21,6 @@ void ecode_hw_board_init()
     
     print_log_register_io(fprint_log);
     
-    eth_init();
 }
 void SysTick_Handler(void)
 {

@@ -1,7 +1,10 @@
 #include "stm_pin.h"
-#include "stdio.h"
-#include "includes.h"
+#include "board_includes.h"
+#include "ecode.h"
 
+
+#define STM_PIN(pin)    ((pin)&0xF)  
+#define STM_PORT(pin)   (((pin)>>4)&0x0F)
 
 
 const uint32_t pin_defines[16] = {
@@ -162,7 +165,7 @@ GPIO_TypeDef *stm_gpio_set_clk(uint32_t port_idx) {
 }
 
 
-void stm_pin_init(pin_name_t pin, pin_mode_t mode, pin_pupd_t pull)
+void stm_pin_mode(struct pin_device *dev, pin_index_t pin, pin_mode_t mode, pin_pupd_t pupd)
 {
     GPIO_TypeDef *port;
     uint32_t pin_mask = pin_defines[STM_PIN(pin)];
@@ -190,35 +193,51 @@ void stm_pin_init(pin_name_t pin, pin_mode_t mode, pin_pupd_t pull)
 		LL_GPIO_SetPinMode(port, pin_mask, LL_GPIO_MODE_ANALOG);
 	}
     
-    LL_GPIO_SetPinSpeed(port, pin_mask, LL_GPIO_SPEED_FREQ_VERY_HIGH);
+    LL_GPIO_SetPinSpeed(port, pin_mask, LL_GPIO_SPEED_FREQ_HIGH);
     
-    if(pull==PIN_PUPD_UP)
+    if(pupd==PIN_PUPD_UP)
         LL_GPIO_SetPinPull(port, pin_mask, LL_GPIO_PULL_UP);
-    else if(pull==PIN_PUPD_DOWN)
+    else if(pupd==PIN_PUPD_DOWN)
         LL_GPIO_SetPinPull(port, pin_mask, LL_GPIO_PULL_DOWN); 
-	else if(pull==PIN_PUPD_NO)
-		LL_GPIO_SetPinPull(port, pin_mask, LL_GPIO_PULL_NO);
+	else if(pupd==PIN_PUPD_NO)
+		LL_GPIO_SetPinPull(port, pin_mask, LL_GPIO_PULL_NO); 
 }
 
-void stm_pin_set(pin_name_t pin)
+void stm_pin_write(struct pin_device *dev, pin_index_t pin, pin_val_t val)
 {
-    LL_GPIO_SetOutputPin(stm_pin_get_port(STM_PORT(pin)), pin_defines[STM_PIN(pin)]);
+    if(val == PIN_HIGH)
+        LL_GPIO_SetOutputPin(stm_pin_get_port(STM_PORT(pin)), pin_defines[STM_PIN(pin)]);
+    else
+        LL_GPIO_ResetOutputPin(stm_pin_get_port(STM_PORT(pin)), pin_defines[STM_PIN(pin)]);
 }
 
-void stm_pin_reset(pin_name_t pin)
-{
-    LL_GPIO_ResetOutputPin(stm_pin_get_port(STM_PORT(pin)), pin_defines[STM_PIN(pin)]);    
-}
 
-pin_state_t stm_pin_read(pin_name_t pin)
+int stm_pin_read(struct pin_device *dev, pin_index_t pin)
 {
 	if(LL_GPIO_IsInputPinSet(stm_pin_get_port(STM_PORT(pin)), pin_defines[STM_PIN(pin)]))
-		return PIN_SET;
+		return PIN_HIGH;
 	else
-		return PIN_RESET;
+		return PIN_LOW;
 }
 
-void stm_pin_toggle(pin_name_t pin)
+static const struct pin_operation ops={
+    .pin_mode = stm_pin_mode,
+    .pin_write = stm_pin_write,
+    .pin_read = stm_pin_read,
+};
+
+int stm_pin_init(void)
 {
-    LL_GPIO_TogglePin(stm_pin_get_port(STM_PORT(pin)), pin_defines[STM_PIN(pin)]);
+    int ret;
+    
+    ret = pin_device_register("pin", &ops);
+    
+    if(ret<0)
+    {
+        LOG_ERROR("pin register failed!");
+        return -1;
+    }
+    
+    return 0;
 }
+
