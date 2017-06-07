@@ -5,10 +5,12 @@
 LIST_HEAD(platform_device_head);
 
 
-int platform_driver_register(struct platform_device *dev)
+int platform_driver_register(struct platform_device *dev, const char *name)
 {
     if(dev==NULL)
         return -1;
+    
+    dev->name = name;
     
     list_add(&platform_device_head, &dev->entry);
     

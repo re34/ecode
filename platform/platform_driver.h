@@ -19,7 +19,7 @@ struct device_operations{
 };
 
 
-int platform_driver_register(struct platform_device *dev);
+int platform_driver_register(struct platform_device *dev, const char *name);
 int platform_driver_unregister(struct platform_device *dev);
 int open(const char *name, int flags);
 int close(int fd);
