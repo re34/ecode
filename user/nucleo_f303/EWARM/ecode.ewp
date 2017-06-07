@@ -2027,6 +2027,9 @@
       <name>$PROJ_DIR$\..\..\..\platform\oled.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\..\platform\pid.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\..\platform\platform_cli_handles.c</name>
     </file>
     <file>

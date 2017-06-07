@@ -16,6 +16,8 @@ int pid_init(struct pid *pid)
     pid->kd = 0;
     pid->adjust_callback = 0;
     pid->monitor_callback = 0;
+    
+    return 0;
 }
 
 int pid_set_coeff(struct pid *pid, float kp, float ki, float kd)
@@ -52,10 +54,32 @@ int pid_set_real_val(struct pid*pid, float real)
 
 int pid_process(struct pid *pid)
 {
+    float err;
     if(pid==NULL)
         return -1;
     
+    if(pid->monitor_callback!=NULL)
+        pid->real_val = ((pid_monitor_callback_t)pid->monitor_callback)();
+    else
+        return -2;
     
+    pid->err = pid->set_val - pid->real_val;
+    err = pid->kp*(pid->err-pid->err_last)+pid->ki*pid->err\
+        +pid->kd*(pid->err-2*pid->err_last+pid->err_last_last);
+    pid->output_val += err;
+    pid->err_last_last = pid->err_last;
+    pid->err_last = pid->err;
+    
+    if(pid->output_val>pid->max)
+        pid->output_val = pid->max;
+    
+    if(pid->output_val<pid->min)
+        pid->output_val = pid->min;
+    
+    if(pid->adjust_callback!=NULL)
+        ((pid_adjust_callback_t)pid->adjust_callback)(pid->output_val);
+    else
+        return -2;
     
     
     return 0;    
