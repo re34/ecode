@@ -16,6 +16,7 @@
 #include "platform_cli_handles.h"
 #include "oled.h"
 #include "pin.h"
+#include "ecode_assert.h"
 
 #if CONFIG_USE_LWIP==1
 #include "ethernetif.h"

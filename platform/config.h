@@ -11,4 +11,8 @@
 #define CONSIG_USE_LWIP	0
 #endif
 
+#ifndef CONFIG_USE_ASSERT
+#define CONFIG_USE_ASSERT   1
+#endif
+
 #endif

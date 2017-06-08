@@ -2398,6 +2398,9 @@
       <name>$PROJ_DIR$\..\..\..\platform\ecode.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\..\platform\ecode_assert.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\..\platform\ecode_cli.c</name>
     </file>
     <file>
