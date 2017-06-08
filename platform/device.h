@@ -6,6 +6,7 @@
 #define DEVICE_FLAG_ACTIVATED       BIT(0)
 #define DEVICE_FLAG_OPEN            BIT(1)
 #define DEVICE_FLAG_CLOSE           BIT(2)
+#define DEVICE_FLAG_STREAM          BIT(3)
 
 
 typedef struct e_device * e_device_t;

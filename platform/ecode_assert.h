@@ -15,6 +15,7 @@
     #define ecode_assert(expr)  ((void)0)
 #endif
 
+#define ASSERT_PARAM        ecode_assert
 
 #ifdef __cplusplus
 }
