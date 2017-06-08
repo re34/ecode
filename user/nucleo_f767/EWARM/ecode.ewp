@@ -2129,6 +2129,9 @@
       <name>$PROJ_DIR$\..\..\..\platform\delay.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\..\platform\device.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\..\platform\ecode.c</name>
     </file>
     <file>
@@ -2153,16 +2156,13 @@
       <name>$PROJ_DIR$\..\..\..\platform\includes.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\..\platform\object.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\..\platform\platform_cli_handles.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\platform_cli_handles.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\platform_driver.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\platform_driver.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\print_log.c</name>
