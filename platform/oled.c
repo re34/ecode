@@ -70,42 +70,42 @@ void oled_write_cmd(unsigned char cmd)
 {
     unsigned char i;
     
-    oled_dev->dc(PIN_RESET);
-    oled_dev->cs(PIN_RESET);
+    oled_dev->dc(PIN_LOW);
+    oled_dev->cs(PIN_LOW);
     
     for(i=0;i<8;i++)
     {
-        oled_dev->sclk(PIN_RESET);
+        oled_dev->sclk(PIN_LOW);
         if(cmd&0x80)
-            oled_dev->sdin(PIN_SET);
+            oled_dev->sdin(PIN_HIGH);
         else
-            oled_dev->sdin(PIN_RESET);
-        oled_dev->sclk(PIN_SET);
+            oled_dev->sdin(PIN_LOW);
+        oled_dev->sclk(PIN_HIGH);
         cmd<<=1;
     }
-    oled_dev->cs(PIN_SET);
-    oled_dev->dc(PIN_SET); 
+    oled_dev->cs(PIN_HIGH);
+    oled_dev->dc(PIN_HIGH); 
 }
 
 void oled_write_data(unsigned char data)
 {
     unsigned char i;
     
-    oled_dev->dc(PIN_SET);
-    oled_dev->cs(PIN_RESET);
+    oled_dev->dc(PIN_HIGH);
+    oled_dev->cs(PIN_LOW);
     
     for(i=0;i<8;i++)
     {
-        oled_dev->sclk(PIN_RESET);
+        oled_dev->sclk(PIN_LOW);
         if(data&0x80)
-            oled_dev->sdin(PIN_SET);
+            oled_dev->sdin(PIN_HIGH);
         else
-            oled_dev->sdin(PIN_RESET);
-        oled_dev->sclk(PIN_SET);
+            oled_dev->sdin(PIN_LOW);
+        oled_dev->sclk(PIN_HIGH);
         data<<=1;
     }
-    oled_dev->cs(PIN_SET);
-    oled_dev->dc(PIN_SET);
+    oled_dev->cs(PIN_HIGH);
+    oled_dev->dc(PIN_HIGH);
 }
 
 
@@ -497,17 +497,17 @@ void oled_clear(UInt8 data){
 static void _oled_init(void)
 {
 
-    oled_dev->reset(PIN_SET);
-    oled_dev->cs(PIN_SET);
-    oled_dev->dc(PIN_SET);
-    oled_dev->sdin(PIN_SET);
-    oled_dev->sclk(PIN_SET);
+    oled_dev->reset(PIN_HIGH);
+    oled_dev->cs(PIN_HIGH);
+    oled_dev->dc(PIN_HIGH);
+    oled_dev->sdin(PIN_HIGH);
+    oled_dev->sclk(PIN_HIGH);
     
-    oled_dev->reset(PIN_SET);
+    oled_dev->reset(PIN_HIGH);
     delay_ms(100);
-    oled_dev->reset(PIN_RESET);
+    oled_dev->reset(PIN_LOW);
     delay_ms(200);
-    oled_dev->reset(PIN_SET);
+    oled_dev->reset(PIN_HIGH);
     
     oled_write_cmd(0xAE);//--turn off oled panel
     oled_write_cmd(0x00);//---set low column address

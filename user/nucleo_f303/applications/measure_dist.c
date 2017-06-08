@@ -6,9 +6,9 @@ static void measure_dist_callback(void);
 void measure_start(void)
 {
 	hcsr04_set_echo_callback(measure_dist_callback);
-	hcsr04_set_trig(PIN_SET);
+	hcsr04_set_trig(PIN_HIGH);
 	delay_ms(1);
-	hcsr04_set_trig(PIN_RESET);
+	hcsr04_set_trig(PIN_LOW);
 	
 }
 

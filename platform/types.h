@@ -8,16 +8,16 @@ extern "C" {
 
 typedef unsigned char UInt8;
 typedef signed char Int8;
-typedef unsigned shoe UInt16;
-typedef signed shoe Int16;
+typedef unsigned short UInt16;
+typedef signed short Int16;
 typedef unsigned long UInt32;
 typedef signed long Int32;
 
 
 typedef unsigned char       e_uint8_t;  //8bit integer type
 typedef signed char         e_int8_t;   
-typedef unsigned shoe      e_uint16_t; 
-typedef signed shoe        e_int16_t;
+typedef unsigned short      e_uint16_t; 
+typedef signed short       e_int16_t;
 typedef unsigned long       e_uint32_t;
 typedef signed long         e_int32_t;
 typedef int                 e_bool_t;

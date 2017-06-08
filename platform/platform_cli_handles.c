@@ -76,16 +76,6 @@ static int ls(struct ecode_cli_dev *dev, char **args, int argc)
     struct platform_device *platform_dev = NULL;
     int dev_num = 0;
 
-    platform_dev = platform_device_find_next(platform_dev);
-    while(platform_dev!=NULL)
-    {
-        dev_num++;
-        ecode_cli_print(dev, "%s        ", platform_dev->name);
-        platform_dev = platform_device_find_next(platform_dev);
-    }
-    if(dev_num==0)
-        ecode_cli_print(dev, "no device found!!!");
-    ecode_cli_print(dev, "\r\n");
-    
+
     cli_error(dev, ERROR_NONE);
 }

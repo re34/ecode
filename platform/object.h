@@ -20,6 +20,6 @@ typedef struct e_object * e_object_t;
 
 void e_object_init(struct e_object *object,
                     const char *name);
-                    
+void e_object_detach(e_object_t object);             
 e_object_t e_object_find(const char *name);                 
 #endif

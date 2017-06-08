@@ -32,9 +32,9 @@ void hcsr04_set_echo_callback(hcsr04_echo_callback_t callback)
 	_hcsr04_echo_callback = callback;
 }
 
-void hcsr04_set_trig(pin_state_t status)
+void hcsr04_set_trig(pin_val_t status)
 {
-	if(status==PIN_SET)
+	if(status==PIN_HIGH)
 	{
         HAL_GPIO_WritePin(GPIOC,GPIO_PIN_2, GPIO_PIN_SET);
     }

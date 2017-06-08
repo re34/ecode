@@ -46,7 +46,7 @@ static int oled_init()
 
 static void oled_cs(unsigned char status)
 {
-    if(status==PIN_SET)
+    if(status==PIN_HIGH)
         pin_write(CS, PIN_HIGH);
     else
         pin_write(CS, PIN_LOW);
@@ -54,7 +54,7 @@ static void oled_cs(unsigned char status)
 
 static void oled_dc(unsigned char status)
 {
-    if(status==PIN_SET)
+    if(status==PIN_HIGH)
         pin_write(DC, PIN_HIGH);
     else
         pin_write(DC, PIN_LOW);
@@ -62,7 +62,7 @@ static void oled_dc(unsigned char status)
 
 static void oled_reset(unsigned char status)
 {
-    if(status==PIN_SET)
+    if(status==PIN_HIGH)
         pin_write(RESET, PIN_HIGH);
     else
         pin_write(RESET, PIN_LOW);
@@ -70,7 +70,7 @@ static void oled_reset(unsigned char status)
 
 static void oled_sclk(unsigned char status)
 {
-    if(status==PIN_SET)
+    if(status==PIN_HIGH)
         pin_write(SCLK, PIN_HIGH);
     else
         pin_write(SCLK, PIN_LOW);
@@ -78,7 +78,7 @@ static void oled_sclk(unsigned char status)
 
 static void oled_sdin(unsigned char status)
 {
-    if(status==PIN_SET)
+    if(status==PIN_HIGH)
         pin_write(SDIN, PIN_HIGH);
     else
         pin_write(SDIN, PIN_LOW);
