@@ -108,22 +108,24 @@ e_inline int _serial_int_tx(struct serial_dev *dev, const e_uint8_t *data, int l
         length --;
     }
     
-    return size->length;
+    return size-length;
 }
 
-
-int serial_register(int fd, struct serial_dev *dev)
+static e_err_t seiral_init(struct e_device *dev)
 {
-    if(fd>=COMn)
-        return -1;
-    if(dev==NULL)
-        return -2;
+    e_err_t result = E_EOK;
+    struct serial_device *serial;
     
-    devs[fd]=dev;
+    ASSERT_PARAM(dev!=NULL);
     
-    LOG_DEBUG("COM%d is registered!", fd+1);
-    return 0;
+    serial = contianer_of(dev, struct serial_dev, parent);
+    
+    if(serial->ops->configure)
+        result = serial->ops->configure(serial, &serial->config);
+    
+    return result;    
 }
+
 
 static int serial_dev_read(struct e_device *dev,
                     e_offset_t pos,
@@ -179,68 +181,106 @@ static e_err_t serial_dev_control(struct e_device *dev,
     
     switch(cmd)
     {
-        
+    case DEVICE_CONFIG:
+        if(args)
+        {
+            serial->config = *(struct serial_configure *)args;
+            
+            serial->ops->configure(serial, (struct serial_configure *)args);
+        }
+        break;
+    default:
+        serial->ops->control(serial, cmd, args);
+        break;
     }
     
     return E_EOK;
 }
 
-int serial_write(int fd, char *datas, int len)
-{
-    int ret=0;
-    struct serial_dev *dev;
-    
-    if(fd>=COMn)
-        return -1;
-    dev = devs[fd];
-    if(dev==NULL)
-        return -2;
-    
-    while(len!=0)
-    {
-        if(dev->put_c(*datas++)<0)
-            return -2;
-        len--;
-        ret++;
-    }
 
-    return ret;
+e_err_t serial_hw_register(struct serial_dev *serial,
+                            const char *name,
+                            e_uint32_t flag,
+                            void *data)
+{
+    struct e_device *device;
+    ASSERT_PARAM(serial!=NULL);
+    
+    device = &(serial->parent);
+    
+    device->init = NULL;
+    device->open = NULL;
+    device->close = NULL;
+    device->read = serial_dev_read;
+    device->write = serial_dev_write;
+    device->control = serial_dev_control;
+    device->private_data = data;
+    
+    
+    return e_device_register(device, name, flag);
 }
 
-int serial_read(int fd, char *buf, int len)
+
+int serial_register(int fd,
+                    struct serial_dev *dev,
+                    const char *name, 
+                    e_uint32_t flag,
+                    void *data)
+{
+    int ret;
+    
+    ASSERT_PARAM((fd<COMn)&&(dev!=NULL));
+    
+    devs[fd]=dev;
+    
+    ret = serial_hw_register(dev, name, flag, data)
+    
+    if(ret<0)
+        return -1;
+    LOG_DEBUG("COM%d is registered!", fd+1);
+    return 0;
+}
+
+
+int serial_write(int fd,
+                e_offset_t pos,
+                const void *buffer,
+                e_size_t size)
 {
     int ret=0;
     struct serial_dev *dev;
     
-    if(fd>=COMn)
-        return -1;
+    ASSERT_PARAM(fd<COMn);
+    
     dev = devs[fd];
-    if(dev==NULL)
-        return -2;
     
-    while(len!=0)
-    {
-        *buf++=dev->get_c();
-        len--;
-        ret++;
-    }
+    ASSERT_PARAM(dev!=NULL);
     
-    return ret;
+    return serial_dev_write(dev, pos, buffer, size)
+}
+
+int serial_read(int fd, 
+                e_offset_t pos,
+                void *buffer,
+                e_size_t size)
+{
+    int ret=0;
+    struct serial_dev *dev;
+    
+    ASSERT_PARAM(fd<COMn);
+    
+    dev = devs[fd];
+    
+    ASSERT_PARAM(dev!=NULL);
+    
+    return serial_dev_read(dev, pos, buffer, size);
 }
 
 int serial_in_waiting(int fd)
 {
     struct serial_dev *dev;
-    
-    if(fd>=COMn)
-        return -1;
-    
-    dev = devs[fd];
-    
-    if(dev==NULL)
-        return -2;
-    
-    return dev->in_waiting();
+
+    return 0;
 }
 
 

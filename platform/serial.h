@@ -96,16 +96,6 @@ struct serial_rx_fifo
     e_uint16_t put_index, get_index;
 };
 
-struct e_serial_rx_dma
-{
-    e_bool_t activated;
-};
-
-struct e_serial_tx_dma
-{
-    e_bool_t activated;
-};
-
 struct serial_operation{
     e_err_t (*configure)(struct serial_dev *serial, struct serial_configure *cfg);
     e_err_t (*control)(struct serial_dev *dev, int cmd, void *arg);
@@ -120,21 +110,25 @@ struct serial_dev{
     const struct e_serial_operation *ops;
     struct serial_configure config;
     
-    
     void *serial_rx;
     void *serial_tx;
-    
-    int baudrate;
-    int (*get_c)(void);
-    int (*put_c)(unsigned char c);
-    int (*in_waiting)(void);
 };
 typedef struct serial_device e_serial_t;
 
 
 
-int serial_register(int fd, struct serial_dev *dev);
-int serial_write(int fd, char *datas, int len);
-int serial_read(int fd, char *buf, int len);
+int serial_register(int fd,
+                    struct serial_dev *dev,
+                    const char *name, 
+                    e_uint32_t flag,
+                    void *data);
+int serial_write(int fd,
+                e_offset_t pos,
+                const void *buffer,
+                e_size_t size);
+int serial_read(int fd, 
+                e_offset_t pos,
+                void *buffer,
+                e_size_t size);
 int serial_in_waiting(int fd);
 #endif
