@@ -11,7 +11,7 @@ e_inline int _serial_poll_rx(struct serial_dev *serial, e_uint8_t *data, int len
     int ch;
     int size;
     
-    ASSERT_PARAM(serial !=NULL);
+    ASSERT_PARAM(serial!=NULL);
     size = length;
     
     while(length)
@@ -117,9 +117,9 @@ e_inline int _serial_int_tx(struct serial_dev *serial, const e_uint8_t *data, in
 static e_err_t seiral_init(struct device *dev)
 {
     e_err_t result = E_EOK;
-    struct serial_device *serial;
+    struct serial_dev *serial;
     
-    ASSERT_PARAM(serial!=NULL);
+    ASSERT_PARAM(dev!=NULL);
     
     serial = contianer_of(dev, struct serial_dev, parent);
     
@@ -131,7 +131,7 @@ static e_err_t seiral_init(struct device *dev)
 
 
 
-static int serial_dev_read(struct device *dev,
+static e_size_t serial_dev_read(struct device *dev,
                     e_offset_t pos,
                     void *buffer,
                     e_size_t size)
@@ -153,7 +153,7 @@ static int serial_dev_read(struct device *dev,
     return _serial_poll_rx(serial, buffer, size);
 }
 
-static int serial_dev_write(struct device *dev,
+static e_size_t serial_dev_write(struct device *dev,
                             e_offset_t pos,
                             const void *buffer,
                             e_size_t size)
@@ -203,7 +203,7 @@ static e_err_t serial_dev_control(struct device *dev,
 }
 
 
-e_err_t serial_hw_register(struct serial_dev *serial,
+e_err_t serial_dev_register(struct serial_dev *serial,
                             const char *name,
                             e_uint32_t flag,
                             void *data)
@@ -226,33 +226,30 @@ e_err_t serial_hw_register(struct serial_dev *serial,
 }
 
 
-int serial_register(int fd,
+e_err_t serial_register(int fd,
                     struct serial_dev *serial,
                     const char *name, 
                     e_uint32_t flag,
                     void *data)
 {
-    int ret;
-    
+    e_err_t err;
     ASSERT_PARAM((fd<COMn)&&(serial!=NULL));
     
     serials[fd]=serial;
     
-    ret = serial_hw_register(serial, name, flag, data)
+    err = serial_dev_register(serial, name, flag, data);
     
-    if(ret<0)
-        return -1;
+    if(err!=E_EOK)
+        return -E_ERROR;
     LOG_DEBUG("COM%d is registered!", fd+1);
-    return 0;
+    return E_EOK;
 }
 
 
-int serial_write(int fd,
-                e_offset_t pos,
+e_size_t serial_write(int fd,
                 const void *buffer,
                 e_size_t size)
 {
-    int ret=0;
     struct serial_dev *serial;
     
     ASSERT_PARAM(fd<COMn);
@@ -261,15 +258,13 @@ int serial_write(int fd,
     
     ASSERT_PARAM(serial!=NULL);
     
-    return serial_dev_write(serial, pos, buffer, size)
+    return serial_dev_write(&(serial->parent), 0, buffer, size);
 }
 
-int serial_read(int fd, 
-                e_offset_t pos,
+e_size_t serial_read(int fd, 
                 void *buffer,
                 e_size_t size)
 {
-    int ret=0;
     struct serial_dev *serial;
     
     ASSERT_PARAM(fd<COMn);
@@ -278,7 +273,7 @@ int serial_read(int fd,
     
     ASSERT_PARAM(serial!=NULL);
     
-    return serial_dev_read(serial, pos, buffer, size);
+    return serial_dev_read(&(serial->parent), 0, buffer, size);
 }
 
 int serial_in_waiting(int fd)
@@ -290,46 +285,51 @@ int serial_in_waiting(int fd)
 
 void serial_hw_isr(struct serial_dev *serial, int event)
 {
+    struct serial_rx_fifo *rx_fifo;
     switch(event&0xFF)
     {
-    case SERIAL_EVENT_RX_IND:
-        int ch = -1;
-        rx_fifo = (struct serial_rx_fifo *)serial->serial_rx;
-        ASSERT_PARAM(rx_fifo!=NULL);
-        
-        while(1)
+        case SERIAL_EVENT_RX_IND:
         {
-            ch = serial->ops->getc(serial);
-            if(ch == -1)
-                break;
-            rx_fifo->buffer[rx_fifo->put_index]=ch;
-            rx_fifo->put_index += 1;
-            if(rx_fifo->put_index>=serial->config.bufsz)
-                rx_fifo->put_index = 0;
-            if(rx_fifo->put_index == rx_fifo->get_index)
+            int ch = -1;
+            rx_fifo = (struct serial_rx_fifo *)serial->serial_rx;
+            ASSERT_PARAM(rx_fifo!=NULL);
+            
+            while(1)
             {
-                rx_fifo->get_index += 1;
-                if(rx_fifo->put_index >= serial->config.bufsz)
+                ch = serial->ops->getc(serial);
+                if(ch == -1)
+                    break;
+                rx_fifo->buffer[rx_fifo->put_index]=ch;
+                rx_fifo->put_index += 1;
+                if(rx_fifo->put_index>=serial->config.bufsz)
+                    rx_fifo->put_index = 0;
+                if(rx_fifo->put_index == rx_fifo->get_index)
                 {
-                    rx_fifo->get_index = 0;
+                    rx_fifo->get_index += 1;
+                    if(rx_fifo->put_index >= serial->config.bufsz)
+                    {
+                        rx_fifo->get_index = 0;
+                    }
                 }
             }
+            if(serial->parent.rx_indicate!=NULL)
+            {
+                e_size_t rx_length;
+                
+                rx_length = (rx_fifo->put_index>=rx_fifo->get_index)?(rx_fifo->put_index-rx_fifo->put_index):
+                        (serial->config.bufsz-(rx_fifo->get_index-rx_fifo->put_index));
+                serial->parent.rx_indicate(&serial->parent, rx_length);
+            }
+            break;
         }
-        if(serial->parent.rx_indicate!=NULL)
+        case SERIAL_EVENT_TX_DONE:
         {
-            e_size_t rx_length;
+            struct serial_tx_fifo *tx_fifo;
             
-            rx_length = (rx_fifo->put_index>=rx_fifo->get_index)?(rx_fifo->put_index-rx_fifo->put_index):
-                    (serial->config.bufsz->(rx_fifo->get_index-rx_fifo->put_index));
-            serial->parent.rx_indicate(&serial->parent, rx_length);
+            tx_fifo = (struct serial_tx_fifo *)serial->serial_tx;
+            //completion_done(&(tx_fifo->ccompletion));
+            break;
         }
-        break;
-    case SERIAL_EVENT_TX_DONE:
-        struct serial_rx_fifo *tx_fifo;
-        
-        rx_fifo = (struct serial_tx_fifo *)serial->serial_tx;
-        completion_done(&(tx_fifo->ccompletion));
-        break;
     }
 }
 

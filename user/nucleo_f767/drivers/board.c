@@ -1,5 +1,5 @@
 #include "board.h"
-#include "uart.h"
+//#include "uart.h"
 #include "eth.h"
 
 void board_clock_configuration(void);
@@ -9,19 +9,19 @@ void board_clock_configuration(void);
  */
 void ecode_hw_board_init()
 {
-    struct print_log_interface fprint_log;
+    //struct print_log_interface fprint_log;
 	
 	//__set_PRIMASK(1);
 	
     board_clock_configuration();
 	
-    uart_init();
+    //uart_init();
     
-    fprint_log.put_char = uart_putc;
+    //fprint_log.put_char = uart_putc;
     
-    print_log_register_io(fprint_log);
+    //print_log_register_io(fprint_log);
     
-    eth_init();
+    //eth_init();
 }
 
 void SysTick_Handler(void)

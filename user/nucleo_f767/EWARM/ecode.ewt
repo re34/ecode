@@ -2521,6 +2521,9 @@
       <name>$PROJ_DIR$\..\..\..\platform\ecode.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\..\platform\ecode_assert.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\..\platform\ecode_cli.c</name>
     </file>
     <file>
@@ -2646,7 +2649,7 @@
         <name>$PROJ_DIR$\..\drivers\system_stm32f7xx.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\drivers\uart.c</name>
+        <name>$PROJ_DIR$\..\drivers\usart.c</name>
       </file>
     </group>
     <group>

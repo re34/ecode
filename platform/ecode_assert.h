@@ -9,13 +9,13 @@
 #endif
 
 #if CONFIG_USE_ASSERT==1
-    #define ecode_assert(expr)  ((expr)?0U:ecode_assert_failed((e_uint8_t *)__FILE__, __LINE__))
+    #define ecode_assert(expr)  ((expr)?(void)0U:ecode_assert_failed((e_uint8_t *)__FILE__, __LINE__))
     void ecode_assert_failed(e_uint8_t *file, e_uint32_t line);
 #else
     #define ecode_assert(expr)  ((void)0)
 #endif
 
-#define ASSERT_PARAM        ecode_assert
+#define ASSERT_PARAM(expr)        ecode_assert(expr)
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,6 @@
 #ifndef __SERIAL_H__
 #define __SERIAL_H__
+#include "device.h"
 
 enum{
     COM1,
@@ -95,15 +96,6 @@ struct serial_rx_fifo
     e_uint8_t *buffer;
     e_uint16_t put_index, get_index;
 };
-
-struct serial_operation{
-    e_err_t (*configure)(struct serial_dev *serial, struct serial_configure *cfg);
-    e_err_t (*control)(struct serial_dev *dev, int cmd, void *arg);
-    int (*putc)(struct serial_dev *dev, char c);
-    int (*getc)(struct serial_dev *dev);
-    e_size_t (*dma_transmit)(struct serial_dev *dev, e_uint8_t *buf, e_size_t size, int direction);
-};
-
 struct serial_dev{
     struct device parent;
     
@@ -115,19 +107,28 @@ struct serial_dev{
 };
 typedef struct serial_device e_serial_t;
 
+struct serial_operation{
+    e_err_t (*configure)(struct serial_dev *serial, struct serial_configure *cfg);
+    e_err_t (*control)(struct serial_dev *dev, int cmd, void *arg);
+    int (*putc)(struct serial_dev *dev, char c);
+    int (*getc)(struct serial_dev *dev);
+    e_size_t (*dma_transmit)(struct serial_dev *dev, e_uint8_t *buf, e_size_t size, int direction);
+};
 
 
-int serial_register(int fd,
-                    struct serial_dev *dev,
+
+
+
+e_err_t serial_register(int fd,
+                    struct serial_dev *serial,
                     const char *name, 
                     e_uint32_t flag,
                     void *data);
-int serial_write(int fd,
-                e_offset_t pos,
+e_size_t serial_write(int fd,
                 const void *buffer,
                 e_size_t size);
-int serial_read(int fd, 
-                e_offset_t pos,
+e_size_t serial_read(int fd, 
                 void *buffer,
                 e_size_t size);
+int serial_in_waiting(int fd);
 #endif

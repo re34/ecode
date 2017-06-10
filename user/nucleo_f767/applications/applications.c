@@ -10,12 +10,12 @@ void led_task(void *args);
 void ecode_application_init(void)
 {
     tcp_server_init();
-	xTaskCreate(cli_task,
-            "cli_task",
-            1024,
-            NULL,
-            1,
-            NULL);
+	//xTaskCreate(cli_task,
+     //       "cli_task",
+     //       1024,
+     //       NULL,
+     //       1,
+     //       NULL);
 	xTaskCreate(led_task,
             "led_task",
             1024,
@@ -28,23 +28,23 @@ void ecode_application_init(void)
 static inline int com_putchar(unsigned char data)
 {
     //write(COM1, (char *)&data, 1);
-    serial_write(COM1, (char *)&data, 1);
+    //serial_write(COM1, (char *)&data, 1);
     return 0;
 }
 static inline int com_getchar(void)
 {
     int data;
     
-    while((data=serial_in_waiting(COM1))<=0)
-    {
-        delay_ms(5);
-    }
+    //while((data=serial_in_waiting(COM1))<=0)
+    //{
+    //    delay_ms(5);
+    //}
     //data = serial_in_waiting(COM1);
     //if(data<=0)
      //   return 0;
     //read(COM1, (char *)&data, 1);
-    if(serial_read(COM1, (char *)&data, 1)<0)
-        return 0;
+    //if(serial_read(COM1, (char *)&data, 1)<0)
+      //  return 0;
     return data;
 }
 
@@ -53,11 +53,11 @@ void cli_task(void *args)
 {
     cli_register_platform_commands();
     
-    com_stdio.put_char = com_putchar;
-    com_stdio.get_char = com_getchar;
-    stdio_puts(&com_stdio, "ecode stdio inited\r\n");
-    com_cli.stdio = &com_stdio;
-    ecode_register_cli_device( &com_cli, "COM");
+    //com_stdio.put_char = com_putchar;
+    //com_stdio.get_char = com_getchar;
+    //stdio_puts(&com_stdio, "ecode stdio inited\r\n");
+    //com_cli.stdio = &com_stdio;
+    //ecode_register_cli_device( &com_cli, "COM");
     
     LOG_DEBUG("cli task running...");
 

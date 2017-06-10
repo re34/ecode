@@ -97,35 +97,36 @@ static void uart_hw_init(int baudrate)
 
 int uart_init(void)
 {
-    serial.baudrate = 115200;
+    //serial.baudrate = 115200;
     
-    if(FifoCreate(&serial_rx_fifo, serial_rx_buffer, SERIAL_RX_BUFFER_SIZE)<0)
-        return -1;
+    //if(FifoCreate(&serial_rx_fifo, serial_rx_buffer, SERIAL_RX_BUFFER_SIZE)<0)
+     //   return -1;
     
-    uart_hw_init(serial.baudrate);
+    //uart_hw_init(serial.baudrate);
 
-    serial.put_c = uart_putc;
-    serial.get_c = uart_getc;
-    serial.in_waiting = uart_in_waiting;
-    if(serial_register(COM1, &serial)<0)
-        return -2;
+    //serial.put_c = uart_putc;
+    //serial.get_c = uart_getc;
+    //serial.in_waiting = uart_in_waiting;
+    //if(serial_register(COM1, &serial)<0)
+     //   return -2;
 
     return 0;
 }
 
 int uart_putc(unsigned char c)
 {
-    LL_USART_TransmitData8(UART_INSTANCE, c);
+    //LL_USART_TransmitData8(UART_INSTANCE, c);
     
-    while(LL_USART_IsActiveFlag_TC(UART_INSTANCE)==RESET);
+    //while(LL_USART_IsActiveFlag_TC(UART_INSTANCE)==RESET);
     
     return c;
 }
 
 static int uart_getc(void)
 {
-    while(FifoIsEmpty(&serial_rx_fifo));
-    return FifoPop(&serial_rx_fifo);
+    //while(FifoIsEmpty(&serial_rx_fifo));
+    //return FifoPop(&serial_rx_fifo);
+    return 0;
 }
 
 static int uart_in_waiting(void)

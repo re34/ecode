@@ -10,24 +10,29 @@
 #define DEVICE_FLAG_INT_RX          BIT(4)
 #define DEVICE_FLAG_INT_TX          BIT(5)
 
+#define DEVICE_CTRL_CLR_INT         1
+#define DEVICE_CTRL_SET_INT         2
+#define DEVICE_CONFIG               3
+
+
 
 
 typedef struct device * device_t;
 
 struct device
 {
-    struct e_object parent;
+    struct object parent;
     e_uint16_t flag;
     e_uint16_t open_flag;
     /* device call back*/
-    rt_err_t (*rx_indicate)(rt_device_t dev, rt_size_t size);
-    rt_err_t (*tx_complete)(rt_device_t dev, void *buffer);
+    e_err_t (*rx_indicate)(device_t dev, e_size_t size);
+    e_err_t (*tx_complete)(device_t dev, void *buffer);
     
     e_err_t (*init)(device_t dev);
     e_err_t (*open)(device_t dev, e_uint16_t oflag);
     e_err_t (*close)(device_t dev);
     e_size_t (*read)(device_t dev, e_offset_t pos, void *buffer, e_size_t size);
-    e_size_t (*write)(device_t dev, e_offset_t pos, const void *buffer, int size);
+    e_size_t (*write)(device_t dev, e_offset_t pos, const void *buffer, e_size_t size);
     e_err_t (*control)(device_t dev, e_uint8_t cmd, void *args);
     
     void *private_data; //private data
