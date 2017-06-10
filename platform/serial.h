@@ -105,9 +105,9 @@ struct serial_operation{
 };
 
 struct serial_dev{
-    struct e_device parent;
+    struct device parent;
     
-    const struct e_serial_operation *ops;
+    const struct serial_operation *ops;
     struct serial_configure config;
     
     void *serial_rx;
@@ -130,5 +130,4 @@ int serial_read(int fd,
                 e_offset_t pos,
                 void *buffer,
                 e_size_t size);
-int serial_in_waiting(int fd);
 #endif

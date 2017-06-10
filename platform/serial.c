@@ -2,21 +2,21 @@
 #include "ecode.h"
 
 
-static struct serial_dev *devs[COMn]={NULL};
+static struct serial_dev *serials[COMn]={NULL};
 
 
 
-e_inline int _serial_poll_rx(struct e_serial_dev *dev, e_uint8_t *data, int length)
+e_inline int _serial_poll_rx(struct serial_dev *serial, e_uint8_t *data, int length)
 {
     int ch;
     int size;
     
-    ASSERT_PARAM(dev !=NULL);
+    ASSERT_PARAM(serial !=NULL);
     size = length;
     
     while(length)
     {
-        ch = serial->ops->getc(dev);
+        ch = serial->ops->getc(serial);
         if(ch == -1)
             break;
         data ++;
@@ -28,20 +28,20 @@ e_inline int _serial_poll_rx(struct e_serial_dev *dev, e_uint8_t *data, int leng
     return size-length;    
 }
 
-e_inline int _serial_poll_tx(struct serial_dev *dev, const e_uint8_t *data, int length)
+e_inline int _serial_poll_tx(struct serial_dev *serial, const e_uint8_t *data, int length)
 {
     int size;
-    ASSERT_PARAM(dev != NULL);
+    ASSERT_PARAM(serial != NULL);
     
     size = length;
     while(length)
     {
-        if(*data == '\n' && (dev->parent.open_flag & DEVICE_FLAG_STREAM))
+        if(*data == '\n' && (serial->parent.open_flag & DEVICE_FLAG_STREAM))
         {
-            dev->ops->putc(dev, '\n');
+            serial->ops->putc(serial, '\n');
         }
         
-        dev->ops->putc(dev, *data);
+        serial->ops->putc(serial, *data);
         
         ++data;
         --length;
@@ -50,16 +50,17 @@ e_inline int _serial_poll_tx(struct serial_dev *dev, const e_uint8_t *data, int 
     return size-length;
 }
 
-e_inline int _serial_int_rx(struct serial_dev *dev, e_uint8_t *data, int length)
+
+e_inline int _serial_int_rx(struct serial_dev *serial, e_uint8_t *data, int length)
 {
     int size;
     struct serial_rx_fifo *rx_fifo;
     
-    ASSERT_PARAM(dev != NULL);
+    ASSERT_PARAM(serial != NULL);
     
     size = length;
     
-    rx_fifo = (struct serial_rx_fifo*) dev->serial_rx;
+    rx_fifo = (struct serial_rx_fifo*) serial->serial_rx;
     ASSERT_PARAM(rx_fifo != NULL);
     
     while(length)
@@ -70,7 +71,7 @@ e_inline int _serial_int_rx(struct serial_dev *dev, e_uint8_t *data, int length)
         {
             ch = rx_fifo->buffer[rx_fifo->get_index];
             rx_fifo->get_index += 1;
-            if(rx_fifo->get_index >= dev->config.bufsz)
+            if(rx_fifo->get_index >= serial->config.bufsz)
                 rx_fifo->get_index = 0;
         }
         else
@@ -87,20 +88,20 @@ e_inline int _serial_int_rx(struct serial_dev *dev, e_uint8_t *data, int length)
     return size - length;
 }
 
-e_inline int _serial_int_tx(struct serial_dev *dev, const e_uint8_t *data, int length)
+e_inline int _serial_int_tx(struct serial_dev *serial, const e_uint8_t *data, int length)
 {
     int size;
     struct serial_tx_fifo *tx;
     
-    ASSERT_PARAM(dev != NULL);
+    ASSERT_PARAM(serial != NULL);
     
     size = length;
-    tx = (struct serial_tx_fifo *) dev->serial_tx;
+    tx = (struct serial_tx_fifo *) serial->serial_tx;
     ASSERT_PARAM(tx!=NULL);
     
     while(length)
     {
-        if(dev->ops->putc(dev, *(char *)data)==-1)
+        if(serial->ops->putc(serial, *(char *)data)==-1)
         {
             continue;
         }
@@ -111,12 +112,14 @@ e_inline int _serial_int_tx(struct serial_dev *dev, const e_uint8_t *data, int l
     return size-length;
 }
 
-static e_err_t seiral_init(struct e_device *dev)
+
+
+static e_err_t seiral_init(struct device *dev)
 {
     e_err_t result = E_EOK;
     struct serial_device *serial;
     
-    ASSERT_PARAM(dev!=NULL);
+    ASSERT_PARAM(serial!=NULL);
     
     serial = contianer_of(dev, struct serial_dev, parent);
     
@@ -127,7 +130,8 @@ static e_err_t seiral_init(struct e_device *dev)
 }
 
 
-static int serial_dev_read(struct e_device *dev,
+
+static int serial_dev_read(struct device *dev,
                     e_offset_t pos,
                     void *buffer,
                     e_size_t size)
@@ -149,7 +153,7 @@ static int serial_dev_read(struct e_device *dev,
     return _serial_poll_rx(serial, buffer, size);
 }
 
-static int serial_dev_write(struct e_device *dev,
+static int serial_dev_write(struct device *dev,
                             e_offset_t pos,
                             const void *buffer,
                             e_size_t size)
@@ -170,7 +174,8 @@ static int serial_dev_write(struct e_device *dev,
     return _serial_poll_tx(serial, buffer, size);
 }
 
-static e_err_t serial_dev_control(struct e_device *dev,
+
+static e_err_t serial_dev_control(struct device *dev,
                                     e_uint8_t cmd,
                                     void *args)
 {
@@ -203,7 +208,7 @@ e_err_t serial_hw_register(struct serial_dev *serial,
                             e_uint32_t flag,
                             void *data)
 {
-    struct e_device *device;
+    struct device *device;
     ASSERT_PARAM(serial!=NULL);
     
     device = &(serial->parent);
@@ -217,23 +222,23 @@ e_err_t serial_hw_register(struct serial_dev *serial,
     device->private_data = data;
     
     
-    return e_device_register(device, name, flag);
+    return device_register(device, name, flag);
 }
 
 
 int serial_register(int fd,
-                    struct serial_dev *dev,
+                    struct serial_dev *serial,
                     const char *name, 
                     e_uint32_t flag,
                     void *data)
 {
     int ret;
     
-    ASSERT_PARAM((fd<COMn)&&(dev!=NULL));
+    ASSERT_PARAM((fd<COMn)&&(serial!=NULL));
     
-    devs[fd]=dev;
+    serials[fd]=serial;
     
-    ret = serial_hw_register(dev, name, flag, data)
+    ret = serial_hw_register(serial, name, flag, data)
     
     if(ret<0)
         return -1;
@@ -248,15 +253,15 @@ int serial_write(int fd,
                 e_size_t size)
 {
     int ret=0;
-    struct serial_dev *dev;
+    struct serial_dev *serial;
     
     ASSERT_PARAM(fd<COMn);
     
-    dev = devs[fd];
+    serial = serials[fd];
     
-    ASSERT_PARAM(dev!=NULL);
+    ASSERT_PARAM(serial!=NULL);
     
-    return serial_dev_write(dev, pos, buffer, size)
+    return serial_dev_write(serial, pos, buffer, size)
 }
 
 int serial_read(int fd, 
@@ -265,25 +270,68 @@ int serial_read(int fd,
                 e_size_t size)
 {
     int ret=0;
-    struct serial_dev *dev;
+    struct serial_dev *serial;
     
     ASSERT_PARAM(fd<COMn);
     
-    dev = devs[fd];
+    serial = serials[fd];
     
-    ASSERT_PARAM(dev!=NULL);
+    ASSERT_PARAM(serial!=NULL);
     
-    return serial_dev_read(dev, pos, buffer, size);
+    return serial_dev_read(serial, pos, buffer, size);
 }
 
 int serial_in_waiting(int fd)
 {
-    struct serial_dev *dev;
+    struct serial_dev *serial;
 
     return 0;
 }
 
-
+void serial_hw_isr(struct serial_dev *serial, int event)
+{
+    switch(event&0xFF)
+    {
+    case SERIAL_EVENT_RX_IND:
+        int ch = -1;
+        rx_fifo = (struct serial_rx_fifo *)serial->serial_rx;
+        ASSERT_PARAM(rx_fifo!=NULL);
+        
+        while(1)
+        {
+            ch = serial->ops->getc(serial);
+            if(ch == -1)
+                break;
+            rx_fifo->buffer[rx_fifo->put_index]=ch;
+            rx_fifo->put_index += 1;
+            if(rx_fifo->put_index>=serial->config.bufsz)
+                rx_fifo->put_index = 0;
+            if(rx_fifo->put_index == rx_fifo->get_index)
+            {
+                rx_fifo->get_index += 1;
+                if(rx_fifo->put_index >= serial->config.bufsz)
+                {
+                    rx_fifo->get_index = 0;
+                }
+            }
+        }
+        if(serial->parent.rx_indicate!=NULL)
+        {
+            e_size_t rx_length;
+            
+            rx_length = (rx_fifo->put_index>=rx_fifo->get_index)?(rx_fifo->put_index-rx_fifo->put_index):
+                    (serial->config.bufsz->(rx_fifo->get_index-rx_fifo->put_index));
+            serial->parent.rx_indicate(&serial->parent, rx_length);
+        }
+        break;
+    case SERIAL_EVENT_TX_DONE:
+        struct serial_rx_fifo *tx_fifo;
+        
+        rx_fifo = (struct serial_tx_fifo *)serial->serial_tx;
+        completion_done(&(tx_fifo->ccompletion));
+        break;
+    }
+}
 
 
 

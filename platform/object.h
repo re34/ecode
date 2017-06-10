@@ -5,7 +5,7 @@
 
 #define OBJECT_NAME_MAX     25
 
-struct e_object{
+struct object{
     char name[OBJECT_NAME_MAX];
     e_uint8_t type;
     e_uint8_t flag;
@@ -13,13 +13,13 @@ struct e_object{
     e_list_t list;
 };
 
-typedef struct e_object * e_object_t;
+typedef struct object * object_t;
 
 
 
 
-void e_object_init(struct e_object *object,
+void object_init(struct object *object,
                     const char *name);
-void e_object_detach(e_object_t object);             
-e_object_t e_object_find(const char *name);                 
+void object_detach(object_t object);             
+object_t object_find(const char *name);                 
 #endif

@@ -10,17 +10,17 @@
  *
  * @return the error code, E_EOK on successfully.
  */
-e_err_t e_device_register(e_device_t dev,
+e_err_t device_register(device_t dev,
                             const char *name,
                             e_uint16_t flags)
 {
     if(dev==NULL)
         return -E_ERROR;
     
-    if(e_device_find(name) != NULL)
+    if(device_find(name) != NULL)
         return -E_EOK;
     
-    e_object_init(&(dev->parent), name);
+    object_init(&(dev->parent), name);
     
     dev->flag = flags;
     
@@ -35,9 +35,9 @@ e_err_t e_device_register(e_device_t dev,
  *
  * @return the error code, E_EOK on successfully.
  */
-e_err_t e_device_unregister(e_device_t dev)
+e_err_t device_unregister(device_t dev)
 {
-    e_object_detach(&(dev->parent));
+    object_detach(&(dev->parent));
     
     return E_EOK;
 }
@@ -48,16 +48,16 @@ e_err_t e_device_unregister(e_device_t dev)
  *
  * @return the device handle, NULL on no devcie found.
  */
-e_device_t e_device_find(const char *name)
+device_t device_find(const char *name)
 {
-    struct e_object *object;
-    e_device_t dev;
+    struct object *object;
+    device_t dev;
     
-    object = e_object_find(name);
+    object = object_find(name);
     if(object==NULL)
         return NULL;
     
-    dev = contianer_of(object, struct e_device, parent);
+    dev = contianer_of(object, struct device, parent);
     
     return dev;    
 }
@@ -68,7 +68,7 @@ e_device_t e_device_find(const char *name)
  *
  * @return the error code, E_EOK on initialization successfully.
  */
-e_err_t e_device_init(e_device_t dev)
+e_err_t device_init(device_t dev)
 {
     e_err_t result = E_EOK;
     
@@ -99,7 +99,7 @@ e_err_t e_device_init(e_device_t dev)
  *
  * @return the error code, E_EOK on successfully.
  */
-e_err_t e_device_open(e_device_t dev, e_uint16_t oflag)
+e_err_t device_open(device_t dev, e_uint16_t oflag)
 {
     e_err_t result = E_EOK;
     
@@ -139,7 +139,7 @@ e_err_t e_device_open(e_device_t dev, e_uint16_t oflag)
  *
  * @return the error code, E_EOK on successfully.
  */
-e_err_t e_device_close(e_device_t dev)
+e_err_t device_close(device_t dev)
 {
     e_err_t result = E_EOK;
     
@@ -162,7 +162,7 @@ e_err_t e_device_close(e_device_t dev)
  *
  * @return the actually read size on successful, otherwise negative returned.
  */
-e_size_t e_device_read(e_device_t dev,
+e_size_t device_read(device_t dev,
                         e_offset_t pos,
                         void *buffer,
                         e_size_t size)
@@ -184,7 +184,7 @@ e_size_t e_device_read(e_device_t dev,
  *
  * @return the actually written size on successful, otherwise negative returned.
  */
-e_size_t e_device_write(e_device_t dev,
+e_size_t device_write(device_t dev,
                         e_offset_t pos,
                         const void *buffer,
                         e_size_t size)
@@ -204,7 +204,7 @@ e_size_t e_device_write(e_device_t dev,
  *
  * @return the result.
  */
-e_err_t e_device_control(e_device_t dev,
+e_err_t device_control(device_t dev,
                             e_uint8_t cmd,
                             void *arg)
 {
