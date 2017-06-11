@@ -73,8 +73,8 @@ static int get_version(struct cli_dev *dev, char **args, int argc)
 
 static int ls(struct cli_dev *dev, char **args, int argc)
 {
-    struct platform_device *platform_dev = NULL;
-    int dev_num = 0;
+   
+
 
 
     cli_error(dev, ERROR_NONE);

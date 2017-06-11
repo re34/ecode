@@ -3,6 +3,5 @@
 
 
 
-int uart_init(void);
-int uart_putc(unsigned char c);
+void uart_hw_init(void);
 #endif

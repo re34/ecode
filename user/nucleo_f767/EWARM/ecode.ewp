@@ -2266,7 +2266,7 @@
         <name>$PROJ_DIR$\..\drivers\system_stm32f7xx.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\drivers\usart.c</name>
+        <name>$PROJ_DIR$\..\drivers\uart.c</name>
       </file>
     </group>
     <group>

@@ -9,6 +9,9 @@ enum{
     COMn
 };
 
+#define SERIAL_FLAG_STREAM          BIT(1)
+#define SERIAL_FLAG_INT_RX          BIT(2)
+#define SERIAL_FLAG_INT_TX          BIT(3)
 
 #define BAUD_RATE_2400                  2400
 #define BAUD_RATE_4800                  4800
@@ -45,7 +48,7 @@ enum{
 #define NRZ_INVERTED                    1       /* Non Return to Zero : inverted mode */
 
 #ifndef SERIAL_RB_BUFSZ
-#define SERIAL_RB_BUFSZ                 64
+#define SERIAL_RB_BUFSZ              64
 #endif
 
 #define SERIAL_EVENT_RX_IND          0x01    /* Rx indication */
@@ -67,8 +70,9 @@ enum{
 #define SERIAL_TX_DATAQUEUE_SIZE     2048
 #define SERIAL_TX_DATAQUEUE_LWM      30
 
-#define SERIAL_CONFIG_DEFAULT               \
-{                                           \
+/* Default config for serial_configure structure */
+#define SERIAL_CONFIG_DEFAULT           \
+{                                          \
     BAUD_RATE_115200, /* 115200 bits/s */  \
     DATA_BITS_8,      /* 8 databits */     \
     STOP_BITS_1,      /* 1 stopbit */      \
@@ -79,56 +83,53 @@ enum{
     0                                      \
 }
 
-
-struct serial_configure{
+struct serial_configure
+{
     e_uint32_t baud_rate;
-    
-    e_uint32_t data_bits        :4;
-    e_uint32_t stop_bits        :2;
-    e_uint32_t parity           :2;
-    e_uint32_t bit_order        :1;
-    e_uint32_t invert           :1;
-    e_uint32_t bufsz            :16;
-    e_uint32_t reserved         :4;
+
+    e_uint32_t data_bits               :4;
+    e_uint32_t stop_bits               :2;
+    e_uint32_t parity                  :2;
+    e_uint32_t bit_order               :1;
+    e_uint32_t invert                  :1;
+    e_uint32_t bufsz                   :16;
+    e_uint32_t reserved                :4;
 };
+
 
 struct serial_rx_fifo
 {
     e_uint8_t *buffer;
     e_uint16_t put_index, get_index;
+    e_size_t bufsz;
 };
 struct serial_dev{
-    struct device parent;
-    
+    e_uint16_t flag;
     const struct serial_operation *ops;
     struct serial_configure config;
     
     void *serial_rx;
     void *serial_tx;
+    
+    void *private_data;
 };
 typedef struct serial_device e_serial_t;
 
 struct serial_operation{
-    e_err_t (*configure)(struct serial_dev *serial, struct serial_configure *cfg);
-    e_err_t (*control)(struct serial_dev *dev, int cmd, void *arg);
+    e_err_t (*init)(struct serial_dev *dev);
     int (*putc)(struct serial_dev *dev, char c);
     int (*getc)(struct serial_dev *dev);
-    e_size_t (*dma_transmit)(struct serial_dev *dev, e_uint8_t *buf, e_size_t size, int direction);
 };
 
 
 e_err_t serial_register(int fd,
                     struct serial_dev *serial,
-                    const char *name, 
-                    e_uint32_t flag,
-                    void *data);
+                    const char *name);
 e_size_t serial_write(int fd,
                 const void *buffer,
                 e_size_t size);
 e_size_t serial_read(int fd, 
                 void *buffer,
                 e_size_t size);
-
 void serial_hw_isr(struct serial_dev *serial, int event);
-int serial_in_waiting(int fd);
 #endif
