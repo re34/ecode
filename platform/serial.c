@@ -114,7 +114,7 @@ e_inline int _serial_int_tx(struct serial_dev *serial, const e_uint8_t *data, in
 
 
 
-static e_err_t seiral_init(struct device *dev)
+static e_err_t seiral_dev_init(struct device *dev)
 {
     e_err_t result = E_EOK;
     struct serial_dev *serial;
@@ -126,7 +126,7 @@ static e_err_t seiral_init(struct device *dev)
     if(serial->ops->configure)
         result = serial->ops->configure(serial, &serial->config);
     
-    return result;    
+    return result;
 }
 
 
@@ -202,6 +202,92 @@ static e_err_t serial_dev_control(struct device *dev,
     return E_EOK;
 }
 
+static e_err_t serial_dev_open(struct device *dev, e_uint16_t oflag)
+{
+    struct serial_dev *serial;
+    
+    ASSERT_PARAM(dev!=NULL);
+    
+    serial = contianer_of(dev, struct serial_dev, parent);
+    
+    if((oflag&DEVICE_FLAG_INT_RX)&&!(dev->flag&DEVICE_FLAG_INT_RX))
+        return -E_EIO;
+    if((oflag&DEVICE_FLAG_INT_TX)&&!(dev->flag&DEVICE_FLAG_INT_TX))
+        return -E_EIO;
+    
+    dev->open_flag = oflag&0xff;
+    
+    if(serial->serial_rx!=NULL)
+    {
+        if(oflag&DEVICE_FLAG_INT_RX)
+        {
+            struct serial_rx_fifo *rx_fifo;
+            
+            rx_fifo = serial->serial_rx;
+            ASSERT_PARAM(rx_fifo!=NULL);
+            
+            memset(rx_fifo->buffer, 0, serial->config.bufsz);
+            rx_fifo->put_index = 0;
+            rx_fifo->get_index = 0;
+            
+            dev->open_flag |= DEVICE_FLAG_INT_RX;
+            
+            serial->ops->control(serial, DEVICE_CTRL_SET_INT, (void *)DEVICE_FLAG_INT_RX);           
+        }
+        else
+            serial->serial_rx = NULL;
+    }
+    
+    if(serial->serial_tx!=NULL)
+    {
+        if(oflag&DEVICE_FLAG_INT_TX)
+        {
+            struct serial_tx_fifo *tx_fifo;
+            
+            tx_fifo = serial->serial_tx;
+            
+            dev->open_flag |= DEVICE_FLAG_INT_TX;
+            
+            serial->ops->control(serial, DEVICE_CTRL_SET_INT, (void *)DEVICE_FLAG_INT_TX);
+            
+        }
+        else
+            serial->serial_tx = NULL;
+    }
+    
+    return E_EOK;
+}
+
+
+static e_err_t serial_dev_close(struct device *dev)
+{
+    struct serial_dev *serial;
+    
+    ASSERT_PARAM(dev!=NULL);
+    
+    serial = contianer_of(dev, struct serial_dev, parent);
+    
+    if(dev->open_flag&DEVICE_FLAG_INT_RX)
+    {
+        struct serial_rx_fifo *rx_fifo;
+        
+        rx_fifo = (struct serial_rx_fifo *)serial->serial_rx;
+        ASSERT_PARAM(rx_fifo !=NULL);
+        dev->open_flag &= ~DEVICE_FLAG_INT_RX;
+        
+        serial->ops->control(serial, DEVICE_CTRL_CLR_INT, (void *)DEVICE_FLAG_INT_RX);
+    }else if(dev->open_flag & DEVICE_FLAG_INT_TX){
+        struct serial_tx_fifo *tx_fifo;
+        
+        tx_fifo = (struct serial_tx_fifo *)serial->serial_tx;
+        ASSERT_PARAM(tx_fifo!=NULL);
+        dev->open_flag&=~DEVICE_FLAG_INT_TX;
+        serial->ops->control(serial, DEVICE_CTRL_CLR_INT, (void *)DEVICE_FLAG_INT_TX);
+    }
+    
+    return E_EOK;
+}
+
 
 e_err_t serial_dev_register(struct serial_dev *serial,
                             const char *name,
@@ -213,15 +299,14 @@ e_err_t serial_dev_register(struct serial_dev *serial,
     
     device = &(serial->parent);
     
-    device->init = NULL;
-    device->open = NULL;
-    device->close = NULL;
+    device->init = seiral_dev_init;
+    device->open = serial_dev_open;
+    device->close = serial_dev_close;
     device->read = serial_dev_read;
     device->write = serial_dev_write;
     device->control = serial_dev_control;
     device->private_data = data;
-    
-    
+
     return device_register(device, name, flag);
 }
 
@@ -242,6 +327,7 @@ e_err_t serial_register(int fd,
     if(err!=E_EOK)
         return -E_ERROR;
     LOG_DEBUG("COM%d is registered!", fd+1);
+    
     return E_EOK;
 }
 

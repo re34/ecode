@@ -152,7 +152,6 @@ static void uart_isr(struct serial_dev *serial)
     {
         
     }
-    
 }
 
 static const struct serial_operation stm_uart_ops={
@@ -162,12 +161,25 @@ static const struct serial_operation stm_uart_ops={
     .getc = stm32_getc,
 };
 
+
+
+
 struct stm32_uart uart3 = {
     .instance = USART3,
     .irq = USART3_IRQn,
 };
 
-static struct serial_dev serial3;
+e_uint8_t serial3_rx_buffer[SERIAL_RB_BUFSZ];
+
+struct serial_rx_fifo serial3_rx_fifo={
+    .buffer = serial3_rx_buffer,
+    .put_index = 0,
+    .get_index = 0,
+};
+
+static struct serial_dev serial3={
+    .serial_rx = &serial3_rx_fifo,
+};
 
 
 void USART3_IRQHandler(void)
@@ -204,8 +216,8 @@ static void usart_nvic_configuration(struct stm32_uart *uart)
     NVIC_SetPriority(uart->irq, 0);
     NVIC_EnableIRQ(uart->irq);
     
-    LL_USART_EnableIT_RXNE(uart->instance);
-    LL_USART_ClearFlag_TC(uart->instance);
+    //LL_USART_EnableIT_RXNE(uart->instance);
+    //LL_USART_ClearFlag_TC(uart->instance);
 }
 
 void usart_hw_init(void)
@@ -222,8 +234,11 @@ void usart_hw_init(void)
     serial3.config = config;
     
     usart_nvic_configuration((struct stm32_uart *)serial3.parent.private_data);
+    
     serial_register(COM1,&serial3,
                     "COM1",
                     DEVICE_FLAG_INT_RX,
                     uart);
+                    
+    device_open(&(serial3.parent), DEVICE_FLAG_INT_RX);
 }

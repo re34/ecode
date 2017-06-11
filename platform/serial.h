@@ -69,13 +69,14 @@ enum{
 
 #define SERIAL_CONFIG_DEFAULT               \
 {                                           \
-    BAUD_RATE_115200,   /*115200 bits/s*/   \
-    DATA_BITS_8,        /*8 databits */     \
-    STOP_BITS_1,        /*1 stopbit  */     \
-    PARITY_NONE,        /*No parity  */     \
-    BIT_ORDER_LSB,      /*LSB first sent */ \
-    NRZ_NORMAL,         /*Buffer size */    \
-    0                                       \
+    BAUD_RATE_115200, /* 115200 bits/s */  \
+    DATA_BITS_8,      /* 8 databits */     \
+    STOP_BITS_1,      /* 1 stopbit */      \
+    PARITY_NONE,      /* No parity  */     \
+    BIT_ORDER_LSB,    /* LSB first sent */ \
+    NRZ_NORMAL,       /* Normal mode */    \
+    SERIAL_RB_BUFSZ, /* Buffer size */  \
+    0                                      \
 }
 
 
@@ -116,9 +117,6 @@ struct serial_operation{
 };
 
 
-
-
-
 e_err_t serial_register(int fd,
                     struct serial_dev *serial,
                     const char *name, 
@@ -130,5 +128,7 @@ e_size_t serial_write(int fd,
 e_size_t serial_read(int fd, 
                 void *buffer,
                 e_size_t size);
+
+void serial_hw_isr(struct serial_dev *serial, int event);
 int serial_in_waiting(int fd);
 #endif
