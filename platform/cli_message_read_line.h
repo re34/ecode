@@ -3,5 +3,5 @@
 #include "ecode_cli.h"
 
 
-int ecode_message_read_line(struct ecode_cli_dev *dev, const char *end);
+int ecode_message_read_line(struct cli_dev *dev, const char *end);
 #endif

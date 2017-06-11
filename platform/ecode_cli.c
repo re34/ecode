@@ -9,29 +9,28 @@
 #define DELIM_STR   ","
 
 
-LIST_HEAD(ecode_cli_head);
+LIST_HEAD(cli_head);
 LIST_HEAD(cli_commands_head);
 
-void ecode_register_cli_device(struct ecode_cli_dev *dev, const char *name)
+void cli_device_register(struct cli_dev *dev, const char *name)
 {
     dev->name = name;
-    list_add(&ecode_cli_head, &dev->cli_entry);
+    list_add(&cli_head, &dev->cli_entry);
 }
 
-void ecode_unregister_cli_device(struct ecode_cli_dev *dev)
+void cli_device_unregister(struct cli_dev *dev)
 {
     list_del(&dev->cli_entry);
 }
 
-
-void ecode_register_commands(struct cli_commands_list * cli_commands_entry, const struct cli_command *command_list)
+void cli_register_commands(struct cli_commands_list * cli_commands_entry, const struct cli_command *command_list)
 {
     cli_commands_entry->commands = (struct cli_command *)command_list;
     list_add(&cli_commands_head, &cli_commands_entry->entry);
 }
 
 
-int ecode_cli_puts(struct ecode_cli_dev *dev, const char *str)
+int cli_puts(struct cli_dev *dev, const char *str)
 {
     int ret;
     
@@ -41,7 +40,7 @@ int ecode_cli_puts(struct ecode_cli_dev *dev, const char *str)
 }
 
 
-struct cli_command * ecode_cli_match_command(const char *name)
+struct cli_command * cli_match_command(const char *name)
 {
     struct list_head *commands;
     struct cli_command *command=NULL;
@@ -65,7 +64,7 @@ struct cli_command * ecode_cli_match_command(const char *name)
     return NULL;
 }
 
-int ecode_cli_execute_command(struct ecode_cli_dev *dev, struct cli_command * command, struct cli_command_param *param)
+int cli_execute_command(struct cli_dev *dev, struct cli_command * command, struct cli_command_param *param)
 {
     int ret = 0;
     
@@ -74,24 +73,24 @@ int ecode_cli_execute_command(struct ecode_cli_dev *dev, struct cli_command * co
     return ret;
 }
 
-int ecode_cli_print_help(struct ecode_cli_dev *dev ,const char *name)
+int cli_print_help(struct cli_dev *dev ,const char *name)
 {
     struct cli_command *command = NULL;
-    command = ecode_cli_match_command(name);
+    command = cli_match_command(name);
     if(command==NULL)
         return -1;
-    ecode_cli_puts(dev, command->name);
-    ecode_cli_puts(dev, command->help);
+    cli_puts(dev, command->name);
+    cli_puts(dev, command->help);
     
     return 0;
 }
 
-int ecode_cli_print_help_list(struct ecode_cli_dev *dev)
+int cli_print_help_list(struct cli_dev *dev)
 {
     struct list_head *commands;
     struct cli_command *command=NULL;
     
-    ecode_cli_puts(dev, "\r\n\r\n***************help list******************\r\n\r\n");
+    cli_puts(dev, "\r\n\r\n***************help list******************\r\n\r\n");
     
     list_for_each(commands, &cli_commands_head)
     {
@@ -100,25 +99,25 @@ int ecode_cli_print_help_list(struct ecode_cli_dev *dev)
         {
             while(command->name!=NULL)
             {
-                ecode_cli_puts(dev, command->name);
-                ecode_cli_puts(dev, command->help);
+                cli_puts(dev, command->name);
+                cli_puts(dev, command->help);
                 command++;
             }
 
         }
     }
     
-    ecode_cli_puts(dev, "\r\n***************help end*******************\r\n\r\n");
+    cli_puts(dev, "\r\n***************help end*******************\r\n\r\n");
 
     return 0;
 }
 
-void cli_print_promot(struct ecode_cli_dev *dev)
+void cli_print_promot(struct cli_dev *dev)
 {
-    ecode_cli_puts(dev,"ecode>>>");
+    cli_puts(dev,"ecode>>>");
 }
 
-void cli_print_error(struct ecode_cli_dev *dev, int errno)
+void cli_print_error(struct cli_dev *dev, int errno)
 {
     if(errno==ERROR_NONE)
     {
@@ -127,50 +126,50 @@ void cli_print_error(struct ecode_cli_dev *dev, int errno)
     }
         
     if(errno!=ERROR_OK)
-      ecode_cli_puts(dev,"ERROR:");
-    ecode_cli_puts(dev, cli_match_error(errno));
-    ecode_cli_puts(dev, "\r\n");
+      cli_puts(dev,"ERROR:");
+    cli_puts(dev, cli_match_error(errno));
+    cli_puts(dev, "\r\n");
     cli_print_promot(dev);
 }
 
-int ecode_cli_polling(void)
+int cli_polling(void)
 {
     struct list_head *dev;
     struct list_head *tnode = NULL;
     struct cli_command_param param;
     struct cli_command *command=NULL;
     
-    //list_for_each(dev, &ecode_cli_head)
-    list_for_each_safe(dev,tnode, &ecode_cli_head)
+    //list_for_each(dev, &cli_head)
+    list_for_each_safe(dev,tnode, &cli_head)
     {
-        if((((struct ecode_cli_dev *)dev)->flag&CLI_PROMOT)==0)
+        if((((struct cli_dev *)dev)->flag&CLI_PROMOT)==0)
         {
             //stdio_puts(stdio_dev , "ecode>> ");
-            cli_print_promot((struct ecode_cli_dev *)dev);
-            ((struct ecode_cli_dev *)dev)->flag|=CLI_PROMOT;
+            cli_print_promot((struct cli_dev *)dev);
+            ((struct cli_dev *)dev)->flag|=CLI_PROMOT;
         }
-        if(ecode_message_read_line((struct ecode_cli_dev *)dev, END_LINE)>0)
+        if(cli_message_read_line((struct cli_dev *)dev, END_LINE)>0)
         {
-            if(ecode_message_parsing(((struct ecode_cli_dev *)dev)->rxbuf, ((struct ecode_cli_dev *)dev)->rxlen, &param,DELIM_STR)==0)
+            if(ecode_message_parsing(((struct cli_dev *)dev)->rxbuf, ((struct cli_dev *)dev)->rxlen, &param,DELIM_STR)==0)
             {
-                command = ecode_cli_match_command(param.command_name);
+                command = cli_match_command(param.command_name);
                 if(command!=NULL)
                 {
-                    if(ecode_cli_execute_command((struct ecode_cli_dev *)dev, command, &param)<0)
+                    if(cli_execute_command((struct cli_dev *)dev, command, &param)<0)
                     {
                         
                     }
                 }
                 else
                 {
-                    cli_print_error((struct ecode_cli_dev *)dev, ERROR_UNKNOW_CMD);
+                    cli_print_error((struct cli_dev *)dev, ERROR_UNKNOW_CMD);
                 }
             }
             else
             {
-                cli_print_error((struct ecode_cli_dev *)dev, ERROR_UNKNOW_CMD);
+                cli_print_error((struct cli_dev *)dev, ERROR_UNKNOW_CMD);
             }
-            ((struct ecode_cli_dev *)dev)->rxlen = 0;
+            ((struct cli_dev *)dev)->rxlen = 0;
         }
     }
     

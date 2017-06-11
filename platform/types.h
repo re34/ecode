@@ -181,7 +181,7 @@ typedef int (*init_fn_t)(void);
 #define contianer_of(node, type, member)\
     ((type *)((char *)(node) - (unsigned long)(&((type *)0)->member)))
 
-#define BIT(b)	(1U<<(b))
+#define BIT(b)	(1<<(b))
 
 #define BIT_SET(x,b)	((x)|=BIT(b))
 #define BIT_RESET(x,b)	((x)&=~(BIT(b)))

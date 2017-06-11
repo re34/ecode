@@ -11,7 +11,6 @@ void ecode_startup(void)
 	ecode_application_init();
 }
 
-
 void main(void)
 {
 

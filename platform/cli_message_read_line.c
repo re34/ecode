@@ -5,7 +5,7 @@
 #include "stdio_ex.h"
 
 
-int ecode_message_read_line(struct ecode_cli_dev *dev, const char *end)
+int cli_message_read_line(struct cli_dev *dev, const char *end)
 {
     char data;
     char *msg;

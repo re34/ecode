@@ -5,10 +5,10 @@
 #include <stdlib.h>
 #include "ecode.h"
 
-static int help(struct ecode_cli_dev *dev, char **args, int atgc);
-static int get_sys_time(struct ecode_cli_dev *dev, char **args, int argc);
-static int get_version(struct ecode_cli_dev *dev, char **args, int argc);
-static int ls(struct ecode_cli_dev *dev, char **args, int argc);
+static int help(struct cli_dev *dev, char **args, int atgc);
+static int get_sys_time(struct cli_dev *dev, char **args, int argc);
+static int get_version(struct cli_dev *dev, char **args, int argc);
+static int ls(struct cli_dev *dev, char **args, int argc);
 
 static const struct cli_command platform_commands[]={
     {.name="help", help, "(), get the help info\r\n"},
@@ -23,21 +23,21 @@ static struct cli_commands_list platform_commands_entry;
 
 void cli_register_platform_commands(void)
 {
-    ecode_register_commands(&platform_commands_entry, platform_commands);
+    cli_register_commands(&platform_commands_entry, platform_commands);
 }
 
-static int help(struct ecode_cli_dev *dev, char **args, int argc)
+static int help(struct cli_dev *dev, char **args, int argc)
 {
     int i;
     if(argc==0)
     {
-        ecode_cli_print_help_list(dev);
+        cli_print_help_list(dev);
     }
     else
     {
         for(i=0;i<argc;i++)
         {
-          if(ecode_cli_print_help(dev, args[i])<0)
+          if(cli_print_help(dev, args[i])<0)
           {
             cli_error(dev, ERROR_PARAM);
           }
@@ -48,7 +48,7 @@ static int help(struct ecode_cli_dev *dev, char **args, int argc)
 }
 
 
-static int get_sys_time(struct ecode_cli_dev *dev, char **args, int argc)
+static int get_sys_time(struct cli_dev *dev, char **args, int argc)
 {
     struct timestamp timestamp;
     if(argc!=0)
@@ -56,12 +56,12 @@ static int get_sys_time(struct ecode_cli_dev *dev, char **args, int argc)
     
     timestamp = get_timestamp();
 
-    ecode_cli_print(dev, "time:%d s %d ms\r\n", timestamp.second, timestamp.msecond);
+    cli_print(dev, "time:%d s %d ms\r\n", timestamp.second, timestamp.msecond);
     
     cli_error(dev, ERROR_NONE);
 }
 
-static int get_version(struct ecode_cli_dev *dev, char **args, int argc)
+static int get_version(struct cli_dev *dev, char **args, int argc)
 {
     if(argc!=0)
         cli_error(dev, ERROR_PARAM);
@@ -71,7 +71,7 @@ static int get_version(struct ecode_cli_dev *dev, char **args, int argc)
     cli_error(dev, ERROR_NONE);
 }
 
-static int ls(struct ecode_cli_dev *dev, char **args, int argc)
+static int ls(struct cli_dev *dev, char **args, int argc)
 {
     struct platform_device *platform_dev = NULL;
     int dev_num = 0;

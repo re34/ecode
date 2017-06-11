@@ -4,13 +4,13 @@
 #include "eth.h"
 
 void board_clock_configuration(void);
-
+static int print_log_putc(unsigned char c);
 /**
  * This function will initial STM32 board.
  */
 void ecode_hw_board_init()
 {
-    //struct print_log_interface fprint_log;
+    struct print_log_interface fprint_log;
 	
 	//__set_PRIMASK(1);
 	
@@ -19,13 +19,18 @@ void ecode_hw_board_init()
     usart_hw_init();
     
     stm_pin_init();
-    //uart_init();
     
-    //fprint_log.put_char = uart_putc;
+    fprint_log.putc = print_log_putc;
     
-    //print_log_register_io(fprint_log);
+    print_log_register_io(fprint_log);
     
     //eth_init();
+}
+
+static int print_log_putc(unsigned char c)
+{
+    serial_write(COM1,&c,1);
+    return c;
 }
 
 void SysTick_Handler(void)

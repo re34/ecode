@@ -48,16 +48,16 @@ void print_log_register_io(struct print_log_interface fio)
 
 static int print_log_putchar(char data)
 {
-    if(fprint_log.put_char==NULL)
+    if(fprint_log.putc==NULL)
         return -1;
-    return fprint_log.put_char(data);
+    return fprint_log.putc(data);
 }
 
 static int print_log_getchar(void)
 {
-    if(fprint_log.get_char==NULL)
+    if(fprint_log.getc==NULL)
         return -1;
-    return fprint_log.get_char();
+    return fprint_log.getc();
 }
 
 static char *LogGetLevelString(int level)

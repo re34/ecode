@@ -242,4 +242,5 @@ void usart_hw_init(void)
                     uart);
                     
     device_open(&(serial3.parent), DEVICE_FLAG_INT_RX);
+    
 }
