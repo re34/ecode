@@ -17,6 +17,8 @@ void ecode_hw_board_init()
     board_clock_configuration();
 	
     usart_hw_init();
+    
+    stm_pin_init();
     //uart_init();
     
     //fprint_log.put_char = uart_putc;

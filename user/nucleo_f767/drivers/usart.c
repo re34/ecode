@@ -70,7 +70,7 @@ static e_err_t stm32_configure(struct serial_dev *serial, struct serial_configur
     LL_USART_SetTransferDirection(UART3_INSTANCE, LL_USART_DIRECTION_TX_RX);
 
     /* 8 data bit, 1 start bit, 1 stop bit, no parity */
-    LL_USART_ConfigCharacter(UART3_INSTANCE, LL_USART_DATAWIDTH_8B, LL_USART_PARITY_NONE, LL_USART_STOPBITS_1);
+    //LL_USART_ConfigCharacter(UART3_INSTANCE, LL_USART_DATAWIDTH_8B, LL_USART_PARITY_NONE, LL_USART_STOPBITS_1);
 
     /* No Hardware Flow control */
     /* Reset value is LL_USART_HWCONTROL_NONE */
@@ -233,9 +233,10 @@ void usart_hw_init(void)
     serial3.ops = &stm_uart_ops;
     serial3.config = config;
     
-    usart_nvic_configuration((struct stm32_uart *)serial3.parent.private_data);
+    usart_nvic_configuration(uart);
     
-    serial_register(COM1,&serial3,
+    serial_register(COM1,
+                    &serial3,
                     "COM1",
                     DEVICE_FLAG_INT_RX,
                     uart);

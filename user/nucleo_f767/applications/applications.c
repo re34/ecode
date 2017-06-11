@@ -10,12 +10,12 @@ void led_task(void *args);
 void ecode_application_init(void)
 {
     tcp_server_init();
-	//xTaskCreate(cli_task,
-     //       "cli_task",
-     //       1024,
-     //       NULL,
-     //       1,
-     //       NULL);
+	xTaskCreate(cli_task,
+           "cli_task",
+           1024,
+           NULL,
+           1,
+           NULL);
 	xTaskCreate(led_task,
             "led_task",
             1024,
