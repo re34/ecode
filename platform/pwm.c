@@ -1,10 +1,13 @@
 #include "pwm.h"
-#include "target.h"
 #include "ecode.h"
+
+#ifndef PWMn
+#define PWMn    3
+#endif
 
 static struct pwm_device *pwm_devs[PWMn];
 
-int pwm_register(pwm_name_t pwm, struct pwm_device *dev)
+int pwm_register(int pwm, struct pwm_device *dev)
 {
     struct pwm_operations *ops;
     
@@ -32,7 +35,7 @@ int pwm_register(pwm_name_t pwm, struct pwm_device *dev)
 
 
 
-int pwm_write(pwm_name_t pwm, float duty)
+int pwm_write(int pwm, float duty)
 {
     struct pwm_device *dev;
    
@@ -50,7 +53,7 @@ int pwm_write(pwm_name_t pwm, float duty)
     return 0;
 }
 
-float pwm_read(pwm_name_t pwm)
+float pwm_read(int pwm)
 {
     struct pwm_device *dev;
     
@@ -62,7 +65,7 @@ float pwm_read(pwm_name_t pwm)
     return dev->pulsewidth_us/dev->period_us;
 }
 
-int pwm_period(pwm_name_t pwm, int hz)
+int pwm_period(int pwm, int hz)
 {
     struct pwm_device *dev;
     
@@ -79,12 +82,12 @@ int pwm_period(pwm_name_t pwm, int hz)
 }
 
 
-int pwm_period_ms(pwm_name_t pwm, int ms)
+int pwm_period_ms(int pwm, int ms)
 {
     return pwm_period_us(pwm, ms*1000);
 }
 
-int pwm_period_us(pwm_name_t pwm, int us)
+int pwm_period_us(int pwm, int us)
 {
     struct pwm_device *dev;
     
@@ -100,17 +103,17 @@ int pwm_period_us(pwm_name_t pwm, int us)
     return 0;
 }
 
-int pwm_pulsewidth(pwm_name_t pwm, float seconds)
+int pwm_pulsewidth(int pwm, float seconds)
 {
     return pwm_pulsewidth_us(pwm, (int)(seconds*1000000));
 }
 
-int pwm_pulsewidth_ms(pwm_name_t pwm, int ms)
+int pwm_pulsewidth_ms(int pwm, int ms)
 {
     return pwm_pulsewidth_us(pwm, ms*1000);
 }
 
-int pwm_pulsewidth_us(pwm_name_t pwm, int us)
+int pwm_pulsewidth_us(int pwm, int us)
 {
     struct pwm_device *dev;
     

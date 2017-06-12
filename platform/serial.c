@@ -1,6 +1,9 @@
 #include "serial.h"
 #include "ecode.h"
 
+#ifndef COMn
+#define COMn    2
+#endif
 
 static struct serial_dev *serials[COMn]={NULL};
 

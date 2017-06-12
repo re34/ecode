@@ -1,7 +1,9 @@
 #include "timer.h"
 #include "includes.h"
 
-
+#ifndef TIMERn
+#define TIMERn      3
+#endif
 struct timer_device *timer_devs[TIMERn]={0};
 
 

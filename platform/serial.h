@@ -2,13 +2,6 @@
 #define __SERIAL_H__
 #include "device.h"
 
-enum{
-    COM1,
-    COM2,
-    COM3,
-    COMn
-};
-
 #define SERIAL_FLAG_STREAM          BIT(1)
 #define SERIAL_FLAG_INT_RX          BIT(2)
 #define SERIAL_FLAG_INT_TX          BIT(3)

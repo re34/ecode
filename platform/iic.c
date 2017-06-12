@@ -1,6 +1,10 @@
 #include "iic.h"
 #include "ecode.h"
 
+#ifndef IICn
+#define IICn    3
+#endif
+
 struct iic_dev *iic_devs[IICn];
 
 int iic_register(int fd, struct iic_dev *dev)

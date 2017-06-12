@@ -3,12 +3,6 @@
 #include "sim_iic.h"
 
 enum{
-    IIC1,
-    IIC2,
-    IICn
-};
-
-enum{
     IIC_ACK,
     IIC_NACK,
 };

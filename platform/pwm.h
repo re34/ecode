@@ -1,14 +1,6 @@
 #ifndef __PWM_H__
 #define __PWM_H__
 
-
-typedef enum{
-    PWM1,
-    PWM2,
-    PWM3,
-    PWMn,
-}pwm_name_t;
-
 struct pwm_operations{
     int (*init)(void);
     void (*period)(unsigned int hz);
@@ -23,14 +15,14 @@ struct pwm_device{
     struct pwm_operations *ops;
 };
 
-int pwm_register(pwm_name_t pwm, struct pwm_device *dev);
-int pwm_write(pwm_name_t pwm, float duty);
-float pwm_read(pwm_name_t pwm);
-int pwm_period(pwm_name_t pwm, int hz);
-int pwm_period_ms(pwm_name_t pwm, int ms);
-int pwm_period_us(pwm_name_t pwm, int us);
-int pwm_pulsewidth(pwm_name_t pwm, float seconds);
-int pwm_pulsewidth_ms(pwm_name_t pwm, int ms);
-int pwm_pulsewidth_us(pwm_name_t pwm, int us);
+int pwm_register(int pwm, struct pwm_device *dev);
+int pwm_write(int pwm, float duty);
+float pwm_read(int pwm);
+int pwm_period(int pwm, int hz);
+int pwm_period_ms(int pwm, int ms);
+int pwm_period_us(int pwm, int us);
+int pwm_pulsewidth(int pwm, float seconds);
+int pwm_pulsewidth_ms(int pwm, int ms);
+int pwm_pulsewidth_us(int pwm, int us);
 
 #endif

@@ -2,12 +2,6 @@
 #define __TIMER_H__
 
 
-enum{
-  TIMER1,
-  TIMER2,
-  TIMER3,
-  TIMERn,  
-};
 
 struct timer_device{
     void (*start)(void);
