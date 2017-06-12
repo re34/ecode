@@ -12,16 +12,21 @@ enum{
     IIC_TYPE_MCU,
 };
 
-struct iic_dev{
-    int iic_type;
-    void *ops;
+struct iic_operations{
+    e_err_t (*start)(struct iic_dev *dev);
+    void (*stop)(struct iic_dev *dev);
+    e_err_t (*write)(struct iic_dev *dev, e_uint8_t byte, e_uint8_t *ack);
+    e_err_t (*read)(struct iic_dev *dev, e_uint8_t ack);
 };
 
-int iic_register(int fd, struct iic_dev *dev);
-int iic_bus_start(int fd);
-int iic_bus_stop(int fd);
-int iic_bus_write(int fd, int byte, int ack);
-int iic_bus_read(int fd);
-int iic_bus_read_ack(int fd);
+struct iic_dev{
+    struct iic_operations *ops;
+    void *private_data;
+};
 
+e_err_t iic_register(int fd, struct iic_dev *dev);
+e_err_t iic_bus_start(int fd);
+void iic_bus_stop(int fd);
+e_err_t iic_bus_write(int fd, e_uint8_t byte, e_uint8_t *ack);
+e_uint8_t iic_bus_read(int fd, e_uint8_t ack);
 #endif

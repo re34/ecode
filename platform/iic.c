@@ -5,124 +5,76 @@
 #define IICn    3
 #endif
 
+
 struct iic_dev *iic_devs[IICn];
 
-int iic_register(int fd, struct iic_dev *dev)
+e_err_t iic_register(int fd, struct iic_dev *dev)
 {
-    if((fd>=IICn)||(dev->ops==NULL))
-        return -1;
+    struct iic_operations *ops;
+    ASSERT_PARAM((fd<IICn)&&(dev!=NULL));
     
     iic_devs[fd]=dev;
     
-    return 0;
+    return E_EOK;
 }
 
-int iic_bus_start(int fd)
+e_err_t iic_bus_start(int fd)
 {
-    struct iic_dev *dev = iic_devs[fd];
-    int ret = 0;
+    struct iic_dev *dev;
+    struct iic_operations *ops;
+
+    ASSERT_PARAM(fd<IICn);
+    dev = iic_devs[fd];
+    ASSERT_PARAM(dev!=NULL);
+    ops = dev->ops;
+    ASSERT_PARAM(ops!=NULL);
     
-    if(dev==NULL)
-        return -1;
-    
-    if(dev->iic_type==IIC_TYPE_SIM)
-    {
-        if(iic_sim_start(dev->ops)<0)
-            return -2;
-    }
-    else
-    {
-        
-    }
-    
-    return 0;
+    return ops->start(dev);
 }
 
-int iic_bus_stop(int fd)
+void iic_bus_stop(int fd)
 {
-    struct iic_dev *dev = iic_devs[fd];
+    struct iic_dev *dev;
+    struct iic_operations *ops;
+
+    ASSERT_PARAM(fd<IICn);
+    dev = iic_devs[fd];
+    ASSERT_PARAM(dev!=NULL);
+    ops = dev->ops;
+    ASSERT_PARAM(ops!=NULL);
     
-    if(dev==NULL)
-        return -1;
-    
-    if(dev->iic_type==IIC_TYPE_SIM)
-    {
-        if(iic_sim_stop(dev->ops)<0)
-            return -2;
-    }
-    else
-    {
-        
-    }
-    
-    return 0;
+    ops->stop(dev);
 }
 
-
-int iic_bus_write(int fd, int byte, int ack)
+e_err_t iic_bus_write(int fd, e_uint8_t byte, e_uint8_t *ack)
 {
-    struct iic_dev *dev = iic_devs[fd];
+    struct iic_dev *dev;
+    struct iic_operations *ops;
+
+    ASSERT_PARAM(fd<IICn);
+    dev = iic_devs[fd];
+    ASSERT_PARAM(dev!=NULL);
+    ops = dev->ops;
+    ASSERT_PARAM(ops!=NULL);
     
-    if(dev==NULL)
-        return -1;
-    
-    if(dev->iic_type==IIC_TYPE_SIM)
-    {
-        if(iic_sim_write(dev->ops, byte, ack)<0)
-            return -2;
-    }
-    else
-    {
-        
-    }
-    
-    return 0;
+    return ops->write(dev, byte, ack);
 }
 
 
-int iic_bus_read(int fd)
+e_uint8_t iic_bus_read(int fd, e_uint8_t ack)
 {
-    struct iic_dev *dev = iic_devs[fd];
-    int ret = 0;
+    struct iic_dev *dev;
+    struct iic_operations *ops;
+
+    ASSERT_PARAM(fd<IICn);
+    dev = iic_devs[fd];
+    ASSERT_PARAM(dev!=NULL);
+    ops = dev->ops;
+    ASSERT_PARAM(ops!=NULL);
     
-    if(dev==NULL)
-        return -1;
-    
-    if(dev->iic_type==IIC_TYPE_SIM)
-    {
-        ret = iic_sim_read(dev->ops);
-        if(ret<0)
-            return -2;
-    }
-    else
-    {
-        
-    }
-    
-    return ret;
+    return ops->read(dev, ack);
 }
 
-int iic_bus_read_ack(int fd)
-{
-    struct iic_dev *dev = iic_devs[fd];
-    int ret = 0;
-    
-    if(dev==NULL)
-        return -1;
-    
-    if(dev->iic_type==IIC_TYPE_SIM)
-    {
-        ret = iic_sim_read_ack(dev->ops);
-        if(ret<0)
-            return -2;
-    }
-    else
-    {
-        
-    }
-    
-    return ret; 
-}
 
 
 

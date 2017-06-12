@@ -7,43 +7,67 @@ void sim_iic_delay(int delay)
     
 }
 
-int sim_iic_start(struct sim_iic_operations *ops)
+e_err_t sim_iic_start(struct iic_dev *dev)
 {
     int timeout = 0xff;
+    struct sim_iic_dev *sim_iic;
+    struct sim_iic_operations *ops;
+    
+    ASSERT_PARAM(dev!=NULL);
+    sim_iic = dev->private_data;
+    ASSERT_PARAM(sim_iic!=NULL);
+    ops = sim_iic->ops;
+    ASSERT_PARAM(ops!=NULL);
     
     ops->sda_set();
     ops->scl_set();
-    sim_iic_delay(5);
+    ops->delay(sim_dev->delay);
     
     while(ops->get_sda()==0)
     {
         timeout--;
         if(timeout==0)
-            return -1;
+            return -E_ERROR;
     }
     ops->sda_reset();
-    sim_iic_delay(2);
+    ops->delay(sim_dev->delay);
     ops->sda_reset();
-    sim_iic_delay(5);
+    ops->delay(sim_dev->delay);
     
-    return 0;
+    return E_EOK;
 }
 
-int sim_iic_stop(struct sim_iic_operations *ops)
+void sim_iic_stop(struct iic_dev *dev)
 {
-    ops->sda_reset();
-    sim_iic_delay(4);
-    ops->scl_set();
-    sim_iic_delay(4);
-    ops->sda_set();
-    sim_iic_delay(5);
+    struct sim_iic_dev *sim_iic;
+    struct sim_iic_operations *ops;
     
-    return 0;
+    ASSERT_PARAM(dev!=NULL);
+    sim_iic = dev->private_data;
+    ASSERT_PARAM(sim_iic!=NULL);
+    ops = sim_iic->ops;
+    ASSERT_PARAM(ops!=NULL);
+    
+    ops->sda_reset();
+    ops->delay(sim_dev->delay);
+    ops->scl_set();
+    ops->delay(sim_dev->delay);
+    ops->sda_set();
+    ops->delay(sim_dev->delay);
 }
 
-int sim_iic_write(struct sim_iic_operations *ops, UInt8 data, UInt8 ack)
+e_err_t sim_iic_write(struct iic_dev *dev, e_uint8_t data, e_uint8_t *ack)
 {
     int i;
+    struct sim_iic_dev *sim_iic;
+    struct sim_iic_operations *ops;
+    
+    ASSERT_PARAM(dev!=NULL);
+    sim_iic = dev->private_data;
+    ASSERT_PARAM(sim_iic!=NULL);
+    ops = sim_iic->ops;
+    ASSERT_PARAM(ops!=NULL);
+    
     for(i=0;i<8;i++)
     {
         ops->scl_reset();
@@ -51,143 +75,72 @@ int sim_iic_write(struct sim_iic_operations *ops, UInt8 data, UInt8 ack)
             ops->sda_set();
         else
             ops->sda_reset();
-        sim_iic_delay(2);
+        ops->delay(sim_dev->delay);
         ops->scl_set();
-        sim_iic_delay(4);
+        ops->delay(sim_dev->delay);
         ops->scl_reset();
-        sim_iic_delay(2);
+        ops->delay(sim_dev->delay);
         data<<=1;
     }
     
     if(ack==IIC_ACK)
     {
         ops->sda_reset();
-        sim_iic_delay(4);
+        ops->delay(sim_dev->delay);
         ops->scl_set();
-        sim_iic_delay(4);
+        ops->delay(sim_dev->delay);
         ops->scl_reset();
-        sim_iic_delay(4);
+        ops->delay(sim_dev->delay);
     }
     else
     {
         ops->sda_set();
-        sim_iic_delay(4);
+        ops->delay(sim_dev->delay);
         ops->scl_set();
-        sim_iic_delay(4);
+        ops->delay(sim_dev->delay);
         ops->scl_reset();
-        sim_iic_delay(4);
+        ops->delay(sim_dev->delay);
     }
     
     return 0;
 }
 
-int sim_iic_read(struct sim_iic_operations *ops)
+e_uint8_t sim_iic_read(struct sim_iic_operations *ops, e_uint8_t ack)
 {
     int data = 0;
     int i;
     
     ops->sda_set();
     ops->scl_reset();
-    sim_iic_delay(4);
+    ops->delay(sim_dev->delay);
     for(i=0;i<8;i++)
     {
         data<<=1;
         ops->scl_set();
-        sim_iic_delay(4);
+        ops->delay(sim_dev->delay);
         if(ops->get_sda()==1)
             data|=0x01;
         ops->scl_reset();
-        sim_iic_delay(4);
+        ops->delay(sim_dev->delay);
         
     }
-    
+        
     return data;
 }
 
-int sim_iic_read_ack(struct sim_iic_operations *ops)
+
+
+e_err_t sim_iic_register(int fd, struct sim_iic_dev *dev)
 {
-    int err_timer = 0;
+    e_err_t err;
     
-    ops->sda_set();
-    sim_iic_delay(1);
-    ops->scl_set();
-    sim_iic_delay(2);
     
-    while(ops->get_sda()==1)
-    {
-        err_timer++;
-        if(err_timer>250)
-        {
-            ops->scl_reset();
-            goto error;
-        }
-        
-    }
-    sim_iic_delay(4);
-    ops->scl_reset();
-    sim_iic_delay(4);
     
-    return 0;
-error:
-    sim_iic_stop(ops);
-    return -1;
+    err = iic_register(fd, dev);
+    
+    
+    
+    
+    return E_EOK;
 }
 
-/*
-int sim_iic_ack(struct sim_iic_operations *ops, UInt8 ack)
-{
-    ops->sda_reset();
-    sim_iic_delay(4);
-    ops->scl_set();
-    sim_iic_delay(4);
-    ops->scl_reset();
-    sim_iic_delay(4);
-    
-    return 0;
-}*/
-
-/*
-int sim_iic_nack(struct sim_iic_operations *ops)
-{
-    ops->sda_set();
-    sim_iic_delay(4);
-    
-    ops->scl_set();
-    sim_iic_delay(4);
-    
-    ops->scl_reset();
-    sim_iic_delay(4);
-    
-    return 0;
-}
-*/
-/*
-int sim_iic_wait_ack(struct sim_iic_operations *ops)
-{
-    int err_timer = 0;
-    
-    ops->sda_set();
-    sim_iic_delay(1);
-    ops->scl_set();
-    sim_iic_delay(2);
-    
-    while(ops->get_sda()==1)
-    {
-        err_timer++;
-        if(err_timer>250)
-        {
-            ops->scl_reset();
-            goto error;
-        }
-        
-    }
-    sim_iic_delay(4);
-    ops->scl_reset();
-    sim_iic_delay(4);
-    
-    return 0;
-error:
-    sim_iic_stop(ops);
-    return -1;
-}
-*/
