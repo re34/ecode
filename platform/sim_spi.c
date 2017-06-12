@@ -1,7 +1,7 @@
 #include "sim_spi.h"
-#include "../common/includes.h"
 
-#define spi_sim_delay()     ecode_tick_delay_us(5)
+
+#define spi_sim_delay()     //ecode_tick_delay_us(5)
 
 int spi_sim_send_read_byte(struct sim_spi_operations *ops, int data)
 {
