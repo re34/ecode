@@ -18,8 +18,8 @@
 #define UART3_INTERRUPT             USART3_IRQHandler
 
 
-#define UART3_ENABLE_IRQ(n)            NVIC_EnableIRQ((n))
-#define UART3_DISABLE_IRQ(n)           NVIC_DisableIRQ((n))
+#define UART_ENABLE_IRQ(n)            NVIC_EnableIRQ((n))
+#define UART_DISABLE_IRQ(n)           NVIC_DisableIRQ((n))
 
 struct stm_uart{
     USART_TypeDef *instance;
@@ -70,13 +70,13 @@ static e_err_t stm_uart_init(struct serial_dev *serial)
     /* Reset value is LL_USART_HWCONTROL_NONE */
     LL_USART_SetHWFlowCtrl(uart->instance, LL_USART_HWCONTROL_NONE);
 #ifdef  USE_UART3
-    if(uart->instance==USART3)
+    if(uart->instance==UART3_INSTANCE)
         LL_USART_SetBaudRate(uart->instance, SystemCoreClock/4, LL_USART_OVERSAMPLING_16, cfg->baud_rate); 
 #endif
 
     LL_USART_Enable(uart->instance);
     
-    UART3_ENABLE_IRQ(uart->irq);
+    UART_ENABLE_IRQ(uart->irq);
     LL_USART_EnableIT_RXNE(uart->instance);
     
     return E_EOK;
@@ -131,18 +131,16 @@ static int stm_getc(struct serial_dev *serial)
     return ch;
 }
 
-
-#ifdef USE_UART3
 static const struct serial_operation stm_uart_ops={
     .init = stm_uart_init,
     .putc = stm_putc,
     .getc = stm_getc,
 };
 
-
+#ifdef USE_UART3
 struct stm_uart uart3 = {
-    .instance = USART3,
-    .irq = USART3_IRQn,
+    .instance = UART3_INSTANCE,
+    .irq = UART3_IRQ_NUM,
 };
 
 e_uint8_t serial3_rx_buffer[SERIAL_RB_BUFSZ];
@@ -166,7 +164,7 @@ static struct serial_dev serial3={
 };
 
 
-void USART3_IRQHandler(void)
+void UART3_INTERRUPT(void)
 {
     uart_isr(&serial3);
 }
