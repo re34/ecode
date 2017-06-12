@@ -2,6 +2,8 @@
 #include "board_includes.h"
 #include "ecode.h"
 
+
+#define USE_UART3
 #define UART3_INSTANCE           USART3
 #define UART3_CLK_ENABLE()     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART3)
 #define UART3_CLK_SOURCE()     LL_RCC_SetUSARTClockSource(LL_RCC_USART3_CLKSOURCE_PCLK1)
@@ -59,18 +61,20 @@ static e_err_t stm_uart_init(struct serial_dev *serial)
     }
         
     /* TX/RX direction */
-    LL_USART_SetTransferDirection(UART3_INSTANCE, LL_USART_DIRECTION_TX_RX);
+    LL_USART_SetTransferDirection(uart->instance, LL_USART_DIRECTION_TX_RX);
 
     /* 8 data bit, 1 start bit, 1 stop bit, no parity */
     //LL_USART_ConfigCharacter(UART3_INSTANCE, LL_USART_DATAWIDTH_8B, LL_USART_PARITY_NONE, LL_USART_STOPBITS_1);
 
     /* No Hardware Flow control */
     /* Reset value is LL_USART_HWCONTROL_NONE */
-    LL_USART_SetHWFlowCtrl(UART3_INSTANCE, LL_USART_HWCONTROL_NONE);
+    LL_USART_SetHWFlowCtrl(uart->instance, LL_USART_HWCONTROL_NONE);
+#ifdef  USE_UART3
     if(uart->instance==USART3)
-        LL_USART_SetBaudRate(UART3_INSTANCE, SystemCoreClock/4, LL_USART_OVERSAMPLING_16, cfg->baud_rate); 
+        LL_USART_SetBaudRate(uart->instance, SystemCoreClock/4, LL_USART_OVERSAMPLING_16, cfg->baud_rate); 
+#endif
 
-    LL_USART_Enable(UART3_INSTANCE);
+    LL_USART_Enable(uart->instance);
     
     UART3_ENABLE_IRQ(uart->irq);
     LL_USART_EnableIT_RXNE(uart->instance);
@@ -128,7 +132,7 @@ static int stm_getc(struct serial_dev *serial)
 }
 
 
-
+#ifdef USE_UART3
 static const struct serial_operation stm_uart_ops={
     .init = stm_uart_init,
     .putc = stm_putc,
@@ -166,16 +170,21 @@ void USART3_IRQHandler(void)
 {
     uart_isr(&serial3);
 }
+#endif
+
 
 static void uart_rcc_configuration(void)
 {
+#ifdef USE_UART3
     UART3_CLK_ENABLE();
     UART3_CLK_SOURCE();
     UART3_GPIO_CLK_ENABLE();
+#endif
 }
 
 static void uart_gpio_configuration(void)
 {
+#ifdef USE_UART3
   /* Configure Tx Pin as : Alternate function, High Speed, Push pull, Pull up */
   LL_GPIO_SetPinMode(UART3_TX_GPIO_PORT, UART3_TX_PIN, LL_GPIO_MODE_ALTERNATE);
   UART3_SET_TX_GPIO_AF();
@@ -189,6 +198,7 @@ static void uart_gpio_configuration(void)
   LL_GPIO_SetPinSpeed(UART3_RX_GPIO_PORT, UART3_RX_PIN, LL_GPIO_SPEED_FREQ_HIGH);
   LL_GPIO_SetPinOutputType(UART3_RX_GPIO_PORT, UART3_RX_PIN, LL_GPIO_OUTPUT_PUSHPULL);
   LL_GPIO_SetPinPull(UART3_RX_GPIO_PORT, UART3_RX_PIN, LL_GPIO_PULL_UP);
+#endif
 }
 
 static void uart_nvic_configuration(struct stm_uart *uart)
@@ -205,6 +215,7 @@ void uart_hw_init(void)
     uart_rcc_configuration();
     uart_gpio_configuration();
     
+#ifdef USE_UART3
     uart = &uart3;
     
     serial3.ops = &stm_uart_ops;
@@ -215,5 +226,5 @@ void uart_hw_init(void)
     serial_register(COM1,
                     &serial3,
                     "COM1");
-    
+#endif
 }
