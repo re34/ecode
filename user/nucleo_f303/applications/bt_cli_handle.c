@@ -3,8 +3,8 @@
 #include "bt_spp.h"
 #include <string.h>
 
-static int bt_mode(struct ecode_cli_dev *dev, char **args, int argc);
-static int bt_write(struct ecode_cli_dev *dev, char **args, int argc);
+static int bt_mode(struct cli_dev *dev, char **args, int argc);
+static int bt_write(struct cli_dev *dev, char **args, int argc);
 
 static const struct cli_command bt_commands[]={
     {.name="bt_mode", bt_mode, "(mode),mode=cli|com, set bt spp mode\r\n"},
@@ -17,10 +17,10 @@ static struct cli_commands_list bt_commands_entry;
 
 void cli_register_bt_commands(void)
 {
-    ecode_register_commands(&bt_commands_entry, bt_commands);
+    cli_register_commands(&bt_commands_entry, bt_commands);
 }
 
-static int bt_mode(struct ecode_cli_dev *dev, char **args, int argc)
+static int bt_mode(struct cli_dev *dev, char **args, int argc)
 {
     if(argc!=1)
     {
@@ -40,7 +40,7 @@ static int bt_mode(struct ecode_cli_dev *dev, char **args, int argc)
     cli_error(dev, ERROR_NONE);
 }
 
-static int bt_write(struct ecode_cli_dev *dev, char **args, int argc)
+static int bt_write(struct cli_dev *dev, char **args, int argc)
 {
     int len=0;
     if(argc!=1)

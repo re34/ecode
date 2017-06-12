@@ -1970,52 +1970,49 @@
   <group>
     <name>platform</name>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\cli_errno.c</name>
+      <name>$PROJ_DIR$\..\..\..\platform\ascii12.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\cli_errno.h</name>
+      <name>$PROJ_DIR$\..\..\..\platform\ascii16.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\platform\cli_errno.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\cli_message_parsing.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\cli_message_parsing.h</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\..\..\platform\cli_message_read_line.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\cli_message_read_line.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\config.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\delay.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\delay.h</name>
+      <name>$PROJ_DIR$\..\..\..\platform\device.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\ecode.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ecode.h</name>
+      <name>$PROJ_DIR$\..\..\..\platform\ecode_assert.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\ecode_cli.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ecode_cli.h</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\..\..\platform\ecode_rtos.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ecode_rtos.h</name>
+      <name>$PROJ_DIR$\..\..\..\platform\iic.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\includes.h</name>
+      <name>$PROJ_DIR$\..\..\..\platform\object.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\platform\oled.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\platform\pid.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\pin.c</name>
@@ -2024,67 +2021,37 @@
       <name>$PROJ_DIR$\..\..\..\platform\platform_cli_handles.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\platform_cli_handles.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\platform_driver.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\platform_driver.h</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\..\..\platform\print_log.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\print_log.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\pwm.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\pwm.h</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\..\..\platform\serial.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\serial.h</name>
+      <name>$PROJ_DIR$\..\..\..\platform\sim_iic.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\stdio_ex.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\stdio_ex.h</name>
+      <name>$PROJ_DIR$\..\..\..\platform\ticks.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ticks.c</name>
+      <name>$PROJ_DIR$\..\..\..\platform\timeout.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\timer.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\timer.h</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\..\..\platform\timer_event.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\timer_event.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\timestamp.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\timestamp.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\types.h</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\..\..\platform\version.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\version.h</name>
     </file>
   </group>
   <group>

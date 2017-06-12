@@ -3,7 +3,7 @@
 #include "uart.h"
 
 void board_clock_configuration(void);
-
+static int print_log_putc(unsigned char c);
 /**
  * This function will initial STM32 board.
  */
@@ -15,13 +15,20 @@ void ecode_hw_board_init()
 	
     board_clock_configuration();
 	
-    uart_init();
+    uart_hw_init();
     
     fprint_log.put_char = uart_putc;
     
     print_log_register_io(fprint_log);
     
 }
+
+static int print_log_putc(unsigned char c)
+{
+    serial_write(COM1,&c,1);
+    return c;
+}
+
 void SysTick_Handler(void)
 {
     tick_inc();

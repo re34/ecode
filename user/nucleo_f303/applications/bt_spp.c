@@ -12,7 +12,7 @@ struct bt_spp{
 static unsigned char bt_buffer[BT_BUFFER_SIZE];
 static struct bt_spp bt_spp;
 
-struct ecode_cli_dev bt_cli_dev;
+struct cli_dev bt_cli_dev;
 static struct stdioex_device bt_stdio;
 
 static void bt_spp_task(void *args);
@@ -20,19 +20,16 @@ static void bt_spp_task(void *args);
 
 static int bt_putc(unsigned char c)
 {
-    return serial_write(COM2, (char *)&c, 1);
+    serial_write(COM2, (char *)&c, 1);
+    return 0;
 }
 
 static int bt_getc()
 {
-    int data;
+    int data=-1;
     
-    data = serial_in_waiting(COM2);
-    if(data<=0)
-        return 0;
+    serial_read(COM2,&data, 1);
     
-    if(serial_read(COM2, (char *)&data,1)<=0)
-        return 0;
     return data;
 }
 
@@ -63,9 +60,9 @@ void bt_spp_set_mode(bt_mode_t mode)
     bt_spp.mode = mode;
     
     if(mode==BT_CLI_MODE)
-        ecode_register_cli_device(&bt_cli_dev, "BT CLI");
+        cli_device_register(&bt_cli_dev, "BT CLI");
     else
-        ecode_unregister_cli_device(&bt_cli_dev);
+        cli_device_unregister(&bt_cli_dev);
     LOG_DEBUG("bt mode changed");
 }
 
@@ -77,15 +74,11 @@ int bt_spp_write(unsigned char *buf, int len)
 
 int bt_spp_read(unsigned char *buf, int len)
 {
-    int ret = 0;
-    ret = serial_in_waiting(COM2);
-    if(ret>0)
-    {
-        len = ((ret>len)?len:ret);
-        ret = serial_read(COM2, (char *)buf, len);
-    }
-        
-    return ret;
+    int size;
+    
+    size = serial_read(COM2, (char *)buf, len);
+    
+    return size;
 }
 
 static void bt_spp_task(void *args)

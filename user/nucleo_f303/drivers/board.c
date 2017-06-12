@@ -1,6 +1,5 @@
 #include "board.h"
 #include "uart.h"
-#include "uart2.h"
 #include "pwm2.h"
 #include "pwm3.h"
 #include "user_oled.h"
@@ -8,7 +7,7 @@
 #include "timer2.h"
 
 void board_clock_configuration(void);
-
+static int print_log_putc(unsigned char c);
 /**
  * This function will initial STM32 board.
  */
@@ -20,14 +19,12 @@ void ecode_hw_board_init()
 	
     board_clock_configuration();
     
-    uart_init();
+    uart_hw_init();
     
-    fprint_log.put_char = uart_putc;
+    fprint_log.putc = print_log_putc;
     
     print_log_register_io(fprint_log);
-    
-	uart2_init();
-    
+
     stm_pin_init();
 	
 	pwm2_init();
@@ -41,6 +38,12 @@ void ecode_hw_board_init()
     timer1_init();
     
     timer2_init();
+}
+
+static int print_log_putc(unsigned char c)
+{
+    serial_write(COM1,&c,1);
+    return c;
 }
 
 void SysTick_Handler(void)

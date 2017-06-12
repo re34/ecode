@@ -4,4 +4,6 @@
 
 #define CONFIG_USE_LWIP		0
 
+#include "device_name.h"
+
 #endif

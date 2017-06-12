@@ -2568,9 +2568,6 @@
         <name>$PROJ_DIR$\..\drivers\uart.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\drivers\uart2.c</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\drivers\user_oled.c</name>
       </file>
     </group>

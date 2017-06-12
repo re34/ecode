@@ -3,7 +3,7 @@
 #include "smart_car.h"
 
 
-static struct ecode_cli_dev com_cli;
+static struct cli_dev com_cli;
 static struct stdioex_device com_stdio;
 
 void cli_task(void *args);
@@ -38,18 +38,10 @@ static inline int com_putchar(unsigned char data)
 }
 static inline int com_getchar(void)
 {
-    int data;
+    int data=-1;
     
-    while((data=serial_in_waiting(COM1))<=0)
-    {
-        vTaskDelay(5);
-    }
-    //data = serial_in_waiting(COM1);
-    //if(data<=0)
-     //   return 0;
-    //read(COM1, (char *)&data, 1);
-    if(serial_read(COM1, (char *)&data, 1)<0)
-        return 0;
+    serial_read(COM1,&data, 1);
+    
     return data;
 }
 
@@ -62,13 +54,13 @@ void cli_task(void *args)
     com_stdio.get_char = com_getchar;
     stdio_puts(&com_stdio, "ecode stdio inited\r\n");
     com_cli.stdio = &com_stdio;
-    ecode_register_cli_device( &com_cli, "COM");
+    cli_device_register( &com_cli, "COM");
     
     LOG_DEBUG("cli task running...");
 
     while(1)
     {
-        ecode_cli_polling();
+        cli_polling();
     }
 }
 
@@ -83,7 +75,7 @@ void led_task(void *args)
 		//stm_pin_toggle(LED1);
         pin_write(LED1, pin_val);
         pin_val = !pin_val;
-		vTaskDelay(500);
+		delay_ms(500);
 	}
 }
 

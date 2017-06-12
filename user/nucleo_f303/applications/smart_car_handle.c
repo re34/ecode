@@ -6,11 +6,11 @@
 #include <string.h>
 
 
-static int speed(struct ecode_cli_dev *dev, char **args, int argc);
-static int speed_up(struct ecode_cli_dev *dev, char **args, int argc);
-static int speed_down(struct ecode_cli_dev *dev, char **args, int argc);
-static int turn_left(struct ecode_cli_dev *dev, char **args, int argc);
-static int turn_right(struct ecode_cli_dev *dev, char **args, int argc);
+static int speed(struct cli_dev *dev, char **args, int argc);
+static int speed_up(struct cli_dev *dev, char **args, int argc);
+static int speed_down(struct cli_dev *dev, char **args, int argc);
+static int turn_left(struct cli_dev *dev, char **args, int argc);
+static int turn_right(struct cli_dev *dev, char **args, int argc);
 
 
 static const struct cli_command smart_car_commands[]={
@@ -26,10 +26,10 @@ static struct cli_commands_list smart_car_commands_entry;
 
 void cli_register_smart_car_commands()
 {
-    ecode_register_commands(&smart_car_commands_entry, smart_car_commands);
+    cli_register_commands(&smart_car_commands_entry, smart_car_commands);
 } 
 
-static int speed(struct ecode_cli_dev *dev, char **args, int argc)
+static int speed(struct cli_dev *dev, char **args, int argc)
 {
     int left_speed;
     int right_speed;
@@ -59,7 +59,7 @@ static int speed(struct ecode_cli_dev *dev, char **args, int argc)
     cli_error(dev, ERROR_NONE);
 }
 
-static int speed_up(struct ecode_cli_dev *dev, char **args, int argc)
+static int speed_up(struct cli_dev *dev, char **args, int argc)
 {
     if(argc!=0)
         cli_error(dev, ERROR_PARAM);
@@ -69,7 +69,7 @@ static int speed_up(struct ecode_cli_dev *dev, char **args, int argc)
     cli_error(dev, ERROR_NONE);
 }
 
-static int speed_down(struct ecode_cli_dev *dev, char **args, int argc)
+static int speed_down(struct cli_dev *dev, char **args, int argc)
 {
     if(argc!=0)
         cli_error(dev, ERROR_PARAM);
@@ -80,7 +80,7 @@ static int speed_down(struct ecode_cli_dev *dev, char **args, int argc)
 }
 
 
-static int turn_left(struct ecode_cli_dev *dev, char **args, int argc)
+static int turn_left(struct cli_dev *dev, char **args, int argc)
 {
     if(argc!=0)
         cli_error(dev, ERROR_PARAM);
@@ -90,7 +90,7 @@ static int turn_left(struct ecode_cli_dev *dev, char **args, int argc)
     cli_error(dev, ERROR_NONE);
 }
 
-static int turn_right(struct ecode_cli_dev *dev, char **args, int argc)
+static int turn_right(struct cli_dev *dev, char **args, int argc)
 {
     if(argc!=0)
         cli_error(dev, ERROR_PARAM);

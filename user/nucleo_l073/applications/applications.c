@@ -1,5 +1,6 @@
 #include "board.h"
-static struct ecode_cli_dev com_cli;
+
+static struct cli_dev com_cli;
 static struct stdioex_device com_stdio;
 
 void cli_task(void *args);
@@ -7,15 +8,16 @@ void led_task(void *args);
 
 void ecode_application_init(void)
 {
+
 	xTaskCreate(cli_task,
-            "cli_task",
-            512,
-            NULL,
-            2,
-            NULL);
+           "cli_task",
+           1024,
+           NULL,
+           1,
+           NULL);
 	xTaskCreate(led_task,
             "led_task",
-            128,
+            1024,
             NULL,
             3,
             NULL);	
@@ -24,20 +26,16 @@ void ecode_application_init(void)
 
 static inline int com_putchar(unsigned char data)
 {
-    //write(COM1, (char *)&data, 1);
     serial_write(COM1, (char *)&data, 1);
+    
     return 0;
 }
 static inline int com_getchar(void)
 {
-    int data;
+    int data=-1;
     
-    data = serial_in_waiting(COM1);
-    if(data<=0)
-        return 0;
-    //read(COM1, (char *)&data, 1);
-    if(serial_read(COM1, (char *)&data, 1)<0)
-        return 0;
+    serial_read(COM1, &data, 1);
+
     return data;
 }
 
@@ -50,14 +48,13 @@ void cli_task(void *args)
     com_stdio.get_char = com_getchar;
     stdio_puts(&com_stdio, "ecode stdio inited\r\n");
     com_cli.stdio = &com_stdio;
-    ecode_register_cli_device( &com_cli, "COM");
+    cli_device_register( &com_cli, "COM");
     
     LOG_DEBUG("cli task running...");
 
     while(1)
     {
-        ecode_cli_polling();
-
+        cli_polling();
     }
 }
 
@@ -74,8 +71,6 @@ void led_task(void *args)
 		delay_ms(500);
 	}
 }
-
-
 #ifdef  USE_FULL_ASSERT
 
 /**
