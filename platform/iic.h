@@ -15,8 +15,8 @@ enum{
 struct iic_operations{
     e_err_t (*start)(struct iic_dev *dev);
     void (*stop)(struct iic_dev *dev);
-    e_err_t (*write)(struct iic_dev *dev, e_uint8_t byte, e_uint8_t *ack);
-    e_err_t (*read)(struct iic_dev *dev, e_uint8_t ack);
+    e_err_t (*writeb)(struct iic_dev *dev, e_uint8_t byte, e_uint8_t *ack);
+    e_err_t (*readb)(struct iic_dev *dev, e_uint8_t ack);
 };
 
 struct iic_dev{
