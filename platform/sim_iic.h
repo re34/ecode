@@ -1,6 +1,7 @@
 #ifndef __SIM_IIC_H__
 #define __SIM_IIC_H__
 #include "includes.h"
+#include "iic.h"
 
 
 struct sim_iic_operations{
@@ -20,11 +21,5 @@ struct sim_iic_dev{
 };
 
 
-e_err_t sim_iic_register(int fd, struct sim_iic_dev *dev);
-
-
-int sim_iic_start(struct sim_iic_operations *dev);
-int sim_iic_stop(struct sim_iic_operations *dev);
-int sim_iic_writeb(struct sim_iic_operations *dev, UInt8 data, UInt8 ack);
-int sim_iic_readb(struct sim_iic_operations *ops);
+e_err_t sim_iic_register(int fd, struct sim_iic_dev *bus);
 #endif

@@ -9,7 +9,12 @@
 
 e_inline void sim_iic_delay(struct sim_iic_operations *ops)
 {
-    ops->udelay((ops->delay_us+1)>>1)
+    ops->udelay(ops->delay_us);
+}
+
+e_inline void sim_iic_delay2(struct sim_iic_operations *ops)
+{
+    ops->udelay((ops->delay_us+1)>>1);
 }
 
 #define SDA_L(ops)      SET_SDA(ops, 0)
@@ -19,16 +24,17 @@ e_inline void sim_iic_delay(struct sim_iic_operations *ops)
 
 static e_err_t SCL_H(struct sim_iic_operations *ops)
 {
-    e_tick_t stae;
+    e_tick_t start;
     
     SET_SCL(ops, 1);
     
     if(!ops->get_scl)
         goto done;
     
-    stae = (!GET_SCL(ops))
+    start = (!GET_SCL(ops));
+    while(!GET_SCL(ops))
     {
-        if(get_tick()-stae>ops->timeout)
+        if(get_ticks()-start>ops->timeout)
             return -E_ETIMEOUT;
         delay_us((ops->timeout+1)>>1);
     }
@@ -39,15 +45,15 @@ done:
     return E_EOK;
 }
 
-static void sim_iic_stae(struct sim_iic_operations *ops)
+static void sim_iic_start(struct sim_iic_operations *ops)
 {
-    SDA_L(ops)；
+    SDA_L(ops);
     sim_iic_delay(ops);
     SCL_L(ops);
     
 }
 
-static void sim_iic_restae(struct sim_iic_operations *ops)
+static void sim_iic_restart(struct sim_iic_operations *ops)
 {
     SDA_H(ops);
     SCL_H(ops);
@@ -76,9 +82,9 @@ e_inline e_bool_t sim_iic_waitack(struct sim_iic_operations *ops)
 
     if (SCL_H(ops) < 0)
     {
-        bit_dbg("wait ack timeout\n");
+        //bit_dbg("wait ack timeout\n");
 
-        return -ETIMEOUT;
+        return -E_ETIMEOUT;
     }
 
     ack = !GET_SDA(ops);    /* ACK : SDA pin is pulled low */
@@ -130,10 +136,7 @@ static e_int32_t sim_iic_readb(struct iic_dev *bus)
 
         if (SCL_H(ops) < 0)
         {
-            bit_dbg("sim_iic_readb: wait scl pin high "
-                    "timeout at bit %d\n", 7 - i);
-
-            return -ETIMEOUT;
+            return -E_ETIMEOUT;
         }
 
         if (GET_SDA(ops))
@@ -150,7 +153,7 @@ static e_size_t sim_iic_send_bytes(struct iic_dev *bus,
 {
     e_int32_t ret;
     e_size_t bytes = 0;
-    const e_uint8_t *ptr = msg->bus;
+    const e_uint8_t *ptr = msg->buf;
     e_int32_t count = msg->len;
     e_uint16_t ignore_nack = msg->flags&IIC_IGNORE_NACK;
     
@@ -166,13 +169,13 @@ static e_size_t sim_iic_send_bytes(struct iic_dev *bus,
         }
         else if (ret == 0)
         {
-            sim_iic_dbg("send bytes: NACK.\n");
+            //sim_iic_dbg("send bytes: NACK.\n");
 
             return 0;
         }
         else
         {
-            sim_iic_dbg("send bytes: error %d\n", ret);
+            //sim_iic_dbg("send bytes: error %d\n", ret);
 
             return ret;
         }
@@ -190,7 +193,7 @@ static e_err_t sim_iic_send_ack_or_nack(struct iic_dev *bus, int ack)
     sim_iic_delay(ops);
     if (SCL_H(ops) < 0)
     {
-        bit_dbg("ACK or NACK timeout\n");
+        //bit_dbg("ACK or NACK timeout\n");
 
         return -E_ETIMEOUT;
     }
@@ -266,7 +269,7 @@ static e_err_t sim_iic_bit_send_address(struct iic_dev *bus,
 {
     e_uint16_t flags = msg->flags;
     e_uint16_t ignore_nack = msg->flags & IIC_IGNORE_NACK;
-    struct e_sim_iic_bit_ops *ops = bus->priv;
+    struct sim_iic_operations *ops = bus->priv;
 
     e_uint8_t addr1, addr2;
     e_int32_t retries;
@@ -279,32 +282,32 @@ static e_err_t sim_iic_bit_send_address(struct iic_dev *bus,
         addr1 = 0xf0 | ((msg->addr >> 7) & 0x06);
         addr2 = msg->addr & 0xff;
 
-        bit_dbg("addr1: %d, addr2: %d\n", addr1, addr2);
+        //bit_dbg("addr1: %d, addr2: %d\n", addr1, addr2);
 
         ret = sim_iic_send_address(bus, addr1, retries);
         if ((ret != 1) && !ignore_nack)
         {
-            bit_dbg("NACK: sending first addr\n");
+            //bit_dbg("NACK: sending first addr\n");
 
-            return -E_E_EIO;
+            return -E_EIO;
         }
 
         ret = sim_iic_writeb(bus, addr2);
         if ((ret != 1) && !ignore_nack)
         {
-            bit_dbg("NACK: sending second addr\n");
+            //bit_dbg("NACK: sending second addr\n");
 
-            return -E_E_EIO;
+            return -E_EIO;
         }
         if (flags & IIC_RD)
         {
-            bit_dbg("send repeated start condition\n");
+            //bit_dbg("send repeated start condition\n");
             sim_iic_restart(ops);
             addr1 |= 0x01;
             ret = sim_iic_send_address(bus, addr1, retries);
             if ((ret != 1) && !ignore_nack)
             {
-                bit_dbg("NACK: sending repeated addr\n");
+                //bit_dbg("NACK: sending repeated addr\n");
 
                 return -E_EIO;
             }
@@ -321,43 +324,43 @@ static e_err_t sim_iic_bit_send_address(struct iic_dev *bus,
             return -E_EIO;
     }
 
-    return EOK;
+    return E_EOK;
 }
 
 static e_size_t sim_iic_bit_xfer(struct iic_dev *bus,
-                              struct e_sim_iic_msg         msgs[],
+                              struct iic_msg         msgs[],
                               e_uint32_t               num)
 {
-    struct e_sim_iic_msg *msg;
+    struct iic_msg *msg;
     struct sim_iic_operations *ops = bus->priv;
     e_int32_t i, ret;
     e_uint16_t ignore_nack;
 
-    bit_dbg("send start condition\n");
+    //bit_dbg("send start condition\n");
     sim_iic_start(ops);
     for (i = 0; i < num; i++)
     {
         msg = &msgs[i];
-        ignore_nack = msg->flags & I2C_IGNORE_NACK;
-        if (!(msg->flags & I2C_NO_START))
+        ignore_nack = msg->flags & IIC_IGNORE_NACK;
+        if (!(msg->flags & IIC_NO_START))
         {
             if (i)
             {
                 sim_iic_restart(ops);
             }
             ret = sim_iic_bit_send_address(bus, msg);
-            if ((ret != EOK) && !ignore_nack)
+            if ((ret != E_EOK) && !ignore_nack)
             {
-                bit_dbg("receive NACK from device addr 0x%02x msg %d\n",
-                        msgs[i].addr, i);
+                //bit_dbg("receive NACK from device addr 0x%02x msg %d\n",
+                        //msgs[i].addr, i);
                 goto out;
             }
         }
-        if (msg->flags & I2C_RD)
+        if (msg->flags & IIC_RD)
         {
             ret = sim_iic_recv_bytes(bus, msg);
             if (ret >= 1)
-                bit_dbg("read %d byte%s\n", ret, ret == 1 ? "" : "s");
+                //bit_dbg("read %d byte%s\n", ret, ret == 1 ? "" : "s");
             if (ret < msg->len)
             {
                 if (ret >= 0)
@@ -369,7 +372,7 @@ static e_size_t sim_iic_bit_xfer(struct iic_dev *bus,
         {
             ret = sim_iic_send_bytes(bus, msg);
             if (ret >= 1)
-                bit_dbg("write %d byte%s\n", ret, ret == 1 ? "" : "s");
+                //bit_dbg("write %d byte%s\n", ret, ret == 1 ? "" : "s");
             if (ret < msg->len)
             {
                 if (ret >= 0)
@@ -381,9 +384,25 @@ static e_size_t sim_iic_bit_xfer(struct iic_dev *bus,
     ret = i;
 
 out:
-    bit_dbg("send stop condition\n");
+    //bit_dbg("send stop condition\n");
     sim_iic_stop(ops);
 
     return ret;
+}
+
+static const struct iic_operations sim_iic_bus_ops={
+    sim_iic_bit_xfer,
+    NULL,
+    NULL,
+};
+
+e_err_t sim_iic_register(int fd, struct sim_iic_dev *bus)
+{
+    struct iic_dev *dev;
+    ASSERT_PARAM(bus!=NULL);
+    dev = &bus->parent;
+    dev->ops = &sim_iic_bus_ops;
+    
+    return iic_register(fd, dev);
 }
 
