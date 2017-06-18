@@ -11,7 +11,7 @@ Kd = Kp*Td/T
 
 #include "pid.h"
 #include "includes.h"
-
+#include "ecode.h"
 
 
 
@@ -81,9 +81,9 @@ float pid_increment_calc(struct pid *pid, float feedback)
     ASSERT_PARAM(pid!=NULL);
     
     pid->err = pid->set_val-feedback;
-    pid->err_sum += err;
+    pid->err_sum += pid->err;
     
-    duk = pid->kp*(pid->err->pid->err_last)+pid->ki*pid->err+\
+    duk = pid->kp*(pid->err-pid->err_last)+pid->ki*pid->err+\
           pid->kd*(pid->err-2*pid->err_last+pid->err_last_last);
           
     pid->err_last_last = pid->err_last;

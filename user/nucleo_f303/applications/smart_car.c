@@ -1,7 +1,9 @@
 #include "smart_car.h"
+#include "ecode.h"
 #include "motor.h"
 #include "smart_car_handle.h"
-#include "speed.h"
+#include "encoder.h"
+
 
 
 struct smart_car{
@@ -13,12 +15,25 @@ struct smart_car{
 
 struct smart_car smart_car={0};
 
+static struct pid left_pid;
+static struct pid right_pid;
+
+
+static void smart_car_task(void *args);
 
 int smart_car_init()
 {
     cli_register_smart_car_commands();
     smart_car_set_speed(0,0);
-    speed_init();
+    encoder_init();
+    pid_init(&left_pid);
+    pid_init(&right_pid);
+    xTaskCreate(smart_car_task,
+                "smart_car_task",
+                512,
+                NULL,
+                3,
+                NULL);
     return 0;
 }
 
@@ -186,4 +201,20 @@ void smart_car_turn_right()
     }
     
     motor_set_left_duty(left_speed, left_dir);  
+}
+
+static void smart_car_task(void *args)
+{
+    struct encoder encoder;
+    int left_duty;
+    int right_duty;
+    
+    while(1)
+    {
+        encoder_get(&encoder);
+        left_duty = pid_increment_calc(&left_pid, encoder.left_count);
+        right_duty = pid_increment_calc(&right_pid, encoder.right_count);
+        
+        delay_ms(50);
+    }
 }

@@ -17,6 +17,7 @@
 #include "oled.h"
 #include "pin.h"
 #include "ecode_assert.h"
+#include "pid.h"
 
 
 #if CONFIG_USE_LWIP==1

@@ -2116,6 +2116,9 @@
         <name>$PROJ_DIR$\..\applications\bt_spp.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\applications\encoder.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\applications\measure_dist.c</name>
       </file>
       <file>
@@ -2126,9 +2129,6 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\applications\smart_car_handle.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\applications\speed.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\applications\startup.c</name>
