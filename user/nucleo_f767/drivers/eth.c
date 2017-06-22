@@ -1,5 +1,5 @@
 #include "eth.h"
-#include "ecode.h"
+#include "rtos.h"
 #include "lan8742.h"
 #include "etharp.h"
 

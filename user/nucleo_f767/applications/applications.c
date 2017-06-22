@@ -1,15 +1,16 @@
 #include "board.h"
-#include "tcp_server.h"
+//#include "tcp_server.h"
 
-static struct cli_dev com_cli;
-static struct stdioex_device com_stdio;
+//static struct cli_dev com_cli;
+//static struct stdioex_device com_stdio;
 
-void cli_task(void *args);
-void led_task(void *args);
+//void cli_task(void *args);
+//void led_task(void *args);
 
 void ecode_application_init(void)
 {
     //tcp_server_init();
+  /*
 	xTaskCreate(cli_task,
            "cli_task",
            1024,
@@ -22,8 +23,9 @@ void ecode_application_init(void)
             NULL,
             3,
             NULL);	
+  */
 }
-
+/*
 
 static inline int com_putchar(unsigned char data)
 {
@@ -72,7 +74,7 @@ void led_task(void *args)
 		delay_ms(500);
 	}
 }
-
+*/
 #ifdef  USE_FULL_ASSERT
 
 /**

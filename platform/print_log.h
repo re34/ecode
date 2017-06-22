@@ -10,9 +10,7 @@
 #define  LOG_LEVEL_DEBUG      1
 
 struct print_log_interface{
-    //int getchar(void);
     int (*putc)(unsigned char data);
-    int (*getc)(void);
 };
 
 

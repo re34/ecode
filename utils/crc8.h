@@ -1,12 +1,12 @@
 #ifndef _CRC8_H
 #define _CRC8_H
 #include <stdint.h>
-#include "includes.h"
+#include "types.h"
 
 
-UInt8 Crc8Ccitt(UInt8 *buf, int len);
+e_uint8_t Crc8Ccitt(e_uint8_t *buf, int len);
 
 
-int Crc8Check(UInt8 tcrc,UInt8 *buf, int sz);
+int Crc8Check(e_uint8_t tcrc,e_uint8_t *buf, int sz);
 
 #endif

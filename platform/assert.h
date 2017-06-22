@@ -1,7 +1,6 @@
-#ifndef __ECODE_ASSERT_H__
-#define __ECODE_ASSERT_H__
+#ifndef __ASSERT_H__
+#define __ASSERT_H__
 #include "types.h"
-#include "config.h"
 
 
 #ifdef __cplusplus

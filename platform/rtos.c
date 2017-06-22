@@ -1,5 +1,5 @@
-#include "ecode_rtos.h"
-#include "ecode.h"
+#include "rtos.h"
+#include "types.h"
 
 extern void xPortSysTickHandler( void );
 

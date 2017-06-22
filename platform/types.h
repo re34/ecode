@@ -6,13 +6,6 @@
 extern "C" {
 #endif
 
-typedef unsigned char UInt8;
-typedef signed char Int8;
-typedef unsigned short UInt16;
-typedef signed short Int16;
-typedef unsigned long UInt32;
-typedef signed long Int32;
-
 
 typedef unsigned char       e_uint8_t;  //8bit integer type
 typedef signed char         e_int8_t;   
@@ -30,6 +23,12 @@ typedef e_ubase_t           e_size_t;
 typedef e_base_t            e_offset_t;
 typedef e_ubase_t           e_dev_t;
 typedef e_uint32_t          e_tick_t;
+
+
+typedef struct{
+    void *buffer;
+    e_size_t size;
+}buffer_t;
 
 #define E_TRUE              1
 #define E_FALSE             0
@@ -178,7 +177,7 @@ typedef int (*init_fn_t)(void);
 #define E_ALIGN_DOWN(size, align)      ((size) & ~((align) - 1))
 
 
-#define contianer_of(node, type, member)\
+#define container_of(node, type, member)\
     ((type *)((char *)(node) - (unsigned long)(&((type *)0)->member)))
 
 #define BIT(b)	(1<<(b))

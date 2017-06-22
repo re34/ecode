@@ -1,5 +1,5 @@
 #include "device.h"
-#include "ecode.h"
+
 
 /**
  * This function registers a device driver with specified name.
@@ -57,7 +57,7 @@ device_t device_find(const char *name)
     if(object==NULL)
         return NULL;
     
-    dev = contianer_of(object, struct device, parent);
+    dev = container_of(object, struct device, parent);
     
     return dev;    
 }

@@ -34,7 +34,7 @@ const LogStrItem_t tLogStrMap[]={
 };
 
 
-struct print_log_interface fprint_log={NULL,NULL};
+struct print_log_interface fprint_log={NULL};
 
 static inline int print_log_putchar(char data);
 
@@ -53,12 +53,6 @@ static int print_log_putchar(char data)
     return fprint_log.putc(data);
 }
 
-static int print_log_getchar(void)
-{
-    if(fprint_log.getc==NULL)
-        return -1;
-    return fprint_log.getc();
-}
 
 static char *LogGetLevelString(int level)
 {

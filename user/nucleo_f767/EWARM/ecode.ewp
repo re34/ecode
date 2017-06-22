@@ -322,6 +322,8 @@
           <state>$PROJ_DIR$\..\..\..\library\lwip\include</state>
           <state>$PROJ_DIR$\..\..\..\library\lwip\include\netif</state>
           <state>$PROJ_DIR$\..\..\..\library\lwip</state>
+          <state>$PROJ_DIR$\..\..\..\module</state>
+          <state>$PROJ_DIR$\..\..\..\drivers</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1932,6 +1934,9 @@
     </settings>
   </configuration>
   <group>
+    <name>drivers</name>
+  </group>
+  <group>
     <name>library</name>
     <group>
       <name>FreeRTOS</name>
@@ -2100,84 +2105,27 @@
     </group>
   </group>
   <group>
+    <name>module</name>
+  </group>
+  <group>
     <name>platform</name>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ascii12.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ascii16.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\cli_errno.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\cli_message_parsing.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\cli_message_read_line.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\delay.c</name>
+      <name>$PROJ_DIR$\..\..\..\platform\assert.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\device.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ecode.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ecode_assert.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ecode_cli.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ecode_rtos.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\iic.c</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\..\..\platform\object.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\oled.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\pid.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\platform_cli_handles.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\print_log.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\pwm.c</name>
+      <name>$PROJ_DIR$\..\..\..\platform\rtos.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\serial.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\sim_iic.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\stdio_ex.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ticks.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\timeout.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\timer.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\timer_event.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\timestamp.c</name>
+      <name>$PROJ_DIR$\..\..\..\platform\time.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\version.c</name>
@@ -2191,13 +2139,7 @@
         <name>$PROJ_DIR$\..\applications\applications.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\platform\pin.c</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\applications\startup.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\applications\tcp_server.c</name>
       </file>
     </group>
     <group>
@@ -2206,13 +2148,7 @@
         <name>$PROJ_DIR$\..\drivers\board.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\drivers\eth.c</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\drivers\FreeRTOSConfig.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\drivers\lan8742.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\startup_stm32f767xx.s</name>
@@ -2221,13 +2157,7 @@
         <name>$PROJ_DIR$\..\drivers\stm32f7xx_it.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\drivers\stm_pin.c</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\drivers\system_stm32f7xx.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\drivers\uart.c</name>
       </file>
     </group>
     <group>
