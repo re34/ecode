@@ -215,6 +215,17 @@ static void smart_car_task(void *args)
         left_duty = pid_increment_calc(&left_pid, encoder.left_count);
         right_duty = pid_increment_calc(&right_pid, encoder.right_count);
         
+        if(left_duty<0)
+            left_dir = MOTOR_DIR_BACK;
+        else
+            left_dir = MOTOR_DIR_FORWARD;
+        if(right_duty<0)
+            right_dir = MOTOR_DIR_BACK;
+        else
+            right_dir = MOTOR_DIR_FORWARD;
+        
+        motor_set_left_duty(left_duty, left_dir); 
+        motor_set_right_duty(right_duty, right_dir);
         delay_ms(50);
     }
 }
