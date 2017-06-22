@@ -60,7 +60,8 @@ void cli_task(void *args)
 
     while(1)
     {
-        cli_polling();
+        if(cli_polling()<0)
+            delay_ms(5);
     }
 }
 

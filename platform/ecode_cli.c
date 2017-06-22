@@ -134,6 +134,7 @@ void cli_print_error(struct cli_dev *dev, int errno)
 
 int cli_polling(void)
 {
+    int ret = -1;
     struct list_head *dev;
     struct list_head *tnode = NULL;
     struct cli_command_param param;
@@ -150,6 +151,7 @@ int cli_polling(void)
         }
         if(cli_message_read_line((struct cli_dev *)dev, END_LINE)>0)
         {
+            ret = 0;
             if(ecode_message_parsing(((struct cli_dev *)dev)->rxbuf, ((struct cli_dev *)dev)->rxlen, &param,DELIM_STR)==0)
             {
                 command = cli_match_command(param.command_name);
@@ -173,7 +175,7 @@ int cli_polling(void)
         }
     }
     
-    return 0;
+    return ret;
 }
 
 
