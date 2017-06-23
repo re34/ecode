@@ -13,6 +13,10 @@
 #include "semphr.h"
 #endif
 
+
+#define rtos_task_create(task, name, stack_depth, args, priority, handle)  \
+                xTaskCreate(task, name, stack_depth, args, priority, handle)
+
 int rtos_is_running(void);
 void rtos_start_scheduler(void);
 void rtos_systick(void);
