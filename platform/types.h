@@ -28,6 +28,7 @@ typedef e_uint32_t          e_tick_t;
 typedef struct{
     void *buffer;
     e_size_t size;
+    e_base_t pos;
 }buffer_t;
 
 #define E_TRUE              1

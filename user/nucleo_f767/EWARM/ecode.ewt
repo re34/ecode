@@ -2487,6 +2487,12 @@
   </group>
   <group>
     <name>module</name>
+    <group>
+      <name>cli</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\module\cli\cli.c</name>
+      </file>
+    </group>
   </group>
   <group>
     <name>platform</name>

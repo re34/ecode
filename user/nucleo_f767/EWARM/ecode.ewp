@@ -324,6 +324,7 @@
           <state>$PROJ_DIR$\..\..\..\library\lwip</state>
           <state>$PROJ_DIR$\..\..\..\module</state>
           <state>$PROJ_DIR$\..\..\..\drivers</state>
+          <state>$PROJ_DIR$\..\..\..\module\cli</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -2106,6 +2107,12 @@
   </group>
   <group>
     <name>module</name>
+    <group>
+      <name>cli</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\module\cli\cli.c</name>
+      </file>
+    </group>
   </group>
   <group>
     <name>platform</name>
