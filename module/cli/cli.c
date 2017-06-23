@@ -50,6 +50,25 @@ e_err_t cli_inputing(struct cli_dev *cli)
     return ops->input(cli);
 }
 
+e_size_t cli_puts(struct cli_dev *cli, char *str)
+{
+    const struct cli_operations *ops;
+    ASSERT_PARAM(cli!=NULL);
+    ASSERT_PARAM(cli->ops!=NULL);
+    
+    ops = cli->ops;
+    
+    if(ops->output==NULL)
+    {
+        LOG_ERROR("cli output is null!");
+        return -E_ERROR;
+    }
+    
+    e_size_t len = strlen(str);
+    
+    return ops->output(cli, str, len);
+}
+
 e_err_t cli_execute(struct cli_dev *cli, struct cli_command *cmd)
 {
     const struct cli_operations *ops;
