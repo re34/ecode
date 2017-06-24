@@ -1,9 +1,10 @@
 #include "board.h"
-#include "rtos.h"
-#include "time.h"
-#include "print_log.h"
+#include "ecode.h"
+//#include "rtos.h"
+//#include "time.h"
+//#include "print_log.h"
 //#include "uart.h"
-//#include "uart.h"
+#include "uart.h"
 //#include "eth.h"
 
 void board_clock_configuration(void);
@@ -13,26 +14,26 @@ static int print_log_putc(unsigned char c);
  */
 void ecode_hw_board_init()
 {
-   // struct print_log_interface fprint_log;
+    struct print_log_interface fprint_log;
 	
 	//__set_PRIMASK(1);
 	
     board_clock_configuration();
 	
-    //uart_hw_init();
+    uart_hw_init();
     
    // stm_pin_init();
     
-   // fprint_log.putc = print_log_putc;
+    fprint_log.putc = print_log_putc;
     
-    //print_log_register_io(fprint_log);
+    print_log_register_io(fprint_log);
     
     //eth_init();
 }
 
 static int print_log_putc(unsigned char c)
 {
-    //serial_write(COM1,&c,1);
+    serial_write(COM1,&c,1);
     return c;
 }
 

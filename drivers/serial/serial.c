@@ -1,5 +1,6 @@
 #include "serial.h"
-#include "ecode.h"
+#include "assert.h"
+#include "print_log.h"
 
 #ifndef COMn
 #define COMn    2

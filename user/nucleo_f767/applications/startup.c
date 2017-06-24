@@ -1,5 +1,5 @@
 #include "board.h"
-#include "rtos.h"
+#include "ecode.h"
 
 
 extern void ecode_application_init(void);

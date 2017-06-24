@@ -1,6 +1,10 @@
 #include "command.h"
 #include "link_list.h"
 #include "cli.h"
+#include "assert.h"
+#include "print_log.h"
+#include <string.h>
+#include <ctype.h>
 
 #define END_OF_LINE     '\n'
 
@@ -9,18 +13,19 @@ LIST_HEAD(command_head);
 e_err_t command_input(struct cli_dev *cli)
 {
     struct command_dev *command;
-    struct command_operations *ops;
+    const struct command_operations *ops;
     e_uint8_t *buffer;
     int data;
     ASSERT_PARAM(cli!=NULL);
     command = cli->private_data;
     ASSERT_PARAM(command->ops!=NULL);
     
+    ops = command->ops;
     buffer = command->rx_buffer.buffer;
     
     while((data=ops->getc())!=-1)
     {
-        if(command->rx_buffer.pos<command->rx_buffer.size)
+        if(command->rx_buffer.pos>command->rx_buffer.size)
         {
             LOG_DEBUG("command rx buffer is full!");
             return -E_EFULL;
@@ -28,18 +33,53 @@ e_err_t command_input(struct cli_dev *cli)
         buffer[command->rx_buffer.pos++]= data;
         
         ops->putc(data);
+        
+        if((data=='\b')&&(command->rx_buffer.pos!=0))
+        {
+            ops->putc(' ');
+            ops->putc('\b');
+            command->rx_buffer.pos--;
+        }
+        
+        if(data==END_OF_LINE)
+            return E_EOK;
     }
     
-    if(data==END_OF_LINE)
-        return E_EOK;
-    
+ 
     return -E_EBUSY;
+}
+
+e_size_t command_puts(struct command_dev *command, const char *str)
+{
+    const struct command_operations *ops;
+    e_uint8_t *pdata;
+    e_size_t temp=0;
+    e_size_t len;
+    ASSERT_PARAM(command!=NULL);
+    ASSERT_PARAM(command->ops!=NULL);
+    ops = command->ops;
+    
+    pdata = (e_uint8_t *)str;
+    len = strlen(str);
+    temp = len;
+    
+    if(ops->putc==NULL)
+        return -E_ERROR;
+    
+    while(len>0)
+    {
+        if(ops->putc(*pdata++)<0)
+            break;
+        len--;
+    }
+    
+    return (len-temp);
 }
 
 e_size_t command_output(struct cli_dev *cli, void *buffer, e_size_t size)
 {
     struct command_dev *command;
-    struct command_operations *ops;
+    const struct command_operations *ops;
     e_uint8_t *pdata;
     e_size_t pos=0;
     ASSERT_PARAM(cli!=NULL);
@@ -70,7 +110,7 @@ void command_print_promot(struct cli_dev *cli)
 e_err_t command_parsing(struct cli_dev *cli, struct cli_command *cmd)
 {
     struct command_dev *command;
-    e_uint8_t *buffer;
+    char *buffer;
     char *p;
     char *ptemp;
     e_size_t len;
@@ -84,7 +124,7 @@ e_err_t command_parsing(struct cli_dev *cli, struct cli_command *cmd)
     if(len<=0)
         return -E_EEMPTY;
     
-    p = buffer+pos;
+    p = buffer+command->rx_buffer.pos-1;
     
     while(p!=buffer)
     {
@@ -101,7 +141,7 @@ e_err_t command_parsing(struct cli_dev *cli, struct cli_command *cmd)
     
     p = buffer;
     
-    while(p!=(buffer+len))
+    while(p!=(buffer+len-1))
     {
         if(isgraph(*p))
             break;
@@ -126,6 +166,7 @@ e_err_t command_parsing(struct cli_dev *cli, struct cli_command *cmd)
     }
     
     memcpy(command->params.name, p, strlen(p));
+    command->params.name[strlen(p)]='\0';
     
     ptemp ++;
     p = ptemp;
@@ -150,7 +191,7 @@ e_err_t command_parsing(struct cli_dev *cli, struct cli_command *cmd)
     }
     else
     {
-        cmd->cmd.argc = 1;
+        command->params.argc = 1;
         command->params.args[0]=ptemp;
         
         p = strchr(ptemp, ',');
@@ -170,6 +211,7 @@ e_err_t command_parsing(struct cli_dev *cli, struct cli_command *cmd)
     
     cmd->cmd = command->params.name;
     cmd->arg = &command->params;
+    command->rx_buffer.pos = 0;
     
     return E_EOK;
 }
@@ -192,7 +234,7 @@ static struct command_item * command_match(const char *name)
                 {
                     return item;
                 }
-                item++:
+                item++;
             }
         }
     }
@@ -225,7 +267,7 @@ e_err_t command_execute(struct cli_dev *cli, struct cli_command *cmd)
     return E_EOK;
 }
 
-const struct cli_operations={
+const struct cli_operations cli_operations={
     .input = command_input,
     .output = command_output,
     .parsing = command_parsing,
@@ -235,8 +277,8 @@ const struct cli_operations={
 e_err_t command_register(struct command_dev *command)
 {
     ASSERT_PARAM(command!=NULL);
-    command->cli.ops = cli_operations;
-    command->private_data = command;
+    command->cli.ops = &cli_operations;
+    command->cli.private_data = command;
     
     return cli_register(&command->cli);
 }
@@ -245,6 +287,49 @@ void command_register_commands(struct command_list *command_entry, struct comman
 {
     command_entry->commands = items;
     list_add(&command_head, &command_entry->entry);
+}
+
+e_err_t command_print_help(struct command_dev *command, const char *name)
+{
+    struct command_item *item = NULL;
+    
+    item = command_match(name);
+    if(item==NULL)
+        return -E_ERROR;
+    
+    command_puts(command, item->name);
+    command_puts(command, item->brief);
+    
+    return E_EOK;
+}
+
+e_err_t command_print_help_list(struct command_dev *command)
+{
+    struct list_head *entry;
+    struct command_item *item = NULL;
+    struct command_list *commands = NULL;
+    
+    command_puts(command, "\r\n**************help info***************\r\n");
+    
+    list_for_each(entry, &command_head)
+    {
+        commands = container_of(entry, struct command_list, entry);
+        item = commands->commands;
+        if(item!=NULL)
+        {
+            while(item->name!=NULL)
+            {
+                command_puts(command, item->name);
+                command_puts(command, item->brief);
+                item++;
+            }
+        }
+        
+    }
+    
+    command_puts(command, "\r\n***********help end*****************\r\n");
+    
+    return E_EOK;
 }
 
 

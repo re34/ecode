@@ -325,6 +325,8 @@
           <state>$PROJ_DIR$\..\..\..\module</state>
           <state>$PROJ_DIR$\..\..\..\drivers</state>
           <state>$PROJ_DIR$\..\..\..\module\cli</state>
+          <state>$PROJ_DIR$\..\..\..\drivers\serial</state>
+          <state>$PROJ_DIR$\..\..\..\common</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1935,7 +1937,19 @@
     </settings>
   </configuration>
   <group>
+    <name>common</name>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\common\ecode.h</name>
+    </file>
+  </group>
+  <group>
     <name>drivers</name>
+    <group>
+      <name>serial</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\serial\serial.c</name>
+      </file>
+    </group>
   </group>
   <group>
     <name>library</name>
@@ -2112,6 +2126,9 @@
       <file>
         <name>$PROJ_DIR$\..\..\..\module\cli\cli.c</name>
       </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\module\cli\command.c</name>
+      </file>
     </group>
   </group>
   <group>
@@ -2146,6 +2163,12 @@
         <name>$PROJ_DIR$\..\applications\applications.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\applications\command_service.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\applications\commands.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\applications\startup.c</name>
       </file>
     </group>
@@ -2165,6 +2188,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\system_stm32f7xx.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\uart.c</name>
       </file>
     </group>
     <group>
