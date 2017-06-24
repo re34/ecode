@@ -93,12 +93,12 @@ e_inline e_bool_t iic_bit_waitack(struct iic_bit_operations *ops)
     return ack;
 }
 
-static e_int32_t iic_bit_writeb(struct iic_dev *bus, e_uint8_t data)
+static e_int32_t iic_bit_writeb(struct iic_bit_dev *bus, e_uint8_t data)
 {
     e_int32_t i;
     e_uint8_t bit;
     
-    struct iic_bit_operations *ops = bus->priv;
+    struct iic_bit_operations *ops = bus->ops;
     
     for(i=7;i>=0;i--)
     {
@@ -121,11 +121,11 @@ static e_int32_t iic_bit_writeb(struct iic_dev *bus, e_uint8_t data)
     return iic_bit_waitack(ops);
 }
 
-static e_int32_t iic_bit_readb(struct iic_dev *bus)
+static e_int32_t iic_bit_readb(struct iic_bit_dev *bus)
 {
     e_uint8_t i;
     e_uint8_t data = 0;
-    struct iic_bit_operations *ops = bus->priv;
+    struct iic_bit_operations *ops = bus->ops;
     
     SDA_H(ops);
     iic_bit_delay(ops);
@@ -146,3 +146,97 @@ static e_int32_t iic_bit_readb(struct iic_dev *bus)
 
     return data;
 }
+
+static e_size_t sim_iic_send_bytes(struct iic_bit_dev *bus,
+                                    struct iic_msg  *msg)
+{
+    e_int32_t ret;
+    e_size_t bytes = 0;
+    const e_uint8_t *ptr = msg->buf;
+    e_int32_t count = msg->len;
+    e_uint16_t ignore_nack = msg->flags&IIC_IGNORE_NACK;
+    
+    while(count>0)
+    {
+        ret = sim_iic_writeb(bus, *ptr);
+        
+        if ((ret > 0) || (ignore_nack && (ret == 0)))
+        {
+            count --;
+            ptr ++;
+            bytes ++;
+        }
+        else if (ret == 0)
+        {
+            //sim_iic_dbg("send bytes: NACK.\n");
+
+            return 0;
+        }
+        else
+        {
+            //sim_iic_dbg("send bytes: error %d\n", ret);
+
+            return ret;
+        }
+    }
+
+    return bytes;
+}
+
+static e_err_t sim_iic_send_ack_or_nack(struct iic_dev *bus, int ack)
+{
+    struct sim_iic_operations *ops = bus->priv;
+    
+    if (ack)
+        SET_SDA(ops, 0);
+    sim_iic_delay(ops);
+    if (SCL_H(ops) < 0)
+    {
+        //bit_dbg("ACK or NACK timeout\n");
+
+        return -E_ETIMEOUT;
+    }
+    SCL_L(ops);
+
+    return E_EOK;
+}
+
+static e_size_t sim_iic_recv_bytes(struct iic_dev *bus,
+                                struct iic_msg        *msg)
+{
+    e_int32_t val;
+    e_int32_t bytes = 0;   /* actual bytes */
+    e_uint8_t *ptr = msg->buf;
+    e_int32_t count = msg->len;
+    const e_uint32_t flags = msg->flags;
+
+    while (count > 0)
+    {
+        val = sim_iic_readb(bus);
+        if (val >= 0)
+        {
+            *ptr = val;
+            bytes ++;
+        }
+        else
+        {
+            break;
+        }
+
+        ptr ++;
+        count --;
+
+        //bit_dbg("recieve bytes: 0x%02x, %s\n",
+        //        val, (flags & IIC_NO_READ_ACK) ?
+        //        "(No ACK/NACK)" : (count ? "ACK" : "NACK"));
+        if (!(flags & IIC_NO_READ_ACK))
+        {
+            val = sim_iic_send_ack_or_nack(bus, count);
+            if (val < 0)
+                return val;
+        }
+    }
+
+    return bytes;
+}
+
