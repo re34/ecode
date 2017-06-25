@@ -2332,9 +2332,24 @@
       </file>
     </group>
     <group>
+      <name>pin</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\pin\pin.c</name>
+      </file>
+    </group>
+    <group>
       <name>serial</name>
       <file>
         <name>$PROJ_DIR$\..\..\..\drivers\serial\serial.c</name>
+      </file>
+    </group>
+    <group>
+      <name>timer</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\timer\pwm.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\timer\timer.c</name>
       </file>
     </group>
   </group>
@@ -2559,6 +2574,9 @@
         <name>$PROJ_DIR$\..\applications\command_service.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\applications\led_task.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\applications\startup.c</name>
       </file>
     </group>
@@ -2575,6 +2593,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\stm32f7xx_it.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\stm_pin.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\system_stm32f7xx.c</name>
@@ -2864,6 +2885,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\utils\link_list.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\utils\pid.c</name>
     </file>
   </group>
 </project>

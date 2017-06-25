@@ -3,5 +3,8 @@
 
 #include "./serial/serial.h"
 #include "./iic/iic_bit.h"
+#include "./pin/pin.h"
+#include "./timer/timer.h"
+#include "./timer/pwm.h"
 
 #endif

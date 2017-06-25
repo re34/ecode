@@ -1,8 +1,7 @@
 #ifndef __BOARD_H__
 #define __BOARD_H__
-//#include "ecode.h"
 
-//#include "stm_pin.h"
+#include "stm_pin.h"
 #include "board_includes.h"
 
 

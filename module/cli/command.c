@@ -305,7 +305,7 @@ e_err_t command_execute(struct cli_dev *cli, struct cli_command *cmd)
     }
     else
     {
-        errno = cli_match_error(ERROR_UNKNOW);
+        errno = cli_match_error(ERROR_UNKNOW_CMD);
         command_puts(cli->private_data, errno);
         command_puts(cli->private_data, "\r\n");
         command_print_promot(cli->private_data);

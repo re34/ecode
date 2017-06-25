@@ -11,7 +11,7 @@
 e_uint32_t sys_jiffies(void)
 {
   //return HAL_GetTick();
-  return get_system_time();
+  return system_get_time();
 }
 
 /**
@@ -23,5 +23,5 @@ e_uint32_t sys_jiffies(void)
 e_uint32_t sys_now(void)
 {
   //return HAL_GetTick();
-  return get_system_time();
+  return system_get_time();
 }

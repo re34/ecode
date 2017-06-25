@@ -22,7 +22,7 @@ void ecode_hw_board_init()
 	
     uart_hw_init();
     
-   // stm_pin_init();
+    stm_pin_init();
     
     fprint_log.putc = print_log_putc;
     

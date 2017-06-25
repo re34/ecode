@@ -15,6 +15,7 @@
 #include "crc16.h"
 #include "fifo.h"
 #include "link_list.h"
+#include "pid.h"
 
 #include "driver.h"
 #include "module.h"

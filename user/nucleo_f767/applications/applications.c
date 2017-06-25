@@ -1,6 +1,7 @@
 #include "board.h"
 #include "ecode.h"
 #include "command_service.h"
+#include "led_task.h"
 
 
 
@@ -8,9 +9,12 @@ void ecode_application_init(void)
 {
     cli_init();
     command_service_init();
+    led_task_init();
     //tcp_server_init();
     
 }
+
+
 
 #ifdef  USE_FULL_ASSERT
 
