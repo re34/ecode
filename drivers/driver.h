@@ -6,5 +6,9 @@
 #include "./pin/pin.h"
 #include "./timer/timer.h"
 #include "./timer/pwm.h"
+#include "./eth/ethernetif.h"
+#include "./oled/oled.h"
+#include "./spi/spi.h"
+#include "./spi/spi_bit.h"
 
 #endif

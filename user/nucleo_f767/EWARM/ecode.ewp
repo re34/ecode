@@ -1946,12 +1946,30 @@
   <group>
     <name>drivers</name>
     <group>
+      <name>eth</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\eth\ethernetif.c</name>
+      </file>
+    </group>
+    <group>
       <name>iic</name>
       <file>
         <name>$PROJ_DIR$\..\..\..\drivers\iic\iic.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\drivers\iic\iic_bit.c</name>
+      </file>
+    </group>
+    <group>
+      <name>oled</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\oled\ascii12.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\oled\ascii16.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\oled\oled.c</name>
       </file>
     </group>
     <group>
@@ -1964,6 +1982,15 @@
       <name>serial</name>
       <file>
         <name>$PROJ_DIR$\..\..\..\drivers\serial\serial.c</name>
+      </file>
+    </group>
+    <group>
+      <name>spi</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\spi\spi.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\spi\spi_bit.c</name>
       </file>
     </group>
     <group>
@@ -2209,7 +2236,13 @@
         <name>$PROJ_DIR$\..\drivers\board.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\drivers\eth.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\drivers\FreeRTOSConfig.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\lan8742.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\startup_stm32f767xx.s</name>
