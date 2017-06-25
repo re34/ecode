@@ -1,5 +1,6 @@
 #include "measure_dist.h"
 #include "board.h"
+#include "ecode.h"
 
 static void measure_dist_callback(void);
 

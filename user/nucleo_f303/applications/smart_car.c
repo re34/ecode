@@ -28,7 +28,7 @@ int smart_car_init()
     encoder_init();
     pid_init(&left_pid);
     pid_init(&right_pid);
-    xTaskCreate(smart_car_task,
+    rtos_task_create(smart_car_task,
                 "smart_car_task",
                 512,
                 NULL,
@@ -208,6 +208,8 @@ static void smart_car_task(void *args)
     struct encoder encoder;
     int left_duty;
     int right_duty;
+    motor_dir_t left_dir;
+    motor_dir_t right_dir;
     
     while(1)
     {
@@ -224,8 +226,8 @@ static void smart_car_task(void *args)
         else
             right_dir = MOTOR_DIR_FORWARD;
         
-        motor_set_left_duty(left_duty, left_dir); 
-        motor_set_right_duty(right_duty, right_dir);
+        //motor_set_left_duty(left_duty, left_dir); 
+        //motor_set_right_duty(right_duty, right_dir);
         delay_ms(50);
     }
 }

@@ -2,6 +2,8 @@
 #include "ecode.h"
 #include "command_service.h"
 #include "led_task.h"
+#include "bt_spp.h"
+#include "smart_car.h"
 
 
 
@@ -10,48 +12,10 @@ void ecode_application_init(void)
     cli_init();
     command_service_init();
     led_task_init();
-    //tcp_server_init();
+    bt_spp_init();
+    smart_car_init();
     
 }
-
-
-<<<<<<< HEAD
-void cli_task(void *args)
-{
-    cli_register_platform_commands();
-    
-    com_stdio.put_char = com_putchar;
-    com_stdio.get_char = com_getchar;
-    stdio_puts(&com_stdio, "ecode stdio inited\r\n");
-    com_cli.stdio = &com_stdio;
-    cli_device_register( &com_cli, "COM");
-    
-    LOG_DEBUG("cli task running...");
-
-    while(1)
-    {
-        if(cli_polling()<0)
-            delay_ms(5);
-    }
-}
-
-void led_task(void *args)
-{
-    pin_val_t pin_val=PIN_LOW;
-	//stm_pin_init(LED1, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
-    pin_mode(LED1, PIN_MODE_OUTPUT_PP, PIN_PUPD_UP);
-
-	while(1)
-	{
-		//stm_pin_toggle(LED1);
-        pin_write(LED1, pin_val);
-        pin_val = !pin_val;
-		delay_ms(500);
-	}
-}
-
-=======
->>>>>>> master
 
 #ifdef  USE_FULL_ASSERT
 

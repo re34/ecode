@@ -1,5 +1,6 @@
 #include "encoder.h"
 #include "board.h"
+#include "ecode.h"
 
 #define SPEED_PERIOD        100//ms
 #define WHEEL_DIAMETER      66//mm

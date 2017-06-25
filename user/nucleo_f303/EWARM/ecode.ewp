@@ -2074,14 +2074,22 @@
         <name>$PROJ_DIR$\..\applications\applications.c</name>
       </file>
       <file>
-<<<<<<< HEAD
         <name>$PROJ_DIR$\..\applications\bt_cli_handle.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\applications\bt_spp.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\applications\command_handle.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\applications\command_service.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\applications\encoder.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\applications\led_task.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\applications\measure_dist.c</name>
@@ -2091,20 +2099,11 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\applications\smart_car.c</name>
-=======
-        <name>$PROJ_DIR$\..\applications\command_handle.c</name>
->>>>>>> master
       </file>
       <file>
-        <name>$PROJ_DIR$\..\applications\command_service.c</name>
+        <name>$PROJ_DIR$\..\applications\smart_car_handle.c</name>
       </file>
       <file>
-<<<<<<< HEAD
-=======
-        <name>$PROJ_DIR$\..\applications\led_task.c</name>
-      </file>
-      <file>
->>>>>>> master
         <name>$PROJ_DIR$\..\applications\startup.c</name>
       </file>
     </group>
@@ -2114,7 +2113,22 @@
         <name>$PROJ_DIR$\..\drivers\board.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\drivers\exti15_10.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\exti4.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\drivers\FreeRTOSConfig.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\hcsr04.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\pwm2.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\pwm3.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\startup_stm32f303xe.s</name>
@@ -2132,7 +2146,16 @@
         <name>$PROJ_DIR$\..\drivers\system_stm32f3xx.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\drivers\timer1.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\timer2.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\drivers\uart.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\user_oled.c</name>
       </file>
     </group>
     <group>

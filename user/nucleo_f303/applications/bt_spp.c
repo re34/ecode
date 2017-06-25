@@ -12,40 +12,46 @@ struct bt_spp{
 static unsigned char bt_buffer[BT_BUFFER_SIZE];
 static struct bt_spp bt_spp;
 
-struct cli_dev bt_cli_dev;
-static struct stdioex_device bt_stdio;
 
 static void bt_spp_task(void *args);
 
 
-static int bt_putc(unsigned char c)
+static int bt_putc(char c)
 {
-    serial_write(COM2, (char *)&c, 1);
-    return 0;
+    return serial_write(COM2, (char *)&c, 1);
 }
 
 static int bt_getc()
 {
-    int data=-1;
+    int data;
     
-    serial_read(COM2,&data, 1);
+    if(serial_read(COM2,&data, 1)>0)
+        return data;
     
-    return data;
+    return -1;
 }
 
+static const struct command_operations bt_commands_ops={
+    .getc = bt_getc,
+    .putc = bt_putc,
+};
+
+struct command_dev bt_command_dev={
+    .rx_buffer.buffer = bt_buffer,
+    .rx_buffer.size = BT_BUFFER_SIZE,
+    .rx_buffer.pos = 0,
+    .ops = &bt_commands_ops,
+};
 
 void bt_spp_init(void)
 {
     LOG_DEBUG("bt spp init...");
-    bt_stdio.put_char = bt_putc;
-    bt_stdio.get_char = bt_getc;
-    bt_cli_dev.stdio = &bt_stdio;
     
     //bt_spp.mode = BT_COM_MODE;
     bt_spp_set_mode(BT_CLI_MODE);
     //bt_spp_set_mode(BT_COM_MODE);
     cli_register_bt_commands();
-    xTaskCreate(bt_spp_task,
+    rtos_task_create(bt_spp_task,
                 "bt_spp_task",
                 512,
                 NULL,
@@ -60,9 +66,9 @@ void bt_spp_set_mode(bt_mode_t mode)
     bt_spp.mode = mode;
     
     if(mode==BT_CLI_MODE)
-        cli_device_register(&bt_cli_dev, "BT CLI");
+        command_register(&bt_command_dev);
     else
-        cli_device_unregister(&bt_cli_dev);
+        command_unregister(&bt_command_dev);
     LOG_DEBUG("bt mode changed");
 }
 
@@ -93,7 +99,7 @@ static void bt_spp_task(void *args)
             ret = bt_spp_read(bt_buffer, BT_BUFFER_SIZE);
             if(ret<=0)
             {
-                vTaskDelay(5);
+                delay_ms(5);
                 continue;
             }
             bt_buffer[ret]='\0';
@@ -101,7 +107,7 @@ static void bt_spp_task(void *args)
         }
         else
         {
-            vTaskDelay(10);
+            delay_ms(10);
         }
     }
 }
