@@ -17,7 +17,7 @@ void system_time_inc(void)
     _system_time++;
 }
 
-e_uint32_t get_system_time(void)
+e_uint32_t system_get_time(void)
 {
     return _system_time;
 }

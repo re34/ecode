@@ -2323,6 +2323,15 @@
   <group>
     <name>drivers</name>
     <group>
+      <name>iic</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\iic\iic.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\iic\iic_bit.c</name>
+      </file>
+    </group>
+    <group>
       <name>serial</name>
       <file>
         <name>$PROJ_DIR$\..\..\..\drivers\serial\serial.c</name>

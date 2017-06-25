@@ -14,7 +14,7 @@ struct time_operations{
 
 e_err_t time_init(struct time_operations ops);
 void system_time_inc(void);
-e_uint32_t get_system_time(void);
+e_uint32_t system_get_time(void);
 void bare_delay_ms(e_uint32_t ms);
 void bare_delay_us(e_uint32_t us);
 void delay_ms(e_uint32_t ms);

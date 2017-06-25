@@ -3,6 +3,7 @@
 #include "assert.h"
 #include "print_log.h"
 #include "time.h"
+#include <string.h>
 
 
 LIST_HEAD(cli_head);

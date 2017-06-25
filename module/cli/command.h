@@ -44,4 +44,5 @@ e_err_t command_register(struct command_dev *command);
 void command_register_commands(struct command_list *command_entry, struct command_item *items);
 void command_print_promot(struct command_dev *command);
 e_err_t command_print_help_list(struct command_dev *command);
+e_err_t command_print_help(struct command_dev *command, const char *name);
 #endif

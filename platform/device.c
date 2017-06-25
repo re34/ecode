@@ -1,5 +1,5 @@
 #include "device.h"
-
+#include "print_log.h"
 
 /**
  * This function registers a device driver with specified name.
