@@ -191,5 +191,3 @@ e_err_t iic_bit_register(int bus,struct iic_bit_dev *iic_bit_dev)
     return iic_register(bus, &(iic_bit_dev->parent));
 }
 
-
-
