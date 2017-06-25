@@ -2127,6 +2127,9 @@
         <name>$PROJ_DIR$\..\..\..\module\cli\cli.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\..\..\module\cli\cli_errno.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\module\cli\command.c</name>
       </file>
     </group>
@@ -2163,10 +2166,10 @@
         <name>$PROJ_DIR$\..\applications\applications.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\applications\command_service.c</name>
+        <name>$PROJ_DIR$\..\applications\command_handle.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\applications\commands.c</name>
+        <name>$PROJ_DIR$\..\applications\command_service.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\applications\startup.c</name>

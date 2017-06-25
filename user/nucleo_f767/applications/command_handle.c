@@ -1,10 +1,10 @@
-#include "commands.h"
+#include "command_handle.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "ecode.h"
 
-static e_err_t help(struct command_dev *command, char **args, int atgc);
-static e_err_t version(struct command_dev *command, char **args, int argc);
+static int help(struct command_dev *command, char **args, int atgc);
+static int version(struct command_dev *command, char **args, int argc);
 
 static const struct command_item platform_commands[]={
     {.name="help", .handle = help, .brief="(), get the help info\r\n"},
@@ -20,37 +20,33 @@ void command_register_platform_commands(void)
     command_register_commands(&platform_commands_entry, (struct command_item *)platform_commands);
 }
 
-static e_err_t help(struct command_dev *command, char **args, int argc)
+static int help(struct command_dev *command, char **args, int argc)
 {
     int i;
     if(argc==0)
     {
         command_print_help_list(command);
     }
-    /*
     else
     {
         for(i=0;i<argc;i++)
         {
-          if(cli_print_help(command, args[i])<0)
+          if(command_print_help(command, args[i])<0)
           {
-            cli_error(command, ERROR_PARAM);
+            return ERROR_PARAM;
           }
         }
     }
-    */
     
-    //cli_error(command, ERROR_NONE);
-    return E_EOK;
+    return ERROR_NONE;
 }
 
-static e_err_t version(struct command_dev *command, char **args, int argc)
+static int version(struct command_dev *command, char **args, int argc)
 {
-    //if(argc!=0)
-    //    cli_error(command, ERROR_PARAM);
+    if(argc!=0)
+        return ERROR_PARAM;
     
     FirmwareInfoPrint();
     
-    //cli_error(command, ERROR_NONE);
-    return E_EOK;
+    return ERROR_NONE;
 }

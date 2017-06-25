@@ -3,6 +3,7 @@
 #include "types.h"
 #include "cli.h"
 #include "link_list.h"
+#include "cli_errno.h"
 
 #define CMD_NAME_LEN        25
 #define CMD_PARAM_NUM_MAX   50
@@ -26,7 +27,7 @@ struct command_dev{
     const struct command_operations *ops;
 };
 
-typedef e_err_t (*command_handle_t)(struct command_dev *command, char **args, int argc);
+typedef int (*command_handle_t)(struct command_dev *command, char **args, int argc);
 
 struct command_item{
     const char *name;
@@ -41,5 +42,6 @@ struct command_list{
 
 e_err_t command_register(struct command_dev *command);
 void command_register_commands(struct command_list *command_entry, struct command_item *items);
+void command_print_promot(struct command_dev *command);
 e_err_t command_print_help_list(struct command_dev *command);
 #endif

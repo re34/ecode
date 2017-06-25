@@ -5,6 +5,7 @@
 #include "print_log.h"
 #include <string.h>
 #include <ctype.h>
+#include "cli_errno.h"
 
 #define END_OF_LINE     '\n'
 
@@ -30,19 +31,36 @@ e_err_t command_input(struct cli_dev *cli)
             LOG_DEBUG("command rx buffer is full!");
             return -E_EFULL;
         }
-        buffer[command->rx_buffer.pos++]= data;
-        
-        ops->putc(data);
         
         if((data=='\b')&&(command->rx_buffer.pos!=0))
         {
+            ops->putc('\b');
             ops->putc(' ');
             ops->putc('\b');
             command->rx_buffer.pos--;
         }
+        else if(data!='\b')
+        {
+            ops->putc(data);
+            buffer[command->rx_buffer.pos++]= data;
+        }
         
         if(data==END_OF_LINE)
+        {
+            if(command->rx_buffer.pos==1)
+            {
+                command_print_promot(command);
+                command->rx_buffer.pos = 0;
+            }
+            if((command->rx_buffer.pos==2)&&(buffer[0]=='\r'))
+            {
+                command_print_promot(command);
+                command->rx_buffer.pos = 0;
+            }
+                
             return E_EOK;
+        }
+            
     }
     
  
@@ -92,7 +110,7 @@ e_size_t command_output(struct cli_dev *cli, void *buffer, e_size_t size)
     if(ops->putc==NULL)
         return -E_ERROR;
     
-    while(size>0)
+    while(pos<size)
     {
         if(ops->putc(*pdata++)<0)
             break;
@@ -102,9 +120,9 @@ e_size_t command_output(struct cli_dev *cli, void *buffer, e_size_t size)
     return pos;
 }
 
-void command_print_promot(struct cli_dev *cli)
+void command_print_promot(struct command_dev *command)
 {
-    cli_puts(cli, "ecode>>");
+    command_puts(command, "ecode>>");
 }
 
 e_err_t command_parsing(struct cli_dev *cli, struct cli_command *cmd)
@@ -114,6 +132,8 @@ e_err_t command_parsing(struct cli_dev *cli, struct cli_command *cmd)
     char *p;
     char *ptemp;
     e_size_t len;
+    e_err_t ret = -E_EOK;
+    const char * errno;
     
     ASSERT_PARAM(cli!=NULL);
     
@@ -122,7 +142,10 @@ e_err_t command_parsing(struct cli_dev *cli, struct cli_command *cmd)
     buffer = command->rx_buffer.buffer;
     len = command->rx_buffer.pos;
     if(len<=0)
-        return -E_EEMPTY;
+    {
+        ret = -E_EEMPTY;
+        goto out;
+    }
     
     p = buffer+command->rx_buffer.pos-1;
     
@@ -135,8 +158,10 @@ e_err_t command_parsing(struct cli_dev *cli, struct cli_command *cmd)
     }
     
     if(len==0)
-        return -E_EEMPTY;
-    
+    {
+        ret = -E_EEMPTY;
+        goto out;
+    }
     buffer[len]='\0';
     
     p = buffer;
@@ -155,14 +180,17 @@ e_err_t command_parsing(struct cli_dev *cli, struct cli_command *cmd)
     ptemp = strchr(p, '(');
     
     if(ptemp==NULL)
-        return -E_ERROR;
-    
+    {
+        ret = -E_ERROR;
+        goto out;
+    }
     *ptemp = '\0';
     
     if(strlen(p)>=CMD_NAME_LEN)
     {
         LOG_DEBUG("cmd name is too long!");
-        return -E_EFULL;
+        ret = -E_EFULL;
+        goto out;
     }
     
     memcpy(command->params.name, p, strlen(p));
@@ -174,13 +202,15 @@ e_err_t command_parsing(struct cli_dev *cli, struct cli_command *cmd)
     if(p==NULL)
     {
         LOG_DEBUG("no ) is found!");
-        return -E_ERROR;
+        ret = -E_ERROR;
+        goto out;
     }
     p = strchr(p, ')');
     if(p==NULL)
     {
         LOG_DEBUG("no ) is found!");
-        return -E_ERROR;
+        ret = -E_ERROR;
+        goto out;
     }
     
     *p = '\0';
@@ -203,7 +233,8 @@ e_err_t command_parsing(struct cli_dev *cli, struct cli_command *cmd)
             if(command->params.argc>CMD_PARAM_NUM_MAX)
             {
                 LOG_DEBUG("param is too long!");
-                return -E_ERROR;
+                ret = -E_ERROR;
+                goto out;
             }
             p = strchr(p, ',');
         }
@@ -211,9 +242,17 @@ e_err_t command_parsing(struct cli_dev *cli, struct cli_command *cmd)
     
     cmd->cmd = command->params.name;
     cmd->arg = &command->params;
+
+out:
+    if((ret!=E_EOK)&&(ret!=-E_EEMPTY))
+    {
+        errno = cli_match_error(ERROR_UNKNOW);
+        command_puts(cli->private_data, errno);
+        command_puts(cli->private_data, "\r\n");
+        command_print_promot(cli->private_data);
+    }
     command->rx_buffer.pos = 0;
-    
-    return E_EOK;
+    return ret;
 }
 
 static struct command_item * command_match(const char *name)
@@ -243,6 +282,8 @@ static struct command_item * command_match(const char *name)
 
 e_err_t command_execute(struct cli_dev *cli, struct cli_command *cmd)
 {
+    int ret;
+    const char *errno;
     ASSERT_PARAM(cli!=NULL);
     ASSERT_PARAM(cmd!=NULL);
     struct command_params *params = cmd->arg;
@@ -253,14 +294,21 @@ e_err_t command_execute(struct cli_dev *cli, struct cli_command *cmd)
     
     if((item!=NULL)&&(item->handle!=NULL))
     {
-        if(item->handle(cli->private_data, params->args, params->argc)!=E_EOK)
+        ret = item->handle(cli->private_data, params->args, params->argc);
+        errno = cli_match_error(ret);
+        if(ret!=ERROR_NONE)
         {
-            
+            command_puts(cli->private_data, errno);
+            command_puts(cli->private_data, "\r\n");
         }
+        command_print_promot(cli->private_data);
     }
     else
     {
-        
+        errno = cli_match_error(ERROR_UNKNOW);
+        command_puts(cli->private_data, errno);
+        command_puts(cli->private_data, "\r\n");
+        command_print_promot(cli->private_data);
     }
     
     
