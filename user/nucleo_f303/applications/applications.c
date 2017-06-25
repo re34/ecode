@@ -1,51 +1,21 @@
 #include "board.h"
-#include "bt_spp.h"
-#include "smart_car.h"
+#include "ecode.h"
+#include "command_service.h"
+#include "led_task.h"
 
 
-static struct cli_dev com_cli;
-static struct stdioex_device com_stdio;
-
-void cli_task(void *args);
-void led_task(void *args);
 
 void ecode_application_init(void)
 {
-	bt_spp_init();
-	
-	smart_car_init();
-	
-	xTaskCreate(cli_task,
-            "cli_task",
-            1024,
-            NULL,
-            2,
-            NULL);
-	xTaskCreate(led_task,
-            "led_task",
-            1024,
-            NULL,
-            3,
-            NULL);	
-}
-
-
-static inline int com_putchar(unsigned char data)
-{
-    //write(COM1, (char *)&data, 1);
-    serial_write(COM1, (char *)&data, 1);
-    return 0;
-}
-static inline int com_getchar(void)
-{
-    int data=-1;
+    cli_init();
+    command_service_init();
+    led_task_init();
+    //tcp_server_init();
     
-    serial_read(COM1,&data, 1);
-    
-    return data;
 }
 
 
+<<<<<<< HEAD
 void cli_task(void *args)
 {
     cli_register_platform_commands();
@@ -80,6 +50,8 @@ void led_task(void *args)
 	}
 }
 
+=======
+>>>>>>> master
 
 #ifdef  USE_FULL_ASSERT
 
@@ -101,4 +73,3 @@ void assert_failed(uint8_t* file, uint32_t line)
   }
 }
 #endif
-

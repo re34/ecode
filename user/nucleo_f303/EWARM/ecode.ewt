@@ -2315,6 +2315,60 @@
     </settings>
   </configuration>
   <group>
+    <name>drivers</name>
+    <group>
+      <name>eth</name>
+    </group>
+    <group>
+      <name>iic</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\iic\iic.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\iic\iic_bit.c</name>
+      </file>
+    </group>
+    <group>
+      <name>oled</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\oled\ascii12.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\oled\oled.c</name>
+      </file>
+    </group>
+    <group>
+      <name>pin</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\pin\pin.c</name>
+      </file>
+    </group>
+    <group>
+      <name>serial</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\serial\serial.c</name>
+      </file>
+    </group>
+    <group>
+      <name>spi</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\spi\spi.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\spi\spi_bit.c</name>
+      </file>
+    </group>
+    <group>
+      <name>timer</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\timer\pwm.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\timer\timer.c</name>
+      </file>
+    </group>
+  </group>
+  <group>
     <name>library</name>
     <group>
       <name>FreeRTOS</name>
@@ -2354,138 +2408,45 @@
     </group>
   </group>
   <group>
+    <name>module</name>
+    <group>
+      <name>cli</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\module\cli\cli.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\module\cli\cli_errno.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\module\cli\command.c</name>
+      </file>
+    </group>
+  </group>
+  <group>
     <name>platform</name>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ascii12.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ascii16.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\cli_errno.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\cli_errno.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\cli_message_parsing.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\cli_message_parsing.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\cli_message_read_line.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\cli_message_read_line.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\config.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\delay.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\delay.h</name>
+      <name>$PROJ_DIR$\..\..\..\platform\assert.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\device.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ecode.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ecode.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ecode_assert.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ecode_cli.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ecode_cli.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ecode_rtos.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ecode_rtos.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\includes.h</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\..\..\platform\object.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\oled.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\pid.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\pin.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\platform_cli_handles.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\platform_cli_handles.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\print_log.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\print_log.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\pwm.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\pwm.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\serial.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\serial.h</name>
+      <name>$PROJ_DIR$\..\..\..\platform\rtos.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\stdio_ex.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\platform\stdio_ex.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\ticks.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\timer.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\timer.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\timer_event.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\timer_event.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\timestamp.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\timestamp.h</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\types.h</name>
+      <name>$PROJ_DIR$\..\..\..\platform\time.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\version.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\version.h</name>
     </file>
   </group>
   <group>
@@ -2496,6 +2457,7 @@
         <name>$PROJ_DIR$\..\applications\applications.c</name>
       </file>
       <file>
+<<<<<<< HEAD
         <name>$PROJ_DIR$\..\applications\bt_cli_handle.c</name>
       </file>
       <file>
@@ -2512,11 +2474,20 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\applications\smart_car.c</name>
+=======
+        <name>$PROJ_DIR$\..\applications\command_handle.c</name>
+>>>>>>> master
       </file>
       <file>
-        <name>$PROJ_DIR$\..\applications\smart_car_handle.c</name>
+        <name>$PROJ_DIR$\..\applications\command_service.c</name>
       </file>
       <file>
+<<<<<<< HEAD
+=======
+        <name>$PROJ_DIR$\..\applications\led_task.c</name>
+      </file>
+      <file>
+>>>>>>> master
         <name>$PROJ_DIR$\..\applications\startup.c</name>
       </file>
     </group>
@@ -2526,22 +2497,7 @@
         <name>$PROJ_DIR$\..\drivers\board.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\drivers\exti15_10.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\drivers\exti4.c</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\drivers\FreeRTOSConfig.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\drivers\hcsr04.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\drivers\pwm2.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\drivers\pwm3.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\startup_stm32f303xe.s</name>
@@ -2559,16 +2515,7 @@
         <name>$PROJ_DIR$\..\drivers\system_stm32f3xx.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\drivers\timer1.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\drivers\timer2.c</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\drivers\uart.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\drivers\user_oled.c</name>
       </file>
     </group>
     <group>
@@ -2801,6 +2748,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\utils\link_list.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\utils\pid.c</name>
     </file>
   </group>
 </project>

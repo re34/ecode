@@ -1,11 +1,11 @@
 #ifndef _CRC16_H
 #define _CRC16_H
-#include "includes.h"
+#include "types.h"
 
-UInt16 Crc16Cal(const UInt8 *buf, int len);
+e_uint16_t Crc16Cal(const e_uint8_t *buf, int len);
 
 
-Int8 Crc16CheckSum(UInt16 tcrc,const UInt8 *buf, int sz);
+e_int8_t Crc16CheckSum(e_uint16_t tcrc,const e_uint8_t *buf, int sz);
 #endif
 
 

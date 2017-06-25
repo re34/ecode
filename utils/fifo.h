@@ -1,6 +1,6 @@
 #ifndef _FIFO_H_
 #define _FIFO_H_
-#include "includes.h"
+#include "types.h"
 
 
 #ifdef __cplusplus
@@ -9,24 +9,24 @@ extern "C" {
 
 typedef struct
 {
-	UInt8* pBuffer;
-	UInt16 iFront;
-	UInt16 iRear;
-	UInt16 nSize;
-	UInt16 nCapacity;
+	e_uint8_t* pBuffer;
+	e_uint16_t iFront;
+	e_uint16_t iRear;
+	e_uint16_t nSize;
+	e_uint16_t nCapacity;
 }Fifo;
 
 
-Int8 FifoCreate(Fifo *pFifo,UInt8 *pBuf,UInt16 nFifoSize);
+e_int8_t FifoCreate(Fifo *pFifo,e_uint8_t *pBuf,e_uint16_t nFifoSize);
 void FifoFinish(Fifo* pFifo);
 
-Int8 FifoIsEmpty(Fifo* pFifo);
-Int8 FifoIsFull(Fifo* pFifo);
+e_int8_t FifoIsEmpty(Fifo* pFifo);
+e_int8_t FifoIsFull(Fifo* pFifo);
 
-void FifoPush(Fifo* pFifo, UInt8 bData);
-UInt8 FifoPop(Fifo* pFifo);
+void FifoPush(Fifo* pFifo, e_uint8_t bData);
+e_uint8_t FifoPop(Fifo* pFifo);
 
-UInt16 FifoQueryPushed(Fifo *pFifo);
+e_uint16_t FifoQueryPushed(Fifo *pFifo);
 void FifoReset(Fifo *pFifo);
 #ifdef __cplusplus
 }

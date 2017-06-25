@@ -1,4 +1,5 @@
 #include "board.h"
+#include "ecode.h"
 #include "board_includes.h"
 #include "uart.h"
 
@@ -17,10 +18,13 @@ void ecode_hw_board_init()
 	
     uart_hw_init();
     
-    fprint_log.put_char = uart_putc;
+    stm_pin_init();
+    
+    fprint_log.putc = print_log_putc;
     
     print_log_register_io(fprint_log);
     
+    //eth_init();
 }
 
 static int print_log_putc(unsigned char c)
@@ -31,9 +35,9 @@ static int print_log_putc(unsigned char c)
 
 void SysTick_Handler(void)
 {
-    tick_inc();
     HAL_IncTick();
-    rtos_systick();
+    system_time_inc();
+	rtos_systick();
 }
 #if RTOS_EN==1
 #if configCHECK_FOR_STACK_OVERFLOW==1

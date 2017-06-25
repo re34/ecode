@@ -1,5 +1,6 @@
 #include "sys_arch.h"
-#include "ecode.h"
+#include "types.h"
+#include "time.h"
 
 /**
 * @brief  Returns the current time in milliseconds
@@ -7,10 +8,10 @@
 * @param  None
 * @retval Time
 */
-u32_t sys_jiffies(void)
+e_uint32_t sys_jiffies(void)
 {
   //return HAL_GetTick();
-  return get_ticks();
+  return system_get_time();
 }
 
 /**
@@ -19,8 +20,8 @@ u32_t sys_jiffies(void)
 * @param  None
 * @retval Time
 */
-u32_t sys_now(void)
+e_uint32_t sys_now(void)
 {
   //return HAL_GetTick();
-  return get_ticks();
+  return system_get_time();
 }

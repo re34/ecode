@@ -1,10 +1,11 @@
 #include "board.h"
+#include "ecode.h"
+//#include "rtos.h"
+//#include "time.h"
+//#include "print_log.h"
+//#include "uart.h"
 #include "uart.h"
-#include "pwm2.h"
-#include "pwm3.h"
-#include "user_oled.h"
-#include "timer1.h"
-#include "timer2.h"
+//#include "eth.h"
 
 void board_clock_configuration(void);
 static int print_log_putc(unsigned char c);
@@ -14,30 +15,20 @@ static int print_log_putc(unsigned char c);
 void ecode_hw_board_init()
 {
     struct print_log_interface fprint_log;
-    
+	
 	//__set_PRIMASK(1);
 	
     board_clock_configuration();
-    
+	
     uart_hw_init();
+    
+    stm_pin_init();
     
     fprint_log.putc = print_log_putc;
     
     print_log_register_io(fprint_log);
-
-    stm_pin_init();
-	
-	pwm2_init();
-	
-	pwm3_init();
-	
-	user_oled_init();
-	
-	hcsr04_hw_init();
     
-    timer1_init();
-    
-    timer2_init();
+    //eth_init();
 }
 
 static int print_log_putc(unsigned char c)
@@ -48,8 +39,8 @@ static int print_log_putc(unsigned char c)
 
 void SysTick_Handler(void)
 {
-    tick_inc();
     HAL_IncTick();
+    system_time_inc();
 	rtos_systick();
 }
 

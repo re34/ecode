@@ -1,6 +1,6 @@
 #include "Fifo.h"
 
-Int8 FifoCreate(Fifo *pFifo,UInt8 *pBuf,UInt16 nFifoSize)
+e_int8_t FifoCreate(Fifo *pFifo,e_uint8_t *pBuf,e_uint16_t nFifoSize)
 {
 	if(pBuf == NULL)
 		return -1;
@@ -19,7 +19,7 @@ Int8 FifoCreate(Fifo *pFifo,UInt8 *pBuf,UInt16 nFifoSize)
 	return 0;
 }
 
-Int8 FifoIsEmpty(Fifo* pFifo)
+e_int8_t FifoIsEmpty(Fifo* pFifo)
 {
 	if(pFifo == NULL)
 		return 0;
@@ -28,7 +28,7 @@ Int8 FifoIsEmpty(Fifo* pFifo)
 	return 0;
 }
 
-Int8 FifoIsFull(Fifo* pFifo)
+e_int8_t FifoIsFull(Fifo* pFifo)
 {
 	if(pFifo == NULL)
 		return 1;
@@ -37,7 +37,7 @@ Int8 FifoIsFull(Fifo* pFifo)
 	return 0;
 }
 
-void FifoPush(Fifo* pFifo, UInt8 bData)
+void FifoPush(Fifo* pFifo, e_uint8_t bData)
 {
 	*(pFifo->pBuffer + pFifo->iRear) = bData;
 	if((pFifo->iRear + 1) == pFifo->nCapacity)
@@ -51,9 +51,9 @@ void FifoPush(Fifo* pFifo, UInt8 bData)
 	return;
 }
 
-UInt8 FifoPop(Fifo* pFifo)
+e_uint8_t FifoPop(Fifo* pFifo)
 {
-	UInt8 bData;
+	e_uint8_t bData;
 	bData = *(pFifo->pBuffer + pFifo->iFront);
 	if((pFifo->iFront + 1) == pFifo->nCapacity)
 	{
@@ -66,7 +66,7 @@ UInt8 FifoPop(Fifo* pFifo)
 	return bData;
 }
 
-UInt16 FifoQueryPushed(Fifo *pFifo)
+e_uint16_t FifoQueryPushed(Fifo *pFifo)
 {
     return pFifo->nSize;
 }

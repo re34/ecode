@@ -1,7 +1,11 @@
 #include "board.h"
+#include "ecode.h"
+//#include "rtos.h"
+//#include "time.h"
+//#include "print_log.h"
 //#include "uart.h"
 #include "uart.h"
-#include "eth.h"
+//#include "eth.h"
 
 void board_clock_configuration(void);
 static int print_log_putc(unsigned char c);
@@ -36,7 +40,7 @@ static int print_log_putc(unsigned char c)
 void SysTick_Handler(void)
 {
     HAL_IncTick();
-    tick_inc();
+    system_time_inc();
 	rtos_systick();
 }
 
