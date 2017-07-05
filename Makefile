@@ -1,4 +1,4 @@
-
+#!/bin/sh
 
 PROJECT_NAME    :=ecode_nucleo_f303
 
@@ -28,9 +28,11 @@ LDFLAGS		+=-u_printf_float
 LDFLAGS		+=-Wl,--gc-sections
 LDFLAGS		+=-mfpu=fpv4-sp-d16 -mfloat-abi=softfp
 
+
+PROJECT_DIR     :=$(shell pwd)
 LINK_FILE   = $(PROJECT_DIR)/user/nucleo_f303/gcc_toolchain/STM32XE_FLASH.ld
 
-PROJECT_DIR     :=.
+
 BUILD_DIR       :=$(PROJECT_DIR)/build
 OUTPUT_DIR      :=$(PROJECT_DIR)/OBJ
 
@@ -39,7 +41,7 @@ TARGET_BIN      :=$(OUTPUT_DIR)/$(PROJECT_NAME).bin
 TARGET_HEX      :=$(OUTPUT_DIR)/$(PROJECT_NAME).hex
 
 SOURCE_DIR      :=$(PROJECT_DIR)/common
-SOURCE_DIR      +=$(PROJECT_DIR)/drivers/chip
+#SOURCE_DIR      +=$(PROJECT_DIR)/drivers/chip
 #SOURCE_DIR      +=$(PROJECT_DIR)/eth
 SOURCE_DIR      +=$(PROJECT_DIR)/drivers/iic
 SOURCE_DIR      +=$(PROJECT_DIR)/drivers/oled
@@ -52,11 +54,11 @@ SOURCE_DIR      +=$(PROJECT_DIR)/platform
 SOURCE_DIR      +=$(PROJECT_DIR)/user/nucleo_f303/applications
 SOURCE_DIR      +=$(PROJECT_DIR)/user/nucleo_f303/drivers/
 SOURCE_DIR      +=$(PROJECT_DIR)/user/nucleo_f303/CMSIS/
-SOURCE_DIR      +=$(PROJECT_DIR)/user/nucleo_f303/STMF3xx_HAL_Driver/Src
+SOURCE_DIR      +=$(PROJECT_DIR)/user/nucleo_f303/STM32F3xx_HAL_Driver/Src
 SOURCE_DIR      +=$(PROJECT_DIR)/utils
 SOURCE_DIR      +=$(PROJECT_DIR)/library/FreeRTOS
-SOURCE_DIR      +=$(PROJECT_DIR)/portable/MemMang
-SOURCE_DIR      +=$(PROJECT_DIR)/portable/GCC/ARM_CM3
+SOURCE_DIR      +=$(PROJECT_DIR)/library/FreeRTOS/portable/MemMang
+SOURCE_DIR      +=$(PROJECT_DIR)/library/FreeRTOS/portable/GCC/ARM_CM4F
 
 SOURCE_ASM      :=$(PROJECT_DIR)/user/nucleo_f303/gcc_toolchain
 
@@ -88,24 +90,24 @@ create_obj_dirs :=$(shell for f in $(obj_dirs);\
                         done)
                         
 $(TARGET_BIN):$(TARGET_ELF)
-    $(OBJCP) -O binary -S $< $@
+	$(OBJCP) -O binary -S $< $@
     
 $(TARGET_ELF):$(c_objs) $(asm_objs)
-    $(CC) $(LDFLAGS) $^ -T $(LINK_FILE) -o $@
-    $(OBJSIZE) $@
+	$(CC) $(LDFLAGS) $^ -T $(LINK_FILE) -o $@
+	$(OBJSIZE) $@
     
 $(c_objs):$(BUILD_DIR)/%.o:%.c
-    $(CC) $(CCFLAGS) $(DEFS) $(includes) -c $< -o $@
+	$(CC) $(CCFLAGS) $(DEFS) $(includes) -c $< -o $@
     
 $(asm_objs):$(BUILD_DIR)/%.o:%.s
-    $(CC) $(CCFLAGS) -c $< -o $@
+	$(CC) $(CCFLAGS) -c $^ -o $@
     
 clean:
-    rm -rf $(c_objs)
-    rm -rf $(asm_objs)
-    rm -rf $(TARGET_BIN)
-    rm -rf $(TARGET_ELF)
-    rm -rf $(TARGET_HEX)
+	rm -rf $(c_objs)
+	rm -rf $(asm_objs)
+	rm -rf $(TARGET_BIN)
+	rm -rf $(TARGET_ELF)
+	rm -rf $(TARGET_HEX)
                         
 
 
