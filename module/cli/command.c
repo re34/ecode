@@ -24,7 +24,7 @@ e_err_t command_input(struct cli_dev *cli)
     ops = command->ops;
     buffer = command->rx_buffer.buffer;
     
-    while((data=ops->getc())!=-1)
+    while((data=ops->fgetc())!=-1)
     {
         if(command->rx_buffer.pos>command->rx_buffer.size)
         {
@@ -34,14 +34,14 @@ e_err_t command_input(struct cli_dev *cli)
         
         if((data=='\b')&&(command->rx_buffer.pos!=0))
         {
-            ops->putc('\b');
-            ops->putc(' ');
-            ops->putc('\b');
+            ops->fputc('\b');
+            ops->fputc(' ');
+            ops->fputc('\b');
             command->rx_buffer.pos--;
         }
         else if(data!='\b')
         {
-            ops->putc(data);
+            ops->fputc(data);
             buffer[command->rx_buffer.pos++]= data;
         }
         
@@ -81,12 +81,12 @@ e_size_t command_puts(struct command_dev *command, const char *str)
     len = strlen(str);
     temp = len;
     
-    if(ops->putc==NULL)
+    if(ops->fputc==NULL)
         return -E_ERROR;
     
     while(len>0)
     {
-        if(ops->putc(*pdata++)<0)
+        if(ops->fputc(*pdata++)<0)
             break;
         len--;
     }
@@ -107,12 +107,12 @@ e_size_t command_output(struct cli_dev *cli, void *buffer, e_size_t size)
     
     pdata = buffer;
     
-    if(ops->putc==NULL)
+    if(ops->fputc==NULL)
         return -E_ERROR;
     
     while(pos<size)
     {
-        if(ops->putc(*pdata++)<0)
+        if(ops->fputc(*pdata++)<0)
             break;
         pos++;
     }

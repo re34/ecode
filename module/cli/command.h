@@ -9,8 +9,8 @@
 #define CMD_PARAM_NUM_MAX   50
 
 struct command_operations{
-    int (*getc)(void);
-    int (*putc)(char c);
+    int (*fgetc)(void);
+    int (*fputc)(char c);
 };
 
 struct command_params{

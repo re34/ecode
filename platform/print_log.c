@@ -6,10 +6,10 @@
 
 #ifdef __GNUC__
 /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
-   set to 'Yes') calls __io_putchar() */
-#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+   set to 'Yes') calls __io_fputchar() */
+#define PUTCHAR_PROTOTYPE int __io_fputchar(int ch)
 #else
-#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#define PUTCHAR_PROTOTYPE int ffputc(int ch, FILE *f)
 #endif /* __GNUC__ */
 
 typedef struct{
@@ -36,7 +36,7 @@ const LogStrItem_t tLogStrMap[]={
 
 struct print_log_interface fprint_log={NULL};
 
-static inline int print_log_putchar(char data);
+static inline int print_log_fputchar(char data);
 
 void print_log_register_io(struct print_log_interface fio)
 {
@@ -46,11 +46,11 @@ void print_log_register_io(struct print_log_interface fio)
 }
 
 
-static int print_log_putchar(char data)
+static int print_log_fputchar(char data)
 {
-    if(fprint_log.putc==NULL)
+    if(fprint_log.fputc==NULL)
         return -1;
-    return fprint_log.putc(data);
+    return fprint_log.fputc(data);
 }
 
 
@@ -120,7 +120,7 @@ int print_hex(const char *data, int len, char delim)
 PUTCHAR_PROTOTYPE
 {
 
-    print_log_putchar(ch);
+    print_log_fputchar(ch);
 
     return ch;
 }

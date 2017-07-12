@@ -139,8 +139,8 @@ static int stm_getc(struct serial_dev *serial)
 
 static const struct serial_operation stm_uart_ops={
     .init = stm_uart_init,
-    .putc = stm_putc,
-    .getc = stm_getc,
+    .fputc = stm_putc,
+    .fgetc = stm_getc,
 };
 
 #ifdef USE_UART2
