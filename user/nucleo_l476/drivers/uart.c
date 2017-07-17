@@ -2,18 +2,19 @@
 #include "board_includes.h"
 #include "ecode.h"
 
-#define UART_INSTANCE           USART2
-#define UART_CLK_ENABLE()     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART2)
-#define UART_CLK_SOURCE()     LL_RCC_SetUSARTClockSource(LL_RCC_USART2_CLKSOURCE_PCLK1)
-#define UART_GPIO_CLK_ENABLE()    LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA)
-#define UART_TX_PIN               LL_GPIO_PIN_2
-#define UART_TX_GPIO_PORT              GPIOA
-#define UART_SET_TX_GPIO_AF()         LL_GPIO_SetAFPin_0_7(UART_TX_GPIO_PORT, UART_TX_PIN, LL_GPIO_AF_7)
-#define UART_RX_PIN               LL_GPIO_PIN_3
-#define UART_RX_GPIO_PORT              GPIOA
-#define UART_SET_RX_GPIO_AF()         LL_GPIO_SetAFPin_0_7(UART_RX_GPIO_PORT, UART_RX_PIN, LL_GPIO_AF_7)
-#define UART_IRQ_NUM              USART2_IRQn
-#define UART_INTERRUPT              USART2_IRQHandler
+#define USE_UART2               1
+#define UART2_INSTANCE           USART2
+#define UART2_CLK_ENABLE()     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART2)
+#define UART2_CLK_SOURCE()     LL_RCC_SetUSARTClockSource(LL_RCC_USART2_CLKSOURCE_PCLK1)
+#define UART2_GPIO_CLK_ENABLE()    LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA)
+#define UART2_TX_PIN               LL_GPIO_PIN_2
+#define UART2_TX_GPIO_PORT              GPIOA
+#define UART2_SET_TX_GPIO_AF()         LL_GPIO_SetAFPin_0_7(UART2_TX_GPIO_PORT, UART2_TX_PIN, LL_GPIO_AF_7)
+#define UART2_RX_PIN               LL_GPIO_PIN_3
+#define UART2_RX_GPIO_PORT              GPIOA
+#define UART2_SET_RX_GPIO_AF()         LL_GPIO_SetAFPin_0_7(UART2_RX_GPIO_PORT, UART2_RX_PIN, LL_GPIO_AF_7)
+#define UART2_IRQ_NUM              USART2_IRQn
+#define UART2_INTERRUPT              USART2_IRQHandler
 #define SERIAL_RX_BUFFER_SIZE       100
 
 
@@ -139,8 +140,8 @@ static int stm_getc(struct serial_dev *serial)
 
 static const struct serial_operation stm_uart_ops={
     .init = stm_uart_init,
-    .fputc = stm_putc,
-    .fgetc = stm_getc,
+    .putc = stm_putc,
+    .getc = stm_getc,
 };
 
 #ifdef USE_UART2

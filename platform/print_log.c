@@ -48,9 +48,9 @@ void print_log_register_io(struct print_log_interface fio)
 
 static int print_log_fputchar(char data)
 {
-    if(fprint_log.fputc==NULL)
+    if(fprint_log.putc==NULL)
         return -1;
-    return fprint_log.fputc(data);
+    return fprint_log.putc(data);
 }
 
 

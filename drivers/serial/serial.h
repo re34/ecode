@@ -110,8 +110,8 @@ typedef struct serial_device e_serial_t;
 
 struct serial_operation{
     e_err_t (*init)(struct serial_dev *dev);
-    int (*fputc)(struct serial_dev *dev, char c);
-    int (*fgetc)(struct serial_dev *dev);
+    int (*putc)(struct serial_dev *dev, char c);
+    int (*getc)(struct serial_dev *dev);
 };
 
 

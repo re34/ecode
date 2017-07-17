@@ -39,7 +39,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_it.h"
-
+#include <stdio.h>
 
 /** @addtogroup STM32L4xx_HAL_Examples
   * @{

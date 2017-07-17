@@ -18,7 +18,7 @@ e_inline int _serial_poll_rx(struct serial_dev *serial, e_uint8_t *data, int len
     
     while(length)
     {
-        ch = serial->ops->fgetc(serial);
+        ch = serial->ops->getc(serial);
         if(ch == -1)
             break;
         data ++;
@@ -38,7 +38,7 @@ e_inline int _serial_poll_tx(struct serial_dev *serial, const e_uint8_t *data, i
     size = length;
     while(length)
     {
-        serial->ops->fputc(serial, *data);
+        serial->ops->putc(serial, *data);
         
         ++data;
         --length;
@@ -98,7 +98,7 @@ e_inline int _serial_int_tx(struct serial_dev *serial, const e_uint8_t *data, in
     
     while(length)
     {
-        if(serial->ops->fputc(serial, *(char *)data)==-1)
+        if(serial->ops->putc(serial, *(char *)data)==-1)
         {
             continue;
         }
@@ -188,7 +188,7 @@ void serial_hw_isr(struct serial_dev *serial, int event)
             
             while(1)
             {
-                ch = serial->ops->fgetc(serial);
+                ch = serial->ops->getc(serial);
                 if(ch == -1)
                     break;
                 rx_fifo->buffer[rx_fifo->put_index]=ch;
