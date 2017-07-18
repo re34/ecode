@@ -4,8 +4,8 @@
 #include <string.h>
 
 
-UInt8 sndbuf[50], cmdbuf[20];
-Int8 cmd_flag;
+e_uint8_t sndbuf[50], cmdbuf[20];
+e_int8_t cmd_flag;
 
 static err_t tcp_server_accept(void *arg, struct tcp_pcb *pcb, err_t err);
 

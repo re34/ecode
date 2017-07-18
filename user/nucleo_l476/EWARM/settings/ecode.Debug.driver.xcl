@@ -8,7 +8,7 @@
 
 "C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\arm\CONFIG\debugger\ST\STM32L476RG.ddf" 
 
-"--semihosting=none" 
+"--semihosting" 
 
 "--device=STM32L476RG" 
 

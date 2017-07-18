@@ -2317,19 +2317,7 @@
   <group>
     <name>drivers</name>
     <group>
-      <name>chip</name>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\drivers\chip\eeprom.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\drivers\chip\mpu6050.c</name>
-      </file>
-    </group>
-    <group>
       <name>eth</name>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\drivers\eth\ethernetif.c</name>
-      </file>
     </group>
     <group>
       <name>iic</name>
@@ -2421,129 +2409,6 @@
         <name>$PROJ_DIR$\..\..\..\library\FreeRTOS\timers.c</name>
       </file>
     </group>
-    <group>
-      <name>lwip</name>
-      <group>
-        <name>api</name>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\api\api_lib.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\api\api_msg.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\api\err.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\api\netbuf.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\api\netdb.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\api\netifapi.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\api\sockets.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\api\tcpip.c</name>
-        </file>
-      </group>
-      <group>
-        <name>core</name>
-        <group>
-          <name>ipv4</name>
-          <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\autoip.c</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\dhcp.c</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\etharp.c</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\icmp.c</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\igmp.c</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\ip4.c</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\ip4_addr.c</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\ip4_frag.c</name>
-          </file>
-        </group>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\def.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\dns.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\inet_chksum.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\init.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\ip.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\mem.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\memp.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\netif.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\pbuf.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\raw.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\stats.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\sys.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\tcp.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\tcp_in.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\tcp_out.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\timeouts.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\udp.c</name>
-        </file>
-      </group>
-      <group>
-        <name>netif</name>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\netif\ethernet.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\netif\lowpan6.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\netif\slipif.c</name>
-        </file>
-      </group>
-    </group>
   </group>
   <group>
     <name>module</name>
@@ -2617,9 +2482,6 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\startup_stm32l476xx.s</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\drivers\stm32l4xx_hal_msp.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\stm32l4xx_it.c</name>
@@ -2906,6 +2768,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\utils\link_list.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\utils\pid.c</name>
     </file>
   </group>
 </project>

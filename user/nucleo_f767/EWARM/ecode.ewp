@@ -93,7 +93,7 @@
         </option>
         <option>
           <name>GenLowLevelInterface</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>GEndianModeBE</name>
@@ -2094,6 +2094,9 @@
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\igmp.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\inet.c</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\ip4.c</name>

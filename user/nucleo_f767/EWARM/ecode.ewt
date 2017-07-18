@@ -2473,6 +2473,9 @@
             <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\igmp.c</name>
           </file>
           <file>
+            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\inet.c</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\ip4.c</name>
           </file>
           <file>

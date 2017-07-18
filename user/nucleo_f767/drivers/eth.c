@@ -1,7 +1,7 @@
 #include "eth.h"
 #include "ecode.h"
 #include "lan8742.h"
-#include "etharp.h"
+
 
 #if defined ( __CC_ARM )  /* MDK ARM Compiler */
 #include "lwip/sio.h"

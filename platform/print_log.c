@@ -7,9 +7,9 @@
 #ifdef __GNUC__
 /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
    set to 'Yes') calls __io_fputchar() */
-#define PUTCHAR_PROTOTYPE int __io_fputchar(int ch)
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
 #else
-#define PUTCHAR_PROTOTYPE int ffputc(int ch, FILE *f)
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
 #endif /* __GNUC__ */
 
 typedef struct{
@@ -36,21 +36,20 @@ const LogStrItem_t tLogStrMap[]={
 
 struct print_log_interface fprint_log={NULL};
 
-static inline int print_log_fputchar(char data);
+static inline int print_log_putchar(char data);
 
 void print_log_register_io(struct print_log_interface fio)
 {
     fprint_log = fio;
-	
-    print_log("print log inited!\r\n");//此处会进入hardfault,待查找原因
+    LOG_DEBUG("print log inited!");
 }
 
 
-static int print_log_fputchar(char data)
+static int print_log_putchar(char data)
 {
-    if(fprint_log.putc==NULL)
+    if(fprint_log.fputc==NULL)
         return -1;
-    return fprint_log.putc(data);
+    return fprint_log.fputc(data);
 }
 
 
@@ -71,7 +70,7 @@ static char *LogGetLevelString(int level)
 
 int print_level(int level, const char *fmt, ...)
 {
-    int ret;
+    int ret=0;
     if(level==LOG_LEVEL_CLOSE)
         return 0;
 
@@ -120,7 +119,7 @@ int print_hex(const char *data, int len, char delim)
 PUTCHAR_PROTOTYPE
 {
 
-    print_log_fputchar(ch);
+    print_log_putchar(ch);
 
     return ch;
 }

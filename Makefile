@@ -18,7 +18,7 @@ CCFLAGS		+=-ffunction-sections -fdata-sections
 CCFLAGS		+=-g
 
 LDFLAGS		+=-mcpu=cortex-m4 -mthumb
-#LDFLAGS		+=-specs=nano.specs
+LDFLAGS		+=-specs=nano.specs
 LDFLAGS		+=-u_printf_float
 LDFLAGS		+=-Wl,--gc-sections
 LDFLAGS		+=-mfpu=fpv4-sp-d16 -mfloat-abi=softfp
@@ -28,11 +28,10 @@ INC_DIR		+=-I $(PROJECT_DIR)/drivers
 INC_DIR		+=-I $(PROJECT_DIR)/library/FreeRTOS/include
 INC_DIR		+=-I $(PROJECT_DIR)/library/FreeRTOS/portable/GCC/ARM_CM4F
 INC_DIR		+=-I $(PROJECT_DIR)/library/lwip/include
+#INC_DIR		+=-I $(PROJECT_DIR)/library/lwip/include/netif
 INC_DIR		+=-I $(PROJECT_DIR)/library/lwip/include/ipv4
-INC_DIR		+=-I $(PROJECT_DIR)/library/lwip/include
-INC_DIR		+=-I $(PROJECT_DIR)/library/lwip/netif
+INC_DIR		+=-I $(PROJECT_DIR)/library/lwip/arch
 INC_DIR		+=-I $(PROJECT_DIR)/library/lwip
-INC_DIR		+=-I $(PROJECT_DIR)/library/
 INC_DIR		+=-I $(PROJECT_DIR)/module
 INC_DIR		+=-I $(PROJECT_DIR)/platform
 INC_DIR		+=-I $(PROJECT_DIR)/user/$(BOARD_NAME)/applications

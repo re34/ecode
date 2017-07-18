@@ -2,7 +2,7 @@
 #include "board_includes.h"
 #include "ecode.h"
 
-#define USE_UART2               1
+#define USE_UART2
 #define UART2_INSTANCE           USART2
 #define UART2_CLK_ENABLE()     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART2)
 #define UART2_CLK_SOURCE()     LL_RCC_SetUSARTClockSource(LL_RCC_USART2_CLKSOURCE_PCLK1)
@@ -19,8 +19,8 @@
 
 
 
-#define UART_ENABLE_IRQ(n)            NVIC_EnableIRQ((n))
-#define UART_DISABLE_IRQ(n)           NVIC_DisableIRQ((n))
+#define UART2_ENABLE_IRQ(n)            NVIC_EnableIRQ((n))
+#define UART2_DISABLE_IRQ(n)           NVIC_DisableIRQ((n))
 
 struct stm_uart{
     USART_TypeDef *instance;
@@ -82,7 +82,7 @@ static e_err_t stm_uart_init(struct serial_dev *serial)
     { 
     } 
     
-    UART_ENABLE_IRQ(uart->irq);
+    UART2_ENABLE_IRQ(uart->irq);
     LL_USART_EnableIT_RXNE(uart->instance);
     LL_USART_ClearFlag_TC(uart->instance);
     
@@ -140,8 +140,8 @@ static int stm_getc(struct serial_dev *serial)
 
 static const struct serial_operation stm_uart_ops={
     .init = stm_uart_init,
-    .putc = stm_putc,
-    .getc = stm_getc,
+    .fputc = stm_putc,
+    .fgetc = stm_getc,
 };
 
 #ifdef USE_UART2

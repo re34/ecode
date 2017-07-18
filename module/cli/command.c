@@ -375,7 +375,7 @@ e_err_t command_print_help_list(struct command_dev *command)
         
     }
     
-    command_puts(command, "\r\n***********help end*****************\r\n");
+    command_puts(command, "\r\n*************help end*****************\r\n");
     
     return E_EOK;
 }
