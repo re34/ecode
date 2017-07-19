@@ -331,6 +331,12 @@ e_err_t command_register(struct command_dev *command)
     return cli_register(&command->cli);
 }
 
+void command_unregister(struct command_dev *command)
+{
+    cli_unregister(&command->cli);
+    
+}
+
 void command_register_commands(struct command_list *command_entry, struct command_item *items)
 {
     command_entry->commands = items;

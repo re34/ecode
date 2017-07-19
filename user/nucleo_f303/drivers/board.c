@@ -24,7 +24,7 @@ void ecode_hw_board_init()
     
     stm_pin_init();
     
-    fprint_log.putc = print_log_putc;
+    fprint_log.fputc = print_log_putc;
     
     print_log_register_io(fprint_log);
     

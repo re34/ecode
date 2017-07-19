@@ -6,21 +6,29 @@
 
 #include "lwip/opt.h"
 
-#include "lwip/init.h"
-#include "lwip/netif.h"
-#include "netif/ethernet.h"
-
 #include "lwip/def.h"
 #include "lwip/mem.h"
 #include "lwip/pbuf.h"
+#include <lwip/stats.h>
+#include <lwip/snmp.h>
+#include "netif/etharp.h"
+#include "netif/ppp_oe.h"
+
+#include "lwip/udp.h"
 #include "lwip/stats.h"
-#include "lwip/snmp.h"
-#include "lwip/ethip6.h"
-#include "lwip/etharp.h"
-#include "lwip/dhcp.h"
-#include "netif/ppp/pppoe.h"
-#include "lwip/timeouts.h"
+#include "lwip/pbuf.h"
 #include "lwip/ip_addr.h"
+
+#include "lwip/err.h"
+#include "lwip/tcp.h"
+#include "lwip/pbuf.h"
+
+#include "lwip/udp.h"
+#include "lwip/stats.h"
+#include "lwip/pbuf.h"
+#include "lwip/ip_addr.h"
+
+
 
 struct ethernet_dev{
 	void (*low_level_init)(struct netif *netif);

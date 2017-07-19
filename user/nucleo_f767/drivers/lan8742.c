@@ -260,7 +260,7 @@ static void low_level_init(struct netif *netif)
  
 
   /* set MAC hardware address length */
-  netif->hwaddr_len = ETH_HWADDR_LEN;
+  netif->hwaddr_len = ETHARP_HWADDR_LEN;
   
   /* set MAC hardware address */
   netif->hwaddr[0] =  heth.Init.MACAddr[0];

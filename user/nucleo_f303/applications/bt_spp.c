@@ -8,38 +8,44 @@ struct bt_spp{
 };
 
 
-#define BT_BUFFER_SIZE      100
-static unsigned char bt_buffer[BT_BUFFER_SIZE];
+#define BT_RX_BUFFER_SIZE      100
+static unsigned char bt_rx_buffer[BT_RX_BUFFER_SIZE];
 static struct bt_spp bt_spp;
 
-struct cli_dev bt_cli_dev;
-static struct stdioex_device bt_stdio;
+struct command_dev bt_cli_dev;
 
 static void bt_spp_task(void *args);
 
 
-static int bt_putc(unsigned char c)
+static int bt_putc(char c)
 {
-    serial_write(COM2, (char *)&c, 1);
-    return 0;
+    return serial_write(COM2, &c, 1);
 }
 
-static int bt_getc()
+static int bt_getc(void)
 {
-    int data=-1;
-    
-    serial_read(COM2,&data, 1);
-    
-    return data;
+    int data;
+    if(serial_read(COM2, &data, 1)>0)
+        return data;
+    else
+        return -1;
 }
 
+static const struct command_operations command_ops = {
+    .fgetc = bt_getc,
+    .fputc = bt_putc,
+};
+
+static struct command_dev command_service = {
+    .rx_buffer.buffer = bt_rx_buffer,
+    .rx_buffer.size = BT_RX_BUFFER_SIZE,
+    .ops = &command_ops,
+};
 
 void bt_spp_init(void)
 {
     LOG_DEBUG("bt spp init...");
-    bt_stdio.put_char = bt_putc;
-    bt_stdio.get_char = bt_getc;
-    bt_cli_dev.stdio = &bt_stdio;
+
     
     //bt_spp.mode = BT_COM_MODE;
     bt_spp_set_mode(BT_CLI_MODE);
@@ -60,9 +66,9 @@ void bt_spp_set_mode(bt_mode_t mode)
     bt_spp.mode = mode;
     
     if(mode==BT_CLI_MODE)
-        cli_device_register(&bt_cli_dev, "BT CLI");
+        command_register(&bt_cli_dev);
     else
-        cli_device_unregister(&bt_cli_dev);
+        command_unregister(&bt_cli_dev);
     LOG_DEBUG("bt mode changed");
 }
 
@@ -90,14 +96,14 @@ static void bt_spp_task(void *args)
     {
         if(bt_spp.mode==BT_COM_MODE)
         {
-            ret = bt_spp_read(bt_buffer, BT_BUFFER_SIZE);
+            ret = bt_spp_read(bt_rx_buffer, BT_RX_BUFFER_SIZE);
             if(ret<=0)
             {
                 vTaskDelay(5);
                 continue;
             }
-            bt_buffer[ret]='\0';
-            print_log("%s", (char *)bt_buffer);
+            bt_rx_buffer[ret]='\0';
+            print_log("%s", (char *)bt_rx_buffer);
         }
         else
         {

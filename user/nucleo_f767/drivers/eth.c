@@ -12,9 +12,9 @@
 
 
 struct netif gnetif;
-ip4_addr_t ipaddr;
-ip4_addr_t netmask;
-ip4_addr_t gw;
+ip_addr_t ipaddr;
+ip_addr_t netmask;
+ip_addr_t gw;
 
 uint8_t IP_ADDRESS[4];
 uint8_t NETMASK_ADDRESS[4];

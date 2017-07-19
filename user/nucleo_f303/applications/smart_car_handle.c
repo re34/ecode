@@ -6,14 +6,14 @@
 #include <string.h>
 
 
-static int speed(struct cli_dev *dev, char **args, int argc);
-static int speed_up(struct cli_dev *dev, char **args, int argc);
-static int speed_down(struct cli_dev *dev, char **args, int argc);
-static int turn_left(struct cli_dev *dev, char **args, int argc);
-static int turn_right(struct cli_dev *dev, char **args, int argc);
+static int speed(struct command_dev *command, char **args, int argc);
+static int speed_up(struct command_dev *command, char **args, int argc);
+static int speed_down(struct command_dev *command, char **args, int argc);
+static int turn_left(struct command_dev *command, char **args, int argc);
+static int turn_right(struct command_dev *command, char **args, int argc);
 
 
-static const struct cli_command smart_car_commands[]={
+static const struct command_item smart_car_commands[]={
     {.name="speed",speed, "({-l/-r,}speed), paramter one select left or right wheel, paramter two is the speed\r\n" },
     {.name="speed up", speed_up, "(), speed up\r\n"},
     {.name="speed down", speed_down, "(), speed down\r\n"},
@@ -22,14 +22,14 @@ static const struct cli_command smart_car_commands[]={
     {NULL, NULL, NULL},
 };
 
-static struct cli_commands_list smart_car_commands_entry;
+static struct command_list smart_car_commands_entry;
 
 void cli_register_smart_car_commands()
 {
-    cli_register_commands(&smart_car_commands_entry, smart_car_commands);
+    command_register_commands(&smart_car_commands_entry, smart_car_commands);
 } 
 
-static int speed(struct cli_dev *dev, char **args, int argc)
+static int speed(struct command_dev *command, char **args, int argc)
 {
     int left_speed;
     int right_speed;
@@ -49,53 +49,53 @@ static int speed(struct cli_dev *dev, char **args, int argc)
             left_speed = smart_car_get_left_speed();
             smart_car_set_speed(left_speed, right_speed);
         }else{
-            cli_error(dev, ERROR_PARAM);
+            return ERROR_PARAM;
         }
     }
     else
-        cli_error(dev, ERROR_PARAM);
+        return ERROR_PARAM;
     
     
-    cli_error(dev, ERROR_NONE);
+    return ERROR_NONE;
 }
 
-static int speed_up(struct cli_dev *dev, char **args, int argc)
+static int speed_up(struct command_dev *command, char **args, int argc)
 {
     if(argc!=0)
-        cli_error(dev, ERROR_PARAM);
+        return ERROR_PARAM;
     
     smart_car_speed_up();
     
-    cli_error(dev, ERROR_NONE);
+    return ERROR_NONE;
 }
 
-static int speed_down(struct cli_dev *dev, char **args, int argc)
+static int speed_down(struct command_dev *command, char **args, int argc)
 {
     if(argc!=0)
-        cli_error(dev, ERROR_PARAM);
+        return ERROR_PARAM;
     
     smart_car_speed_down();
     
-    cli_error(dev, ERROR_NONE);
+    return ERROR_NONE;
 }
 
 
-static int turn_left(struct cli_dev *dev, char **args, int argc)
+static int turn_left(struct command_dev *command, char **args, int argc)
 {
     if(argc!=0)
-        cli_error(dev, ERROR_PARAM);
+        return ERROR_PARAM;
     
     smart_car_turn_left();
     
-    cli_error(dev, ERROR_NONE);
+    return ERROR_NONE;
 }
 
-static int turn_right(struct cli_dev *dev, char **args, int argc)
+static int turn_right(struct command_dev *command, char **args, int argc)
 {
     if(argc!=0)
-        cli_error(dev, ERROR_PARAM);
+        return ERROR_PARAM;
     
     smart_car_turn_right();
     
-    cli_error(dev, ERROR_NONE);
+    return ERROR_NONE;
 }

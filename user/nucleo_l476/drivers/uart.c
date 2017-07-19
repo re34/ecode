@@ -19,8 +19,8 @@
 
 
 
-#define UART2_ENABLE_IRQ(n)            NVIC_EnableIRQ((n))
-#define UART2_DISABLE_IRQ(n)           NVIC_DisableIRQ((n))
+#define UART_ENABLE_IRQ(n)            NVIC_EnableIRQ((n))
+#define UART_DISABLE_IRQ(n)           NVIC_DisableIRQ((n))
 
 struct stm_uart{
     USART_TypeDef *instance;
@@ -82,7 +82,7 @@ static e_err_t stm_uart_init(struct serial_dev *serial)
     { 
     } 
     
-    UART2_ENABLE_IRQ(uart->irq);
+    UART_ENABLE_IRQ(uart->irq);
     LL_USART_EnableIT_RXNE(uart->instance);
     LL_USART_ClearFlag_TC(uart->instance);
     

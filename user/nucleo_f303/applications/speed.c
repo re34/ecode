@@ -31,7 +31,7 @@ static void exti15_10_callback(void);
 
 void speed_init(void)
 {
-    timeout_attach(&timeout, speed_period, SPEED_PERIOD);
+    //timeout_attach(&timeout, speed_period, SPEED_PERIOD);
     exti4_init(exti4_callback);
     exti15_10_init(exti15_10_callback);
     

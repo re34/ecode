@@ -1,9 +1,27 @@
 #include "udp_client.h"
+#include "ecode.h"
 
-char udp_data[]="Hello wrold";
 
+#define UDP_PORT	1025
+
+
+static char udp_data[]="Hello wrold";
+struct udp_pcb *udppcb;
+struct ip_addr ipaddr;
+struct pbuf *p_buf;
+
+//UDP服务端
+static void udp_receive(void *arg, struct udp_pcb *upcb, struct pbuf *p, struct ip_addr * addr, e_uint16_t port){
+	struct ip_addr rmtaddr = *addr;
+
+	if(p!=NULL){
+		udp_sendto(upcb, p, &rmtaddr, port);
+		pbuf_free(p);
+	}
+}
 //UDP 客户端
 void udp_client_init(void){
+
 	p_buf = pbuf_alloc(PBUF_RAW, sizeof(udp_data), PBUF_REF);
 	p_buf->payload = (void *)udp_data;
 

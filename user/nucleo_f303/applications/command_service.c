@@ -24,8 +24,8 @@ int command_putc(char c)
 
 
 const struct command_operations command_ops = {
-    .getc = command_getc,
-    .putc = command_putc,
+    .fgetc = command_getc,
+    .fputc = command_putc,
 };
 
 struct command_dev command_service={

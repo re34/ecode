@@ -2,13 +2,13 @@
 PROJECT         =ecode
 PROJECT_DIR		=.
 
-BOARD_NAME     =nucleo_l476
-LDSCRIPT_FILE   =STM32L476RG_FLASH.ld
-STARTUP_FILE    =startup_stm32l476xx.s
-CHIP_TYPE       =STM32L4xx
+BOARD_NAME     =nucleo_f303
+LDSCRIPT_FILE   =STM32F303XE_FLASH.ld
+STARTUP_FILE    =startup_stm32f303xe.s
+CHIP_TYPE       =STM32F3xx
 
 DEFS        +=-D USE_HAL_DRIVER
-DEFS        +=-D STM32L476xx
+DEFS        +=-D STM32F303xE
 
 CCFLAGS		+=-mcpu=cortex-m4 -mthumb -Wall -Os -std=gnu99
 CCFLAGS		+=-mfpu=fpv4-sp-d16 -mfloat-abi=softfp
