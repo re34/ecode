@@ -2,7 +2,6 @@
 #define __TIMER_H__
 
 
-
 struct timer_device{
     void (*start)(void);
     void (*stop)(void);

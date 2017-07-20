@@ -20,4 +20,6 @@
 #include "driver.h"
 #include "module.h"
 
+#include "assert.h"
+
 #endif

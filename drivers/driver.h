@@ -8,6 +8,7 @@
 #include "./pin/pin.h"
 #include "./timer/timer.h"
 #include "./timer/pwm.h"
+#include "./timer/hwtimer.h"
 #if CONFIG_USE_LWIP==1
 #include "./eth/ethernetif.h"
 #endif

@@ -31,6 +31,12 @@ enum{
 };
 #define TIMERn      3
 
+enum{
+    HWTIMER1,
+    HWTIMER2,
+    HWTIMER3,
+};
+#define HWTIMERn    3
 
 
 
