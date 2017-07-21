@@ -1,5 +1,5 @@
-#ifndef __TIME_H__
-#define __TIME_H__
+#ifndef __ETIME_H__
+#define __ETIME_H__
 #include "types.h"
 
 struct time_operations{

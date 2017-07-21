@@ -183,3 +183,20 @@ int _execve(char *name, char **argv, char **env)
 	errno = ENOMEM;
 	return -1;
 }
+
+
+//非nano库接口,lua需要
+time_t time(time_t *time)
+{
+    return 0;
+}
+
+int system(const char *string)
+{
+    return 0;
+}
+
+void exit(int status)
+{
+    
+}

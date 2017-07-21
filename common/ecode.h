@@ -6,7 +6,7 @@
 #include "print_log.h"
 #include "rtos.h"
 #include "stdio_ex.h"
-#include "time.h"
+#include "etime.h"
 #include "version.h"
 #include "assert.h"
 

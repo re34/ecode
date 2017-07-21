@@ -39,6 +39,7 @@ INC_DIR		+=-I $(PROJECT_DIR)/user/$(BOARD_NAME)/CMSIS
 INC_DIR		+=-I $(PROJECT_DIR)/user/$(BOARD_NAME)/drivers
 INC_DIR		+=-I $(PROJECT_DIR)/user/$(BOARD_NAME)/$(CHIP_TYPE)_HAL_Driver/Inc
 INC_DIR		+=-I $(PROJECT_DIR)/utils
+INC_DIR     +=-I $(PROJECT_DIR)/library/lua
 
 c_sources   +=$(wildcard $(PROJECT_DIR)/drivers/chip/*.c)
 c_sources   +=$(wildcard $(PROJECT_DIR)/drivers/iic/*.c)
@@ -62,6 +63,7 @@ c_sources   +=$(wildcard $(PROJECT_DIR)/user/$(BOARD_NAME)/applications/*.c)
 c_sources   +=$(wildcard $(PROJECT_DIR)/user/$(BOARD_NAME)/drivers/*.c)
 c_sources   +=$(wildcard $(PROJECT_DIR)/user/$(BOARD_NAME)/$(CHIP_TYPE)_HAL_Driver/Src/*.c)
 c_sources   +=$(wildcard $(PROJECT_DIR)/utils/*.c)
+c_sources   +=$(wildcard $(PROJECT_DIR)/library/lua/*.c)
 
 LDSCRIPT        =$(PROJECT_DIR)/user/$(BOARD_NAME)/gcc_toolchain/$(LDSCRIPT_FILE)
 
