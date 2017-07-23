@@ -11,7 +11,6 @@ void ecode_application_init(void)
     command_service_init();
     led_task_init();
     //tcp_server_init();
-    
 }
 
 

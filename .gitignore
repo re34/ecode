@@ -10,3 +10,5 @@
 /user/nucleo_l476/EWARM/Debug
 
 /build
+/user/stm32_f103/EWARM/Debug
+/user/nucleo_f412/EWARM/Debug

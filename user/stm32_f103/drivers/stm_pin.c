@@ -169,6 +169,8 @@ void stm_pin_mode(struct pin_device *dev, pin_index_t pin, pin_mode_t mode, pin_
     
     port = stm_gpio_set_clk(STM_PORT(pin));
     
+    GPIO_InitStruct.Pin = pin_mask;
+    
 	if(mode==PIN_MODE_INPUT)
 	{
         GPIO_InitStruct.Mode      = GPIO_MODE_INPUT;

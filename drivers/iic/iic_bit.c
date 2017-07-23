@@ -1,6 +1,6 @@
 #include "iic_bit.h"
 #include "iic.h"
-#include "time.h"
+#include "etime.h"
 #include "assert.h"
 
 

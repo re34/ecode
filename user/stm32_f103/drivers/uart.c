@@ -63,6 +63,8 @@ static e_err_t stm_uart_init(struct serial_dev *serial)
         
     /* TX/RX direction */
     huart->Init.Mode = UART_MODE_TX_RX;
+    
+    huart->Init.OverSampling = UART_OVERSAMPLING_16;
 
     /* 8 data bit, 1 start bit, 1 stop bit, no parity */
     //LL_USART_ConfigCharacter(UART1_INSTANCE, LL_USART_DATAWIDTH_8B, LL_USART_PARITY_NONE, LL_USART_STOPBITS_1);
@@ -79,9 +81,10 @@ static e_err_t stm_uart_init(struct serial_dev *serial)
         return E_ERROR;
     }
     
-    __HAL_USART_ENABLE_IT(huart,USART_IT_RXNE);
-    __HAL_USART_CLEAR_FLAG(huart, USART_FLAG_RXNE);
-    __HAL_USART_CLEAR_FLAG(huart, USART_FLAG_TC);
+    __HAL_UART_ENABLE_IT(huart,UART_IT_RXNE);
+    __HAL_UART_CLEAR_FLAG(huart, UART_FLAG_RXNE);
+    __HAL_UART_CLEAR_FLAG(huart, UART_FLAG_TC);
+
     return E_EOK;
 }
 
@@ -91,9 +94,10 @@ static void uart_isr(struct serial_dev *serial)
     
     ASSERT_PARAM(uart!=NULL);
     
-    if(__HAL_USART_GET_FLAG(&uart->uart_handle,USART_FLAG_RXNE))
+    if(__HAL_UART_GET_FLAG(&uart->uart_handle,UART_FLAG_RXNE))
     {
         serial_hw_isr(serial, SERIAL_EVENT_RX_IND);
+        __HAL_UART_CLEAR_FLAG(&uart->uart_handle, UART_FLAG_RXNE);
     }
 
 }
@@ -106,6 +110,7 @@ static int stm_putc(struct serial_dev *serial, char c)
     ASSERT_PARAM(serial != NULL);
     uart = serial->private_data;
     ASSERT_PARAM(uart!=NULL);
+    
     
     HAL_UART_Transmit(&uart->uart_handle, (uint8_t *)&c, 1, 0xFFFF);
     
@@ -122,7 +127,9 @@ static int stm_getc(struct serial_dev *serial)
 
     ch = -1;
     
-    HAL_UART_Receive(&uart->uart_handle, (uint8_t *)&ch, 1, 0);
+    if(__HAL_UART_GET_FLAG(&uart->uart_handle,UART_FLAG_RXNE))
+        ch = uart->instance->DR&0xFF;
+    //HAL_UART_Receive(&uart->uart_handle, (uint8_t *)&ch, 1, 0);
 
     return ch;
 }
@@ -190,7 +197,8 @@ static void uart_gpio_configuration(void)
 
     /* UART RX GPIO pin configuration  */
     GPIO_InitStruct.Pin = UART1_RX_PIN;
-
+    GPIO_InitStruct.Mode    = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull    = GPIO_NOPULL;
     HAL_GPIO_Init(UART1_RX_GPIO_PORT, &GPIO_InitStruct);
 #endif
 }
