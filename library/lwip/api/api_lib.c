@@ -775,6 +775,7 @@ netconn_gethostbyname(const char *name, ip_addr_t *addr)
 
   return err;
 }
+
 #endif /* LWIP_DNS*/
 
 #endif /* LWIP_NETCONN */

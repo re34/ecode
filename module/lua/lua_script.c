@@ -12,7 +12,8 @@ static int lua_demo(lua_State *L)
     int m = lua_tonumber(L, 1);
     print_log("%d %d %d\n", n, isnum, m);
     lua_pushnumber(L, m);
-    //lua_pushtring(L, "lua demo string\n");
+    //lua_pushstring(L, "lua demo string\n");
+    print_log("lua demo end!");
     
     return 2;
 }
@@ -32,7 +33,7 @@ void lua_script_init(void)
     
     luaL_setfuncs(L, lua_lib, 0);
     
-    luaL_dostring(L, "lua_demo()");
+    luaL_dostring(L, "demo()");
     
     lua_close(L);
 }

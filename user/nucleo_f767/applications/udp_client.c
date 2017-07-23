@@ -6,9 +6,9 @@
 
 
 static char udp_data[]="Hello wrold";
-struct udp_pcb *udppcb;
-struct ip_addr ipaddr;
-struct pbuf *p_buf;
+static struct udp_pcb *udppcb;
+static struct ip_addr ipaddr;
+static struct pbuf *p_buf;
 
 //UDP服务端
 static void udp_receive(void *arg, struct udp_pcb *upcb, struct pbuf *p, struct ip_addr * addr, e_uint16_t port){

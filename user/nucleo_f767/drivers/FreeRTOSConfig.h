@@ -102,7 +102,7 @@
 #define configUSE_COUNTING_SEMAPHORES 1
 #define configUSE_MUTEXES 1
 
-#define configUSE_TIMERS		1
+#define configUSE_TIMERS		0
 #define configTIMER_TASK_PRIORITY       5
 #define configTIMER_QUEUE_LENGTH   10
 #define configTIMER_TASK_STACK_DEPTH    (configMINIMAL_STACK_SIZE*2)

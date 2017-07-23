@@ -3,5 +3,6 @@
 
 #include "./cli/cli.h"
 #include "./cli/command.h"
+#include "./lua/lua_script.h"
 
 #endif

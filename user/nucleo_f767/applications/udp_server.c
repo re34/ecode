@@ -8,11 +8,11 @@
 
 #define UDP_PORT	1025
 
-struct udp_pcb *udppcb;
+static struct udp_pcb *udppcb;
 //struct ip_addr ipaddr;
-struct pbuf *p_buf;
+static struct pbuf *p_buf;
 
-char udp_data[]="Hello wrold";
+static char udp_data[]="Hello wrold";
 
 //UDP服务端
 static void udp_receive(void *arg, struct udp_pcb *upcb, struct pbuf *p, struct ip_addr * addr, e_uint16_t port){

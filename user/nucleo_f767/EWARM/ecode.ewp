@@ -319,15 +319,17 @@
           <state>$PROJ_DIR$\..\CMSIS</state>
           <state>$PROJ_DIR$\..\STM32F7xx_HAL_Driver\Inc</state>
           <state>$PROJ_DIR$\..\..\..\utils</state>
-          <state>$PROJ_DIR$\..\..\..\library\lwip\include</state>
-          <state>$PROJ_DIR$\..\..\..\library\lwip\include\netif</state>
-          <state>$PROJ_DIR$\..\..\..\library\lwip</state>
           <state>$PROJ_DIR$\..\..\..\module</state>
           <state>$PROJ_DIR$\..\..\..\drivers</state>
           <state>$PROJ_DIR$\..\..\..\module\cli</state>
           <state>$PROJ_DIR$\..\..\..\drivers\serial</state>
           <state>$PROJ_DIR$\..\..\..\common</state>
           <state>$PROJ_DIR$\..\..\..\drivers\iic</state>
+          <state>$PROJ_DIR$\..\..\..\library\lua</state>
+          <state>$PROJ_DIR$\..\..\..\library\lwip\include</state>
+          <state>$PROJ_DIR$\..\..\..\library\lwip\include\ipv4</state>
+          <state>$PROJ_DIR$\..\..\..\library\lwip\arch</state>
+          <state>$PROJ_DIR$\..\..\..\library\lwip</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -2037,8 +2039,107 @@
       <file>
         <name>$PROJ_DIR$\..\..\..\library\FreeRTOS\tasks.c</name>
       </file>
+    </group>
+    <group>
+      <name>lua</name>
       <file>
-        <name>$PROJ_DIR$\..\..\..\library\FreeRTOS\timers.c</name>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lapi.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lauxlib.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lbaselib.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lbitlib.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lcode.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lcorolib.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lctype.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\ldblib.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\ldebug.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\ldo.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\ldump.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lfunc.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lgc.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\linit.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\liolib.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\llex.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lmathlib.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lmem.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\loadlib.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lobject.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lopcodes.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\loslib.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lparser.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lstate.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lstring.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lstrlib.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\ltable.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\ltablib.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\ltm.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lundump.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lutf8lib.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lvm.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\library\lua\lzio.c</name>
       </file>
     </group>
     <group>
@@ -2073,6 +2174,9 @@
       <group>
         <name>arch</name>
         <file>
+          <name>$PROJ_DIR$\..\..\..\library\lwip\arch\lwipopts.h</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\library\lwip\arch\sys_arch.c</name>
         </file>
       </group>
@@ -2084,12 +2188,6 @@
             <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\autoip.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\dhcp.c</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\etharp.c</name>
-          </file>
-          <file>
             <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\icmp.c</name>
           </file>
           <file>
@@ -2099,29 +2197,29 @@
             <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\inet.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\ip4.c</name>
+            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\inet_chksum.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\ip4_addr.c</name>
+            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\ip.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\ip4_frag.c</name>
+            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\ip_addr.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\ip_frag.c</name>
           </file>
         </group>
         <file>
           <name>$PROJ_DIR$\..\..\..\library\lwip\core\def.c</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\..\library\lwip\core\dhcp.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\library\lwip\core\dns.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\inet_chksum.c</name>
-        </file>
-        <file>
           <name>$PROJ_DIR$\..\..\..\library\lwip\core\init.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\ip.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\library\lwip\core\mem.c</name>
@@ -2154,7 +2252,7 @@
           <name>$PROJ_DIR$\..\..\..\library\lwip\core\tcp_out.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\timeouts.c</name>
+          <name>$PROJ_DIR$\..\..\..\library\lwip\core\timers.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\library\lwip\core\udp.c</name>
@@ -2163,10 +2261,7 @@
       <group>
         <name>netif</name>
         <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\netif\ethernet.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\netif\lowpan6.c</name>
+          <name>$PROJ_DIR$\..\..\..\library\lwip\netif\etharp.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\library\lwip\netif\slipif.c</name>
@@ -2188,6 +2283,12 @@
         <name>$PROJ_DIR$\..\..\..\module\cli\command.c</name>
       </file>
     </group>
+    <group>
+      <name>lua</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\module\lua\lua_script.c</name>
+      </file>
+    </group>
   </group>
   <group>
     <name>platform</name>
@@ -2198,6 +2299,9 @@
       <name>$PROJ_DIR$\..\..\..\platform\device.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\..\..\platform\etime.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\..\..\platform\object.c</name>
     </file>
     <file>
@@ -2205,9 +2309,6 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\rtos.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\platform\time.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\platform\version.c</name>
@@ -2231,6 +2332,18 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\applications\startup.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\applications\tcp_client.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\applications\tcp_server.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\applications\udp_client.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\applications\udp_server.c</name>
       </file>
     </group>
     <group>
