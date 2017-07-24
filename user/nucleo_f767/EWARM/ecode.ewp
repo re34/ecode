@@ -2188,38 +2188,41 @@
             <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\autoip.c</name>
           </file>
           <file>
+            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\dhcp.c</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\etharp.c</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\icmp.c</name>
           </file>
           <file>
             <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\igmp.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\inet.c</name>
+            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\ip4.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\inet_chksum.c</name>
+            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\ip4_addr.c</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\ip.c</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\ip_addr.c</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\ip_frag.c</name>
+            <name>$PROJ_DIR$\..\..\..\library\lwip\core\ipv4\ip4_frag.c</name>
           </file>
         </group>
         <file>
           <name>$PROJ_DIR$\..\..\..\library\lwip\core\def.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\dhcp.c</name>
-        </file>
-        <file>
           <name>$PROJ_DIR$\..\..\..\library\lwip\core\dns.c</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\..\..\library\lwip\core\inet_chksum.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\library\lwip\core\init.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\lwip\core\ip.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\library\lwip\core\mem.c</name>
@@ -2252,7 +2255,7 @@
           <name>$PROJ_DIR$\..\..\..\library\lwip\core\tcp_out.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\core\timers.c</name>
+          <name>$PROJ_DIR$\..\..\..\library\lwip\core\timeouts.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\library\lwip\core\udp.c</name>
@@ -2261,7 +2264,10 @@
       <group>
         <name>netif</name>
         <file>
-          <name>$PROJ_DIR$\..\..\..\library\lwip\netif\etharp.c</name>
+          <name>$PROJ_DIR$\..\..\..\library\lwip\netif\ethernet.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\lwip\netif\lowpan6.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\library\lwip\netif\slipif.c</name>

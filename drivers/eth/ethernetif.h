@@ -12,7 +12,6 @@
 #include <lwip/stats.h>
 #include <lwip/snmp.h>
 #include "netif/etharp.h"
-#include "netif/ppp_oe.h"
 
 #include "lwip/udp.h"
 #include "lwip/ip_addr.h"
@@ -20,9 +19,7 @@
 #include "lwip/err.h"
 #include "lwip/tcp.h"
 #include "lwip/init.h"
-#include "lwip/tcp_impl.h"
 #include "lwip/dhcp.h"
-#include "lwip/timers.h"
 
 
 

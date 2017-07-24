@@ -80,14 +80,17 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p);
 static struct pbuf * low_level_input(struct netif *netif);
 
 static struct ethernet_dev ethernet_dev;
+static struct lan8742_operations lan8742_ops;
 
-int lan8742_init(void)
+int lan8742_init(struct lan8742_operations ops)
 {
   ethernet_dev.low_level_init = low_level_init;
   ethernet_dev.low_level_output = low_level_output;
   ethernet_dev.low_level_input = low_level_input;
   if(ethernet_reigster(&ethernet_dev)<0)
     return -1;
+  
+  lan8742_ops = ops;
   
   return 0;
 }
@@ -238,6 +241,7 @@ static void low_level_init(struct netif *netif)
   heth.Init.PhyAddress = LAN8742A_PHY_ADDRESS;
   heth.Init.DuplexMode = ETH_MODE_FULLDUPLEX;
   heth.Init.RxMode = ETH_RXPOLLING_MODE;
+  //heth.Init.RxMode = ETH_RXINTERRUPT_MODE;
   heth.Init.ChecksumMode = ETH_CHECKSUM_BY_HARDWARE;
   heth.Init.MediaInterface = ETH_MEDIA_INTERFACE_RMII;
 
@@ -287,14 +291,14 @@ static void low_level_init(struct netif *netif)
   
 
   /* Read Register Configuration */
-  //HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR, &regvalue);
-  //regvalue |= (PHY_ISFR_INT4);
+//  HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR, &regvalue);
+//  regvalue |= (PHY_ISFR_INT4);
 
   /* Enable Interrupt on change of link status */ 
-  //HAL_ETH_WritePHYRegister(&heth, PHY_ISFR , regvalue );
+//  HAL_ETH_WritePHYRegister(&heth, PHY_ISFR , regvalue );
   
   /* Read Register Configuration */
-  //HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR , &regvalue);
+//  HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR , &regvalue);
 
 /* USER CODE BEGIN PHY_POST_CONFIG */ 
     
@@ -490,4 +494,12 @@ static struct pbuf * low_level_input(struct netif *netif)
 }
 
 
-
+void ETH_IRQHandler(void)
+{
+    if(__HAL_ETH_DMA_GET_FLAG(&heth, ETH_DMA_FLAG_R))
+    {
+        if(lan8742_ops.indicate!=NULL)
+            lan8742_ops.indicate();
+        __HAL_ETH_DMA_CLEAR_IT(&heth, ETH_DMA_IT_R);
+    }
+}

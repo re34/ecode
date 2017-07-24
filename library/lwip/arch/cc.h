@@ -7,6 +7,7 @@
 #define BYTE_ORDER	LITTLE_ENDIAN
 #endif
 
+#define LWIP_NO_STDINT_H    1
 typedef	unsigned char 	u8_t;
 typedef signed char		s8_t;
 typedef unsigned short		u16_t;
@@ -14,7 +15,8 @@ typedef signed short		s16_t;
 typedef unsigned long		u32_t;
 typedef signed long		s32_t;
 typedef u32_t	mem_ptr_t;
-typedef int	sys_prot_t;
+//typedef u32_t	mem_ptr_t;
+//typedef int	sys_prot_t;
 
 #if OS_CRITICAL_METHOD == 1
 #define SYS_ARCH_DECL_PROTECT(lev)
@@ -29,8 +31,8 @@ typedef int	sys_prot_t;
 #endif
 
 #if	defined (__ICCARM__)
-
-#define PACK_STRUCT_BEGIN
+#define PACK_STRUCT_BEGIN __packed
+//#define PACK_STRUCT_BEGIN
 #define PACK_STRUCT_STRUCT
 #define PACK_STRUCT_END
 #define PACK_STRUCT_FIELD(x)	x

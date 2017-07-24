@@ -10,6 +10,32 @@
 #define TCP_TIMER_INTERVAL          250
 #define ARP_TIMER_INTERVAL          5000
 
+#define IP_ADDR0    192
+#define IP_ADDR1    168
+#define IP_ADDR2    0
+#define IP_ADDR3    119
+
+#define NETMASK_ADDR0   255
+#define NETMASK_ADDR1   255
+#define NETMASK_ADDR2   255
+#define NETMASK_ADDR3   0
+
+#define GW_ADDR0        192
+#define GW_ADDR1        168
+#define GW_ADDR2        0
+#define GW_ADDR3        1
+
+
+#define MAX_DHCP_TRIES      10
+
+enum{
+    DHCP_OFF,
+    DHCP_START,
+    DHCP_WAIT_ADDRESS,
+    DHCP_ADDRESS_ASSIGNED,
+    DHCP_TIMEOUT,
+    DHCP_LINK_DOWN,
+};
 
 struct netif gnetif;
 ip_addr_t ipaddr;
@@ -19,18 +45,22 @@ ip_addr_t gw;
 uint8_t IP_ADDRESS[4];
 uint8_t NETMASK_ADDRESS[4];
 uint8_t GATEWAY_ADDRESS[4];
+uint8_t dhcp_state = 0;
 
 
-//static SemaphoreHandle_t xSemaphore;
+static SemaphoreHandle_t xSemaphoreEth;
+void ethernet_rx_indicate(void);
 
 void ethernet_task(void *args);
+void ethernet_data_task(void *args);
 
 void eth_init(void)
 {
+    struct lan8742_operations lan8742_ops;
+    lan8742_ops.indicate = ethernet_rx_indicate;
+    xSemaphoreEth = xSemaphoreCreateBinary();
     
-    //xSemaphore = xSemaphoreCreateBinary();
-    
-	lan8742_init();
+	lan8742_init(lan8742_ops);
 	
 	lwip_init();
     
@@ -39,23 +69,26 @@ void eth_init(void)
 	netmask.addr = 0;
 	gw.addr = 0;
 #else
-    IP_ADDRESS[0] = 192;
-    IP_ADDRESS[1] = 168;
-    IP_ADDRESS[2] = 1;
-    IP_ADDRESS[3] = 200;
-    NETMASK_ADDRESS[0] = 255;
-    NETMASK_ADDRESS[1] = 255;
-    NETMASK_ADDRESS[2] = 255;
-    NETMASK_ADDRESS[3] = 0;
-    GATEWAY_ADDRESS[0] = 192;
-    GATEWAY_ADDRESS[1] = 168;
-    GATEWAY_ADDRESS[2] = 1;
-    GATEWAY_ADDRESS[3] = 1; 
+    IP_ADDRESS[0] = IP_ADDR0;
+    IP_ADDRESS[1] = IP_ADDR1;
+    IP_ADDRESS[2] = IP_ADDR2;
+    IP_ADDRESS[3] = IP_ADDR3;
+    NETMASK_ADDRESS[0] = NETMASK_ADDR0;
+    NETMASK_ADDRESS[1] = NETMASK_ADDR1;
+    NETMASK_ADDRESS[2] = NETMASK_ADDR2;
+    NETMASK_ADDRESS[3] = NETMASK_ADDR3;
+    GATEWAY_ADDRESS[0] = GW_ADDR0;
+    GATEWAY_ADDRESS[1] = GW_ADDR1;
+    GATEWAY_ADDRESS[2] = GW_ADDR2;
+    GATEWAY_ADDRESS[3] = GW_ADDR3; 
     
     /* IP addresses initialization without DHCP (IPv4) */
     IP4_ADDR(&ipaddr, IP_ADDRESS[0], IP_ADDRESS[1], IP_ADDRESS[2], IP_ADDRESS[3]);
     IP4_ADDR(&netmask, NETMASK_ADDRESS[0], NETMASK_ADDRESS[1] , NETMASK_ADDRESS[2], NETMASK_ADDRESS[3]);
     IP4_ADDR(&gw, GATEWAY_ADDRESS[0], GATEWAY_ADDRESS[1], GATEWAY_ADDRESS[2], GATEWAY_ADDRESS[3]);
+    LOG_DEBUG("ip address: %d.%d.%d.%d",IP_ADDR0,IP_ADDR1,IP_ADDR2,IP_ADDR3);
+    LOG_DEBUG("net mask: %d.%d.%d.%d", NETMASK_ADDR0,NETMASK_ADDR1,NETMASK_ADDR2,NETMASK_ADDR3);
+    LOG_DEBUG("gateway: %d.%d.%d.%d", GW_ADDR0,GW_ADDR1,GW_ADDR2,GW_ADDR3);
 #endif
 	
 	netif_add(&gnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &ethernet_input);
@@ -65,6 +98,7 @@ void eth_init(void)
 	if(netif_is_link_up(&gnetif))
 	{
 		netif_set_up(&gnetif);
+        LOG_DEBUG("netif link up!");
 	}
 	else
 	{
@@ -72,25 +106,95 @@ void eth_init(void)
 	}
     
 #if LWIP_DHCP==1
-	dhcp_start(&gnetif);
+    if(netif_is_up(&gnetif))
+    {
+        dhcp_state = DHCP_START;
+    }
 #endif
     
 	xTaskCreate(ethernet_task,
             "ethernet_task",
-            1024,
+            512,
             NULL,
             1,
             NULL);
+    
+	xTaskCreate(ethernet_data_task,
+            "ethernet_data_task",
+            512,
+            NULL,
+            5,
+            NULL);
 }
 
+void dhcp_process(void)
+{
+    struct dhcp *dhcp;
+    static e_uint32_t dhcp_timer = 0;
+    e_uint32_t dhcp_local_timer = 0;
+    if(dhcp_timer==0)
+        dhcp_timer = system_get_time();
+    dhcp_local_timer = system_get_time();
+    if(dhcp_local_timer-dhcp_timer>250)
+    {
+        dhcp_local_timer = dhcp_timer;
+        switch(dhcp_state)
+        {
+        case DHCP_START:
+            ip_addr_set_zero_ip4(&gnetif.ip_addr);
+            ip_addr_set_zero_ip4(&gnetif.netmask);
+            ip_addr_set_zero_ip4(&gnetif.gw);       
+            dhcp_start(&gnetif);
+            dhcp_state = DHCP_WAIT_ADDRESS;
+            break;
+        case DHCP_WAIT_ADDRESS:
+            if(dhcp_supplied_address(&gnetif))
+            {
+                dhcp_state = DHCP_ADDRESS_ASSIGNED;
+                LOG_DEBUG("dhcp completed!", );
+                LOG_DEBUG("ip address: %d.%d.%d.%d",ip4_addr1(&gnetif.ip_addr),ip4_addr2(&gnetif.ip_addr),ip4_addr3(&gnetif.ip_addr),ip4_addr4(&gnetif.ip_addr));
+                LOG_DEBUG("net mask: %d.%d.%d.%d", ip4_addr1(&gnetif.netmask),ip4_addr2(&gnetif.netmask),ip4_addr3(&gnetif.netmask),ip4_addr4(&gnetif.netmask));
+                LOG_DEBUG("gateway: %d.%d.%d.%d", ip4_addr1(&gnetif.gw),ip4_addr2(&gnetif.gw),ip4_addr3(&gnetif.gw),ip4_addr4(&gnetif.gw));
+            }
+            else
+            {
+                dhcp = (struct dhcp *)netif_get_client_data(&gnetif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP);
+                if(dhcp->tries > MAX_DHCP_TRIES)
+                {
+                    dhcp_state = DHCP_TIMEOUT;
+                    dhcp_stop(&gnetif);
+                    
+                    /* Static address used */
+                    IP_ADDR4(&ipaddr, IP_ADDR0 ,IP_ADDR1 , IP_ADDR2 , IP_ADDR3 );
+                    IP_ADDR4(&netmask, NETMASK_ADDR0, NETMASK_ADDR1, NETMASK_ADDR2, NETMASK_ADDR3);
+                    IP_ADDR4(&gw, GW_ADDR0, GW_ADDR1, GW_ADDR2, GW_ADDR3);
+                    netif_set_addr(&gnetif, ip_2_ip4(&ipaddr), ip_2_ip4(&netmask), ip_2_ip4(&gw));
+                    LOG_DEBUG("dhcp timeout,static address was used!", );
+                    LOG_DEBUG("ip address: %d.%d.%d.%d",IP_ADDR0,IP_ADDR1,IP_ADDR2,IP_ADDR3);
+                    LOG_DEBUG("net mask: %d.%d.%d.%d", NETMASK_ADDR0,NETMASK_ADDR1,NETMASK_ADDR2,NETMASK_ADDR3);
+                    LOG_DEBUG("gateway: %d.%d.%d.%d", GW_ADDR0,GW_ADDR1,GW_ADDR2,GW_ADDR3);
+                }
+            }
+            break;
+        case DHCP_LINK_DOWN:
+            dhcp_stop(&gnetif);
+            dhcp_state = DHCP_OFF;
+            break;
+        }
+    }
+    
+}
 
-
+void ethernet_rx_indicate(void)
+{
+    xSemaphoreGive(xSemaphoreEth);
+}
 
 void ethernet_process(void)
 {
     if(lan8742_get_packet_size()>0)
         ethernetif_input(&gnetif);
-    sys_check_timeouts();
+    //sys_check_timeouts();
 }
 
 void ethernet_task(void *args)
@@ -102,9 +206,12 @@ void ethernet_task(void *args)
     //jiffies = get_ticks();
     //tcp_timer = jiffies;
     //arp_timer = jiffies;
+    
+    
+    
     while(1)
     {
-        ethernet_process();
+        //ethernet_process();
         //delay_ms(2);
         
         //jiffies = get_ticks();
@@ -118,8 +225,23 @@ void ethernet_task(void *args)
          //   arp_timer = jiffies;
          //   etharp_tmr();
         //}
+        sys_check_timeouts();
+        dhcp_process();
+        delay_ms(10);
         
     }
+}
+
+void ethernet_data_task(void *args)
+{
+
+  for(;;)
+  {
+    //xSemaphoreTake(xSemaphoreEth, portMAX_DELAY);
+    ethernet_process();
+    delay_ms(1);
+  
+  }
 }
 
 

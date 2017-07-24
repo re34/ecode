@@ -9,11 +9,11 @@ static int lua_demo(lua_State *L)
 {
     int n = lua_gettop(L);
     int isnum = lua_isnumber(L, 1);
-    int m = lua_tonumber(L, 1);
-    print_log("%d %d %d\n", n, isnum, m);
+    float m = lua_tonumber(L, 1);
+    print_log("%d %d %f\n", n, isnum, m);
     lua_pushnumber(L, m);
     //lua_pushstring(L, "lua demo string\n");
-    print_log("lua demo end!");
+    print_log("lua demo end!\r\n");
     
     return 2;
 }

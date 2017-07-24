@@ -9,14 +9,14 @@
 #define UDP_PORT	1025
 
 static struct udp_pcb *udppcb;
-//struct ip_addr ipaddr;
-static struct pbuf *p_buf;
+static ip_addr_t ipaddr;
+struct pbuf *p_buf;
 
-static char udp_data[]="Hello wrold";
+char udp_data[]="Hello wrold";
 
 //UDP服务端
-static void udp_receive(void *arg, struct udp_pcb *upcb, struct pbuf *p, struct ip_addr * addr, e_uint16_t port){
-	struct ip_addr rmtaddr = *addr;
+void udp_receive(void *arg, struct udp_pcb *upcb, struct pbuf *p,const ip_addr_t * addr, e_uint16_t port){
+	ip_addr_t rmtaddr = *addr;
 
 	if(p!=NULL){
 		udp_sendto(upcb, p, &rmtaddr, port);
