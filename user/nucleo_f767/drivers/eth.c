@@ -151,7 +151,7 @@ void dhcp_process(void)
             if(dhcp_supplied_address(&gnetif))
             {
                 dhcp_state = DHCP_ADDRESS_ASSIGNED;
-                LOG_DEBUG("dhcp completed!", );
+                LOG_DEBUG("dhcp completed!");
                 LOG_DEBUG("ip address: %d.%d.%d.%d",ip4_addr1(&gnetif.ip_addr),ip4_addr2(&gnetif.ip_addr),ip4_addr3(&gnetif.ip_addr),ip4_addr4(&gnetif.ip_addr));
                 LOG_DEBUG("net mask: %d.%d.%d.%d", ip4_addr1(&gnetif.netmask),ip4_addr2(&gnetif.netmask),ip4_addr3(&gnetif.netmask),ip4_addr4(&gnetif.netmask));
                 LOG_DEBUG("gateway: %d.%d.%d.%d", ip4_addr1(&gnetif.gw),ip4_addr2(&gnetif.gw),ip4_addr3(&gnetif.gw),ip4_addr4(&gnetif.gw));
@@ -169,7 +169,7 @@ void dhcp_process(void)
                     IP_ADDR4(&netmask, NETMASK_ADDR0, NETMASK_ADDR1, NETMASK_ADDR2, NETMASK_ADDR3);
                     IP_ADDR4(&gw, GW_ADDR0, GW_ADDR1, GW_ADDR2, GW_ADDR3);
                     netif_set_addr(&gnetif, ip_2_ip4(&ipaddr), ip_2_ip4(&netmask), ip_2_ip4(&gw));
-                    LOG_DEBUG("dhcp timeout,static address was used!", );
+                    LOG_DEBUG("dhcp timeout,static address was used!");
                     LOG_DEBUG("ip address: %d.%d.%d.%d",IP_ADDR0,IP_ADDR1,IP_ADDR2,IP_ADDR3);
                     LOG_DEBUG("net mask: %d.%d.%d.%d", NETMASK_ADDR0,NETMASK_ADDR1,NETMASK_ADDR2,NETMASK_ADDR3);
                     LOG_DEBUG("gateway: %d.%d.%d.%d", GW_ADDR0,GW_ADDR1,GW_ADDR2,GW_ADDR3);
@@ -227,7 +227,7 @@ void ethernet_task(void *args)
         //}
         sys_check_timeouts();
         dhcp_process();
-        delay_ms(10);
+        delay_ms(TCP_TIMER_INTERVAL);
         
     }
 }
@@ -237,9 +237,9 @@ void ethernet_data_task(void *args)
 
   for(;;)
   {
-    //xSemaphoreTake(xSemaphoreEth, portMAX_DELAY);
+    xSemaphoreTake(xSemaphoreEth, portMAX_DELAY);
     ethernet_process();
-    delay_ms(1);
+
   
   }
 }

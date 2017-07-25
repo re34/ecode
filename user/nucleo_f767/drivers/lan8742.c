@@ -126,6 +126,8 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOG_CLK_ENABLE();
+    /* Enable Peripheral clock */
+  __HAL_RCC_ETH_CLK_ENABLE();
   /* USER CODE END ETH_MspInit 0 */
 
   
@@ -169,11 +171,10 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
     HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
     /* Peripheral interrupt init */
-    //HAL_NVIC_SetPriority(ETH_IRQn, 0, 0);
-    //HAL_NVIC_EnableIRQ(ETH_IRQn);
+    HAL_NVIC_SetPriority(ETH_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(ETH_IRQn);
   /* USER CODE BEGIN ETH_MspInit 1 */
-    /* Enable Peripheral clock */
-    __HAL_RCC_ETH_CLK_ENABLE();
+
   /* USER CODE END ETH_MspInit 1 */
   }
 }

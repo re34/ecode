@@ -1,8 +1,9 @@
 #include "cc.h"
 #include "types.h"
+#include "ecode.h"
 u32_t sys_now(void)
 {
-	return HAL_GetTick();
+	return system_get_time();
 }
 /*
 void sys_init(void)
