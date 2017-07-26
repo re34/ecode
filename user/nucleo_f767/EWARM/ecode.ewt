@@ -2670,6 +2670,12 @@
         <name>$PROJ_DIR$\..\..\..\module\lua\lua_script.c</name>
       </file>
     </group>
+    <group>
+      <name>protocal</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\module\protocal\xmodem.c</name>
+      </file>
+    </group>
   </group>
   <group>
     <name>platform</name>

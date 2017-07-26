@@ -15,8 +15,14 @@
 
 
 
-#define rtos_task_create(task, name, stack_depth, args, priority, handle)  \
-                xTaskCreate(task, name, stack_depth, args, priority, handle)
+//#define rtos_task_create(task, name, stack_depth, args, priority, handle)  \
+//                xTaskCreate(task, name, stack_depth, args, priority, handle)
+void rtos_task_create(	TaskFunction_t task,
+							const char * const name,
+							const uint16_t stack_depth,
+							void * const args,
+							UBaseType_t priority,
+							TaskHandle_t * const handle );
 
 int rtos_is_running(void);
 void rtos_start_scheduler(void);

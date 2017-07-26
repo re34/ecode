@@ -4,5 +4,6 @@
 #include "./cli/cli.h"
 #include "./cli/command.h"
 #include "./lua/lua_script.h"
+#include "./protocal/xmodem.h"
 
 #endif

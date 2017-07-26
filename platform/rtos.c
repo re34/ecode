@@ -1,8 +1,19 @@
 #include "rtos.h"
 #include "types.h"
+#include "print_log.h"
 
 extern void xPortSysTickHandler( void );
 
+void rtos_task_create(	TaskFunction_t task,
+							const char * const name,
+							const uint16_t stack_depth,
+							void * const args,
+							UBaseType_t priority,
+							TaskHandle_t * const handle )
+{
+    xTaskCreate(task, name, stack_depth, args, priority, handle);
+    LOG_DEBUG("task %s created!", name);
+}
 
 int rtos_is_running(void)
 {

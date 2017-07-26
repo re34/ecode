@@ -121,14 +121,14 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
   GPIO_InitTypeDef GPIO_InitStruct;
   if(ethHandle->Instance==ETH)
   {
-  /* USER CODE BEGIN ETH_MspInit 0 */
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOG_CLK_ENABLE();
+    /* USER CODE BEGIN ETH_MspInit 0 */
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    __HAL_RCC_GPIOG_CLK_ENABLE();
     /* Enable Peripheral clock */
-  __HAL_RCC_ETH_CLK_ENABLE();
-  /* USER CODE END ETH_MspInit 0 */
+    __HAL_RCC_ETH_CLK_ENABLE();
+    /* USER CODE END ETH_MspInit 0 */
 
   
     /**ETH GPIO Configuration    
@@ -171,7 +171,7 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
     HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
     /* Peripheral interrupt init */
-    HAL_NVIC_SetPriority(ETH_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(ETH_IRQn, 3, 0);
     HAL_NVIC_EnableIRQ(ETH_IRQn);
   /* USER CODE BEGIN ETH_MspInit 1 */
 
@@ -241,13 +241,23 @@ static void low_level_init(struct netif *netif)
   heth.Init.AutoNegotiation = ETH_AUTONEGOTIATION_ENABLE;
   heth.Init.PhyAddress = LAN8742A_PHY_ADDRESS;
   heth.Init.DuplexMode = ETH_MODE_FULLDUPLEX;
-  heth.Init.RxMode = ETH_RXPOLLING_MODE;
-  //heth.Init.RxMode = ETH_RXINTERRUPT_MODE;
+  //heth.Init.RxMode = ETH_RXPOLLING_MODE;
+  heth.Init.RxMode = ETH_RXINTERRUPT_MODE;
   heth.Init.ChecksumMode = ETH_CHECKSUM_BY_HARDWARE;
   heth.Init.MediaInterface = ETH_MEDIA_INTERFACE_RMII;
 
+
   /* USER CODE BEGIN MACADDRESS */
-    
+    HAL_GPIO_DeInit(GPIOC, RMII_MDC_Pin|RMII_RXD0_Pin|RMII_RXD1_Pin);
+
+    HAL_GPIO_DeInit(GPIOA, RMII_REF_CLK_Pin|RMII_MDIO_Pin|RMII_CRS_DV_Pin);
+
+    HAL_GPIO_DeInit(RMII_TXD1_GPIO_Port, RMII_TXD1_Pin);
+
+    HAL_GPIO_DeInit(GPIOG, RMII_TX_EN_Pin|RMII_TXD0_Pin);
+
+    /* Peripheral interrupt Deinit*/
+    HAL_NVIC_DisableIRQ(ETH_IRQn);
   /* USER CODE END MACADDRESS */
 
   hal_eth_init_status = HAL_ETH_Init(&heth);
@@ -292,17 +302,18 @@ static void low_level_init(struct netif *netif)
   
 
   /* Read Register Configuration */
-//  HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR, &regvalue);
-//  regvalue |= (PHY_ISFR_INT4);
+  HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR, &regvalue);
+  regvalue |= (PHY_ISFR_INT4);
 
   /* Enable Interrupt on change of link status */ 
-//  HAL_ETH_WritePHYRegister(&heth, PHY_ISFR , regvalue );
+  HAL_ETH_WritePHYRegister(&heth, PHY_ISFR , regvalue );
   
   /* Read Register Configuration */
-//  HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR , &regvalue);
+  HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR , &regvalue);
 
 /* USER CODE BEGIN PHY_POST_CONFIG */ 
-    
+    __HAL_ETH_DMA_CLEAR_IT(&heth, ETH_DMA_IT_R);
+    __HAL_ETH_DMA_CLEAR_IT(&heth, ETH_DMA_IT_NIS);
 /* USER CODE END PHY_POST_CONFIG */
 
 
@@ -427,7 +438,7 @@ static struct pbuf * low_level_input(struct netif *netif)
   
 
   /* get received frame */
-  if (HAL_ETH_GetReceivedFrame(&heth) != HAL_OK)
+  if (HAL_ETH_GetReceivedFrame_IT(&heth) != HAL_OK)
     return NULL;
   
   /* Obtain the size of the packet and put it into the "len" variable. */
@@ -494,13 +505,31 @@ static struct pbuf * low_level_input(struct netif *netif)
   return p;
 }
 
+void HAL_ETH_RxCpltCallback(ETH_HandleTypeDef *heth)
+{
+    int xhigher_priority_woken = pdFALSE;
+    if(lan8742_ops.indicate!=NULL)
+        lan8742_ops.indicate(&xhigher_priority_woken);
+    if(xhigher_priority_woken)
+      portYIELD_FROM_ISR(xhigher_priority_woken);
+}
 
 void ETH_IRQHandler(void)
 {
+    HAL_ETH_IRQHandler(&heth);
+#if 0
+    int xhigher_priority_woken = pdFALSE;
     if(__HAL_ETH_DMA_GET_FLAG(&heth, ETH_DMA_FLAG_R))
     {
         if(lan8742_ops.indicate!=NULL)
-            lan8742_ops.indicate();
+            lan8742_ops.indicate(&xhigher_priority_woken);
         __HAL_ETH_DMA_CLEAR_IT(&heth, ETH_DMA_IT_R);
     }
+    /* Clear the interrupt flags */
+    
+    __HAL_ETH_DMA_CLEAR_IT(&heth, ETH_DMA_IT_NIS);
+    if(xhigher_priority_woken)
+      portYIELD_FROM_ISR(xhigher_priority_woken);
+  
+#endif
 }

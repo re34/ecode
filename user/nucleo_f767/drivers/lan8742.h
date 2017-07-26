@@ -2,7 +2,7 @@
 #define __LAN8742_H__
 
 struct lan8742_operations{
-    void (*indicate)(void);
+    void (*indicate)(int *xhigher_priority_woken);
 };
 
 int lan8742_init(struct lan8742_operations ops);

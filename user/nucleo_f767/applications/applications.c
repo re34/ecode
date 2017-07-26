@@ -11,8 +11,8 @@ void ecode_application_init(void)
     cli_init();
     command_service_init();
     led_task_init();
-    tcp_server_init();
-    lua_script_init();
+    //tcp_server_init();
+    //lua_script_init();
     
 }
 

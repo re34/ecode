@@ -7,6 +7,8 @@
 #include "lwip/sio.h"
 #endif /* MDK ARM Compiler */
 
+#define USE_DHCP        0
+
 #define TCP_TIMER_INTERVAL          250
 #define ARP_TIMER_INTERVAL          5000
 
@@ -46,25 +48,161 @@ uint8_t IP_ADDRESS[4];
 uint8_t NETMASK_ADDRESS[4];
 uint8_t GATEWAY_ADDRESS[4];
 uint8_t dhcp_state = 0;
+uint8_t eth_is_on = 0;
 
 
 static SemaphoreHandle_t xSemaphoreEth;
-void ethernet_rx_indicate(void);
+void ethernet_rx_indicate(int * xhigher_priority_woken);
 
-void ethernet_task(void *args);
-void ethernet_data_task(void *args);
+void eth_server_task(void *args);
+void eth_stream_task(void *args);
 
 void eth_init(void)
+{
+
+    xTaskCreate(eth_stream_task,
+            "eth_stream_task",
+            512,
+            NULL,
+            5,
+            NULL);
+	xTaskCreate(eth_server_task,
+            "eth_server_task",
+            512,
+            NULL,
+            1,
+            NULL);
+}
+
+#if USE_DHCP==1
+void dhcp_process(void)
+{
+    struct dhcp *dhcp;
+    static e_uint32_t dhcp_timer = 0;
+
+    switch(dhcp_state)
+    {
+    case DHCP_START:
+        ip_addr_set_zero_ip4(&gnetif.ip_addr);
+        ip_addr_set_zero_ip4(&gnetif.netmask);
+        ip_addr_set_zero_ip4(&gnetif.gw);       
+        dhcp_start(&gnetif);
+        dhcp_state = DHCP_WAIT_ADDRESS;
+        dhcp_timer = system_get_time();
+        break;
+    case DHCP_WAIT_ADDRESS:
+        if(dhcp_supplied_address(&gnetif))
+        {
+            dhcp_state = DHCP_ADDRESS_ASSIGNED;
+            LOG_DEBUG("dhcp address assigned!");
+            LOG_DEBUG("ip address: %d.%d.%d.%d",ip4_addr1(&gnetif.ip_addr),ip4_addr2(&gnetif.ip_addr),ip4_addr3(&gnetif.ip_addr),ip4_addr4(&gnetif.ip_addr));
+            LOG_DEBUG("net mask: %d.%d.%d.%d", ip4_addr1(&gnetif.netmask),ip4_addr2(&gnetif.netmask),ip4_addr3(&gnetif.netmask),ip4_addr4(&gnetif.netmask));
+            LOG_DEBUG("gateway: %d.%d.%d.%d", ip4_addr1(&gnetif.gw),ip4_addr2(&gnetif.gw),ip4_addr3(&gnetif.gw),ip4_addr4(&gnetif.gw));
+        }
+        else
+        {
+            dhcp = (struct dhcp *)netif_get_client_data(&gnetif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP);
+           
+            if(dhcp->tries > MAX_DHCP_TRIES)
+            {
+                dhcp_state = DHCP_TIMEOUT;
+                dhcp_stop(&gnetif);
+                    
+                /* Static address used */
+                IP_ADDR4(&ipaddr, IP_ADDR0 ,IP_ADDR1 , IP_ADDR2 , IP_ADDR3 );
+                IP_ADDR4(&netmask, NETMASK_ADDR0, NETMASK_ADDR1, NETMASK_ADDR2, NETMASK_ADDR3);
+                IP_ADDR4(&gw, GW_ADDR0, GW_ADDR1, GW_ADDR2, GW_ADDR3);
+                netif_set_addr(&gnetif, ip_2_ip4(&ipaddr), ip_2_ip4(&netmask), ip_2_ip4(&gw));
+                LOG_DEBUG("dhcp timeout,static address was used!");
+                LOG_DEBUG("ip address: %d.%d.%d.%d",IP_ADDR0,IP_ADDR1,IP_ADDR2,IP_ADDR3);
+                LOG_DEBUG("net mask: %d.%d.%d.%d", NETMASK_ADDR0,NETMASK_ADDR1,NETMASK_ADDR2,NETMASK_ADDR3);
+                LOG_DEBUG("gateway: %d.%d.%d.%d", GW_ADDR0,GW_ADDR1,GW_ADDR2,GW_ADDR3);
+            }
+            else if(system_get_time()-dhcp_timer>=1000)
+            {
+                dhcp_timer = system_get_time();
+                dhcp_start(&gnetif);
+                LOG_DEBUG("dhcp tring %d", dhcp->tries);
+                dhcp->tries ++;
+            }
+        }
+            
+        break;
+    case DHCP_LINK_DOWN:
+        dhcp_stop(&gnetif);
+        dhcp_state = DHCP_OFF;
+        break;
+    }
+    
+}
+
+#endif
+
+void ethernet_rx_indicate(int * xhigher_priority_woken)
+{
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    
+    xSemaphoreGiveFromISR(xSemaphoreEth,&xHigherPriorityTaskWoken);
+
+    *xhigher_priority_woken = xHigherPriorityTaskWoken;
+    //portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
+
+void ethernet_process(void)
+{
+    //if(lan8742_get_packet_size()>0)
+    ethernetif_input(&gnetif);
+    sys_check_timeouts();
+}
+
+void eth_server_task(void *args)
+{
+   // unsigned int tcp_timer = 0;
+    //unsigned int arp_timer = 0;
+    //unsigned int jiffies = 0;
+    
+    //jiffies = get_ticks();
+    //tcp_timer = jiffies;
+    //arp_timer = jiffies;
+    
+    
+    LOG_DEBUG("eth server task running...");
+    while(1)
+    {
+        //ethernet_process();
+        //delay_ms(2);
+        
+        //jiffies = get_ticks();
+        //if(time_after(jiffies, tcp_timer+TCP_TIMER_INTERVAL))
+        //{
+        //    tcp_timer = jiffies;
+        //    tcp_tmr();
+        //}
+        //if(time_after(jiffies, arp_timer+ARP_TIMER_INTERVAL))
+        //{
+         //   arp_timer = jiffies;
+         //   etharp_tmr();
+        //}
+        //sys_check_timeouts();
+#if USE_DHCP==1
+        dhcp_process();
+#endif
+        delay_ms(TCP_TIMER_INTERVAL);
+        
+    }
+}
+
+void eth_stream_task(void *args)
 {
     struct lan8742_operations lan8742_ops;
     lan8742_ops.indicate = ethernet_rx_indicate;
     xSemaphoreEth = xSemaphoreCreateBinary();
-    
+
 	lan8742_init(lan8742_ops);
-	
+
 	lwip_init();
     
-#if LWIP_DHCP==1    
+#if USE_DHCP==1    
 	ipaddr.addr = 0;
 	netmask.addr = 0;
 	gw.addr = 0;
@@ -105,141 +243,19 @@ void eth_init(void)
 		netif_set_down(&gnetif);
 	}
     
-#if LWIP_DHCP==1
+#if USE_DHCP==1
     if(netif_is_up(&gnetif))
     {
+        LOG_DEBUG("dhcp start...");
         dhcp_state = DHCP_START;
     }
 #endif
     
-	xTaskCreate(ethernet_task,
-            "ethernet_task",
-            512,
-            NULL,
-            1,
-            NULL);
-    
-	xTaskCreate(ethernet_data_task,
-            "ethernet_data_task",
-            512,
-            NULL,
-            5,
-            NULL);
-}
-
-void dhcp_process(void)
-{
-    struct dhcp *dhcp;
-    static e_uint32_t dhcp_timer = 0;
-    e_uint32_t dhcp_local_timer = 0;
-    if(dhcp_timer==0)
-        dhcp_timer = system_get_time();
-    dhcp_local_timer = system_get_time();
-    if(dhcp_local_timer-dhcp_timer>250)
-    {
-        dhcp_local_timer = dhcp_timer;
-        switch(dhcp_state)
-        {
-        case DHCP_START:
-            ip_addr_set_zero_ip4(&gnetif.ip_addr);
-            ip_addr_set_zero_ip4(&gnetif.netmask);
-            ip_addr_set_zero_ip4(&gnetif.gw);       
-            dhcp_start(&gnetif);
-            dhcp_state = DHCP_WAIT_ADDRESS;
-            break;
-        case DHCP_WAIT_ADDRESS:
-            if(dhcp_supplied_address(&gnetif))
-            {
-                dhcp_state = DHCP_ADDRESS_ASSIGNED;
-                LOG_DEBUG("dhcp completed!");
-                LOG_DEBUG("ip address: %d.%d.%d.%d",ip4_addr1(&gnetif.ip_addr),ip4_addr2(&gnetif.ip_addr),ip4_addr3(&gnetif.ip_addr),ip4_addr4(&gnetif.ip_addr));
-                LOG_DEBUG("net mask: %d.%d.%d.%d", ip4_addr1(&gnetif.netmask),ip4_addr2(&gnetif.netmask),ip4_addr3(&gnetif.netmask),ip4_addr4(&gnetif.netmask));
-                LOG_DEBUG("gateway: %d.%d.%d.%d", ip4_addr1(&gnetif.gw),ip4_addr2(&gnetif.gw),ip4_addr3(&gnetif.gw),ip4_addr4(&gnetif.gw));
-            }
-            else
-            {
-                dhcp = (struct dhcp *)netif_get_client_data(&gnetif, LWIP_NETIF_CLIENT_DATA_INDEX_DHCP);
-                if(dhcp->tries > MAX_DHCP_TRIES)
-                {
-                    dhcp_state = DHCP_TIMEOUT;
-                    dhcp_stop(&gnetif);
-                    
-                    /* Static address used */
-                    IP_ADDR4(&ipaddr, IP_ADDR0 ,IP_ADDR1 , IP_ADDR2 , IP_ADDR3 );
-                    IP_ADDR4(&netmask, NETMASK_ADDR0, NETMASK_ADDR1, NETMASK_ADDR2, NETMASK_ADDR3);
-                    IP_ADDR4(&gw, GW_ADDR0, GW_ADDR1, GW_ADDR2, GW_ADDR3);
-                    netif_set_addr(&gnetif, ip_2_ip4(&ipaddr), ip_2_ip4(&netmask), ip_2_ip4(&gw));
-                    LOG_DEBUG("dhcp timeout,static address was used!");
-                    LOG_DEBUG("ip address: %d.%d.%d.%d",IP_ADDR0,IP_ADDR1,IP_ADDR2,IP_ADDR3);
-                    LOG_DEBUG("net mask: %d.%d.%d.%d", NETMASK_ADDR0,NETMASK_ADDR1,NETMASK_ADDR2,NETMASK_ADDR3);
-                    LOG_DEBUG("gateway: %d.%d.%d.%d", GW_ADDR0,GW_ADDR1,GW_ADDR2,GW_ADDR3);
-                }
-            }
-            break;
-        case DHCP_LINK_DOWN:
-            dhcp_stop(&gnetif);
-            dhcp_state = DHCP_OFF;
-            break;
-        }
-    }
-    
-}
-
-void ethernet_rx_indicate(void)
-{
-    xSemaphoreGive(xSemaphoreEth);
-}
-
-void ethernet_process(void)
-{
-    if(lan8742_get_packet_size()>0)
-        ethernetif_input(&gnetif);
-    //sys_check_timeouts();
-}
-
-void ethernet_task(void *args)
-{
-   // unsigned int tcp_timer = 0;
-    //unsigned int arp_timer = 0;
-    //unsigned int jiffies = 0;
-    
-    //jiffies = get_ticks();
-    //tcp_timer = jiffies;
-    //arp_timer = jiffies;
-    
-    
-    
-    while(1)
-    {
-        //ethernet_process();
-        //delay_ms(2);
-        
-        //jiffies = get_ticks();
-        //if(time_after(jiffies, tcp_timer+TCP_TIMER_INTERVAL))
-        //{
-        //    tcp_timer = jiffies;
-        //    tcp_tmr();
-        //}
-        //if(time_after(jiffies, arp_timer+ARP_TIMER_INTERVAL))
-        //{
-         //   arp_timer = jiffies;
-         //   etharp_tmr();
-        //}
-        sys_check_timeouts();
-        dhcp_process();
-        delay_ms(TCP_TIMER_INTERVAL);
-        
-    }
-}
-
-void ethernet_data_task(void *args)
-{
-
+  LOG_DEBUG("eth stream task running...");
   for(;;)
   {
     xSemaphoreTake(xSemaphoreEth, portMAX_DELAY);
     ethernet_process();
-
   
   }
 }

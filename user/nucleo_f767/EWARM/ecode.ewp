@@ -740,11 +740,11 @@
         </option>
         <option>
           <name>IlinkIcfOverride</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$TOOLKIT_DIR$\config\linker\ST\stm32f767xI.icf</state>
+          <state>$PROJ_DIR$\ecode.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -2293,6 +2293,12 @@
       <name>lua</name>
       <file>
         <name>$PROJ_DIR$\..\..\..\module\lua\lua_script.c</name>
+      </file>
+    </group>
+    <group>
+      <name>protocal</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\module\protocal\xmodem.c</name>
       </file>
     </group>
   </group>

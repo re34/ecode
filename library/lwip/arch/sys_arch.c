@@ -5,6 +5,11 @@ u32_t sys_now(void)
 {
 	return system_get_time();
 }
+
+u32_t sys_jiffies(void)
+{
+    return system_get_time();
+}
 /*
 void sys_init(void)
 {

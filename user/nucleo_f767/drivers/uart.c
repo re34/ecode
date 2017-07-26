@@ -224,6 +224,5 @@ void uart_hw_init(void)
     serial_register(COM1,
                     &serial3,
                     "COM1");
-    serial_write(COM1,"hello",5);
 #endif
 }

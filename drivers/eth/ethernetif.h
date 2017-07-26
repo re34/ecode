@@ -20,6 +20,7 @@
 #include "lwip/tcp.h"
 #include "lwip/init.h"
 #include "lwip/dhcp.h"
+#include "lwip/timeouts.h"
 
 
 
