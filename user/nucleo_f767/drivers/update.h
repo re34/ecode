@@ -2,4 +2,5 @@
 #define __UPDATE_H__
 
 
+void update_init(void);
 #endif

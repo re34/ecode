@@ -82,9 +82,9 @@ e_err_t update_process(struct firmware *firmware)
     
     print_log("Firmware upgrading...\r\n");
     
-    taskENTER_CRITICAL();
+    //taskENTER_CRITICAL();
     ret = XmodemReceive(FLASH_UPDATE_SIZE, &bytes_received, FLASH_UPDATE_ADDRESS, update_data_write);
-    taskEXIT_CRITICAL();
+    //taskEXIT_CRITICAL();
     
     if(ret!=E_EOK)
     {

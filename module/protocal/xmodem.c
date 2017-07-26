@@ -31,7 +31,7 @@ void XmodemInit(XmodemDescription_t desc)
     fXmodemDescription = desc;
 }
 
-
+/*
 static e_uint8_t Xmodemfgetc(void)
 {
 	int pChar;
@@ -47,6 +47,30 @@ static e_uint8_t Xmodemfgetc(void)
 			{
 				return -1;
 			}
+		}
+        else
+          break;
+	}
+
+	return pChar;
+}
+*/
+
+static e_uint8_t Xmodemfgetc(void)
+{
+	int pChar;
+	e_uint32_t timeout = 0;
+    e_uint32_t local_time = 0;
+    
+    local_time = system_get_time();
+
+	while (1)
+	{
+        pChar = fXmodemDescription.fgetc();
+		if(pChar<0)
+		{
+          if(system_get_time()-local_time>1000)//1s
+            return -1;
 		}
         else
           break;

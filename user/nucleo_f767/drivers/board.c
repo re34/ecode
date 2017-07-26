@@ -6,6 +6,7 @@
 //#include "uart.h"
 #include "uart.h"
 #include "eth.h"
+#include "update.h"
 
 void board_clock_configuration(void);
 static int print_log_putc(unsigned char c);
@@ -29,6 +30,8 @@ void ecode_hw_board_init()
     print_log_register_io(fprint_log);
     
     eth_init();
+    
+    update_init();
 }
 
 static int print_log_putc(unsigned char c)
