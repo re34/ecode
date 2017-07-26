@@ -2301,6 +2301,12 @@
         <name>$PROJ_DIR$\..\..\..\module\protocal\xmodem.c</name>
       </file>
     </group>
+    <group>
+      <name>update</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\module\update\firmware.c</name>
+      </file>
+    </group>
   </group>
   <group>
     <name>platform</name>
@@ -2386,6 +2392,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\uart.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\update.c</name>
       </file>
     </group>
     <group>

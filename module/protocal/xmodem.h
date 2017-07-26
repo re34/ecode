@@ -10,7 +10,7 @@ typedef struct{
 }XmodemDescription_t;
 
 
-typedef int (*XmodemWriteData)(e_uint32_t nAddress, e_uint8_t* pData, e_uint16_t nLength);
+typedef int (*XmodemWriteData)(e_uint32_t nAddress, void* buffer, e_size_t nLength);
 
 void XmodemInit(XmodemDescription_t desc);
 
