@@ -28,7 +28,7 @@ LeaveTargetRunning=_ 0
 stlinkserialNo=67032755
 stlinkfoundProbes=
 [DebugChecksum]
-Checksum=159453951
+Checksum=-315566807
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -116,7 +116,12 @@ ShowTiming=1
 mode=0
 [Breakpoints2]
 Bp0=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\module\protocal\xmodem.c}.191.3" 0 0 1 "" 0 "" 0
-Count=1
+Bp1=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\module\protocal\xmodem.c}.163.6" 0 0 1 "" 0 "" 0
+Bp2=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\module\protocal\xmodem.c}.166.6" 0 0 1 "" 0 "" 0
+Bp3=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\module\protocal\xmodem.c}.169.6" 0 0 1 "" 0 "" 0
+Bp4=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\module\protocal\xmodem.c}.173.17" 0 0 1 "" 0 "" 0
+Bp5=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\module\protocal\xmodem.c}.155.4" 0 0 1 "" 0 "" 0
+Count=6
 [Aliases]
 Count=0
 SuppressDialog=0

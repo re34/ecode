@@ -1,6 +1,7 @@
 #ifndef __SERIAL_H__
 #define __SERIAL_H__
 #include "device.h"
+#include "rtos.h"
 
 #define SERIAL_FLAG_STREAM          BIT(1)
 #define SERIAL_FLAG_INT_RX          BIT(2)
@@ -103,6 +104,9 @@ struct serial_dev{
     
     void *serial_rx;
     void *serial_tx;
+    
+    os_sem_t read_sem;
+    os_sem_t write_sem;
     
     void *private_data;
 };

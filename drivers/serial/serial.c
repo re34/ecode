@@ -125,6 +125,20 @@ e_err_t serial_register(int fd,
     if(err!=E_EOK)
         return -E_ERROR;
     
+    serial->read_sem = os_sem_create();
+    if(serial->read_sem==NULL)
+        return -E_ERROR;
+    
+    serial->write_sem = os_sem_create();
+    if(serial->write_sem==NULL)
+    {
+        os_sem_delete(serial->read_sem);
+        return -E_ERROR;
+    }
+    
+    os_sem_release(serial->read_sem);
+    os_sem_release(serial->write_sem);
+    
     serials[fd]=serial;
     
     LOG_DEBUG("%s is registered!", name);
@@ -139,18 +153,28 @@ e_size_t serial_write(int fd,
 {
     struct serial_dev *serial;
     
+    e_size_t ret = 0;
+    
     ASSERT_PARAM(fd<COMn);
     
     serial = serials[fd];
     
     ASSERT_PARAM(serial!=NULL);
     
+    os_sem_wait(serial->write_sem, OS_WAIT_FOREVER);
+    
     if(serial->flag&SERIAL_FLAG_INT_TX)
     {
-        return _serial_int_tx(serial, buffer, size);
+        ret =  _serial_int_tx(serial, buffer, size);
+    }
+    else
+    {
+        ret = _serial_poll_tx(serial, buffer, size);
     }
     
-    return _serial_poll_tx(serial, buffer, size);
+    os_sem_release(serial->write_sem);
+    
+    return ret;
 }
 
 e_size_t serial_read(int fd, 
@@ -159,18 +183,28 @@ e_size_t serial_read(int fd,
 {
     struct serial_dev *serial;
     
+    e_size_t ret = 0;
+    
     ASSERT_PARAM(fd<COMn);
     
     serial = serials[fd];
     
     ASSERT_PARAM(serial!=NULL);
     
+    os_sem_wait(serial->read_sem, OS_WAIT_FOREVER);
+    
     if(serial->flag&SERIAL_FLAG_INT_RX)
     {
-        return _serial_int_rx(serial, buffer, size);
+        ret = _serial_int_rx(serial, buffer, size);
+    }
+    else
+    {
+        ret = _serial_poll_rx(serial, buffer, size);
     }
     
-    return _serial_poll_rx(serial, buffer, size);
+    os_sem_release(serial->read_sem);
+    
+    return ret;
 }
 
 
