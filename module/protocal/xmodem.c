@@ -56,27 +56,32 @@ static e_uint8_t Xmodemfgetc(void)
 }
 */
 
-static e_uint8_t Xmodemfgetc(void)
+static int Xmodemfgetc(void)
 {
-	int pChar;
-	e_uint32_t timeout = 0;
+	int ch = -1;
+
     e_uint32_t local_time = 0;
     
     local_time = system_get_time();
 
 	while (1)
 	{
-        pChar = fXmodemDescription.fgetc();
-		if(pChar<0)
+        ch = fXmodemDescription.fgetc();
+
+		if(ch<0)
 		{
-          if(system_get_time()-local_time>1000)//1s
+          if(system_get_time()-local_time>=999)//1s
+          {
             return -1;
+          }
+            
+          continue;
 		}
         else
-          break;
+          break; 
 	}
 
-	return pChar;
+	return ch;
 }
 
 static void Xmodemfputc(e_uint8_t bData)

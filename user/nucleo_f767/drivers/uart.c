@@ -75,9 +75,10 @@ static e_err_t stm_uart_init(struct serial_dev *serial)
 #endif
 
     LL_USART_Enable(uart->instance);
-    
     UART_ENABLE_IRQ(uart->irq);
+    LL_USART_ClearFlag_ORE(uart->instance);
     LL_USART_EnableIT_RXNE(uart->instance);
+    LL_USART_DisableIT_TC(uart->instance);
     
     return E_EOK;
 }
@@ -96,6 +97,11 @@ static void uart_isr(struct serial_dev *serial)
     {
         
     }
+    if(LL_USART_IsActiveFlag_ORE(uart->instance))
+    {
+        LL_USART_ClearFlag_ORE(uart->instance);
+    }
+    
 }
 
 

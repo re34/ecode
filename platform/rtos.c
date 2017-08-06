@@ -60,13 +60,13 @@ e_err_t os_sem_wait(os_sem_t sem, uint32_t millisec)
     }
     
     if(in_isr_mode()){
-        //if(xSemaphoreTakeFromISR(sem, ticks, &task_woken)!=pdTRUE){
+        if(xSemaphoreTakeFromISR(sem, &task_woken)!=pdTRUE){
             return -E_ERROR;
-        //}
-       // else
-       // {
-       //     portEND_SWITCHING_ISR(task_woken);
-       // }
+        }
+        else
+        {
+            portEND_SWITCHING_ISR(task_woken);
+        }
     }
     else if(xSemaphoreTake(sem, ticks)!=pdTRUE)
     {

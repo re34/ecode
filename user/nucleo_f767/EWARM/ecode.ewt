@@ -2745,6 +2745,9 @@
         <name>$PROJ_DIR$\..\drivers\board.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\drivers\bootloader.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\drivers\eth.c</name>
       </file>
       <file>

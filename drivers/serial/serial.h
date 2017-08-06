@@ -3,6 +3,9 @@
 #include "device.h"
 #include "rtos.h"
 
+#define SERIAL_OFLAG_WR             0x01
+#define SERIAL_OFLAG_RD             0x02
+
 #define SERIAL_FLAG_STREAM          BIT(1)
 #define SERIAL_FLAG_INT_RX          BIT(2)
 #define SERIAL_FLAG_INT_TX          BIT(3)
@@ -99,14 +102,14 @@ struct serial_rx_fifo
 };
 struct serial_dev{
     e_uint16_t flag;
+    e_uint16_t oflag;
     const struct serial_operation *ops;
     struct serial_configure config;
     
     void *serial_rx;
     void *serial_tx;
     
-    os_sem_t read_sem;
-    os_sem_t write_sem;
+    os_sem_t sem;
     
     void *private_data;
 };
@@ -122,6 +125,8 @@ struct serial_operation{
 e_err_t serial_register(int fd,
                     struct serial_dev *serial,
                     const char *name);
+e_err_t serial_open(int fd, int oflags);
+void serial_close(int fd);
 e_size_t serial_write(int fd,
                 const void *buffer,
                 e_size_t size);

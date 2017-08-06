@@ -2,11 +2,11 @@
 /*-Editor annotation file-*/
 /* IcfEditorFile="$TOOLKIT_DIR$\config\linker\ST\IcfEditor\stm32f7xx.xml" */
 /*-Specials-*/
-define symbol __ICFEDIT_intvec_start__ = 0x00200000;
+define symbol __ICFEDIT_intvec_start__ = 0x00240000;
 /*-Memory Regions-*/
 define symbol __ICFEDIT_region_ITCMF_start__ = 0x00200000;
 define symbol __ICFEDIT_region_ITCMF_end__   = 0x003FFFFF;
-define symbol __ICFEDIT_region_AXIF_start__  = 0x08000000;
+define symbol __ICFEDIT_region_AXIF_start__  = 0x08040000;
 define symbol __ICFEDIT_region_AXIF_end__    = 0x081FFFFF;
 define symbol __ICFEDIT_region_FMC11_start__ = 0x0;
 define symbol __ICFEDIT_region_FMC11_end__   = 0x0;

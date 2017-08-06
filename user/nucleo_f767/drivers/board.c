@@ -1,12 +1,9 @@
 #include "board.h"
 #include "ecode.h"
-//#include "rtos.h"
-//#include "time.h"
-//#include "print_log.h"
-//#include "uart.h"
 #include "uart.h"
 #include "eth.h"
 #include "update.h"
+#include "bootloader.h"
 
 void board_clock_configuration(void);
 static int print_log_putc(unsigned char c);
@@ -19,6 +16,17 @@ void ecode_hw_board_init()
 	
 	//__set_PRIMASK(1);
 	
+#if CONFIG_USE_BOOTLOADER==1
+    /* Set the Vector Table base location at 0x08010000 */
+    SCB->VTOR = FLASH_BASE|0x40000;
+#else
+    /* Set the Vector Table base location at 0x08000000 */
+    SCB->VTOR = FLASH_BASE|0x00000;
+
+#endif
+    
+    HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+    
     board_clock_configuration();
 	
     uart_hw_init();
@@ -29,9 +37,15 @@ void ecode_hw_board_init()
     
     print_log_register_io(fprint_log);
     
+#if CONFIG_BOOTLOADER_EN==1
+    bootloader_running();
+#endif
+    
     eth_init();
     
     update_init();
+    
+    
 }
 
 static int print_log_putc(unsigned char c)

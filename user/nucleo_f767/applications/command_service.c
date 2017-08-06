@@ -11,15 +11,27 @@ e_uint8_t command_rx_buffer[COMMAND_RX_BUFFER_SIZE];
 int command_getc(void)
 {
     int data;
-    if(serial_read(COM1, &data, 1)>0)
-        return data;
+    int ret = -1;
+    serial_open(COM1, SERIAL_OFLAG_RD);
+    ret = serial_read(COM1, &data, 1);
+    serial_close(COM1);
+    
+    if(ret>0)
+      return data;
     else
-        return -1;
+      return -1;
+    
 }
 
 int command_putc(char c)
 {
-    return serial_write(COM1, &c, 1);
+    int ret;
+    
+    serial_open(COM1,SERIAL_OFLAG_WR);
+    ret = serial_write(COM1, &c, 1);
+    serial_close(COM1);
+    
+    return ret;
 }
 
 

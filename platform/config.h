@@ -15,4 +15,12 @@
 #define CONFIG_USE_ASSERT   1
 #endif
 
+#ifndef CONFIG_USE_BOOTLOADER
+#define CONFIG_USE_BOOTLOADER   0
+#endif
+
+#ifndef CONFIG_BOOTLOADER_EN
+#define CONFIG_BOOTLOADER_EN    0
+#endif
+
 #endif

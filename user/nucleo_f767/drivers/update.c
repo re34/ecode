@@ -69,6 +69,10 @@ e_err_t update_process(struct firmware *firmware)
 {
     e_err_t ret;
     e_uint32_t bytes_received;
+    
+    
+    firmware_open(firmware);
+    
     HAL_FLASH_Unlock();
     
     print_log("Flash erase...\r\n");
@@ -86,7 +90,7 @@ e_err_t update_process(struct firmware *firmware)
     ret = XmodemReceive(FLASH_UPDATE_SIZE, &bytes_received, FLASH_UPDATE_ADDRESS, update_data_write);
     //taskEXIT_CRITICAL();
     
-    if(ret!=E_EOK)
+   if(ret!=E_EOK)
     {
         firmware_erase(firmware);
         goto update_error;
@@ -94,15 +98,33 @@ e_err_t update_process(struct firmware *firmware)
     
     print_log("Firmware upgrade finished!\r\n");
     
+    firmware_close(firmware);
+    
     return E_EOK;
     
 update_error:
     HAL_FLASH_Lock();
     
+    firmware_close(firmware);
+    
     return ret;
 }
 
+static e_err_t xmodem_open(void)
+{
+    serial_open(COM1, NULL);
+    return E_EOK;
+}
+
+static void xmodem_close(void)
+{
+    serial_close(COM1);
+}
+
+
 static const struct firmware_operations firmware_ops={
+    .open = xmodem_open,
+    .close = xmodem_close,
     .erase = update_erea_erase,
     .write = update_data_write,
     .update = update_process,
@@ -112,12 +134,12 @@ static struct firmware _firmware={
     .ops = &firmware_ops,
 };
 
-
 static int xmodem_getc(void)
 {
-    int ch = -1;
-    
-    serial_read(COM1, &ch, 1);
+    e_uint8_t ch;
+
+    if(serial_read(COM1, &ch, 1)<=0)
+      return -1;
     
     return ch;
 }

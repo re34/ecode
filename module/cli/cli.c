@@ -67,6 +67,8 @@ e_size_t cli_puts(struct cli_dev *cli, char *str)
     
     e_size_t len = strlen(str);
     
+    LOG_DEBUG("len=%d", len);
+    
     return ops->output(cli, str, len);
 }
 

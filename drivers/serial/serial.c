@@ -125,19 +125,10 @@ e_err_t serial_register(int fd,
     if(err!=E_EOK)
         return -E_ERROR;
     
-    serial->read_sem = os_sem_create();
-    if(serial->read_sem==NULL)
-        return -E_ERROR;
+
+    serial->sem = os_sem_create();
     
-    serial->write_sem = os_sem_create();
-    if(serial->write_sem==NULL)
-    {
-        os_sem_delete(serial->read_sem);
-        return -E_ERROR;
-    }
-    
-    os_sem_release(serial->read_sem);
-    os_sem_release(serial->write_sem);
+    os_sem_release(serial->sem);
     
     serials[fd]=serial;
     
@@ -146,6 +137,33 @@ e_err_t serial_register(int fd,
     return E_EOK;
 }
 
+e_err_t serial_open(int fd, int oflag)
+{
+    struct serial_dev *serial;
+    
+    ASSERT_PARAM(fd<COMn);
+    
+    serial = serials[fd];
+    
+    ASSERT_PARAM(serial!=NULL);
+    
+    os_sem_wait(serial->sem, OS_WAIT_FOREVER);
+    
+    return E_EOK;
+}
+
+void serial_close(int fd)
+{
+    struct serial_dev *serial;
+    
+    ASSERT_PARAM(fd<COMn);
+    
+    serial = serials[fd];
+    
+    ASSERT_PARAM(serial!=NULL);
+    
+    os_sem_release(serial->sem);
+}
 
 e_size_t serial_write(int fd,
                 const void *buffer,
@@ -160,9 +178,7 @@ e_size_t serial_write(int fd,
     serial = serials[fd];
     
     ASSERT_PARAM(serial!=NULL);
-    
-    os_sem_wait(serial->write_sem, OS_WAIT_FOREVER);
-    
+
     if(serial->flag&SERIAL_FLAG_INT_TX)
     {
         ret =  _serial_int_tx(serial, buffer, size);
@@ -171,8 +187,6 @@ e_size_t serial_write(int fd,
     {
         ret = _serial_poll_tx(serial, buffer, size);
     }
-    
-    os_sem_release(serial->write_sem);
     
     return ret;
 }
@@ -191,8 +205,6 @@ e_size_t serial_read(int fd,
     
     ASSERT_PARAM(serial!=NULL);
     
-    os_sem_wait(serial->read_sem, OS_WAIT_FOREVER);
-    
     if(serial->flag&SERIAL_FLAG_INT_RX)
     {
         ret = _serial_int_rx(serial, buffer, size);
@@ -201,8 +213,6 @@ e_size_t serial_read(int fd,
     {
         ret = _serial_poll_rx(serial, buffer, size);
     }
-    
-    os_sem_release(serial->read_sem);
     
     return ret;
 }
