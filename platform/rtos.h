@@ -19,6 +19,8 @@ typedef SemaphoreHandle_t os_sem_t;
 
 typedef QueueHandle_t os_queue_t;
 
+typedef SemaphoreHandle_t os_mutex_t;
+
 
 typedef enum{
     OS_PRIO_IDLE        = -3,
@@ -50,6 +52,10 @@ os_sem_t os_sem_create(void);
 e_err_t os_sem_wait(os_sem_t sem, uint32_t millisec);
 e_err_t os_sem_release(os_sem_t sem);
 void os_sem_delete(os_sem_t sem);
+os_mutex_t os_mutex_create(void);
+e_err_t os_mutex_lock(os_mutex_t mutex, uint32_t millisec);
+e_err_t os_mutex_unlock(os_mutex_t mutex);
+void os_mutex_delete(os_mutex_t mutex);
 int rtos_is_running(void);
 void rtos_start_scheduler(void);
 void rtos_systick(void);

@@ -33,8 +33,7 @@ void os_task_create(TaskFunction_t task,
                     os_priority_t prio,
                     TaskHandle_t *const handle)
 {
-    
-    
+
 }
 
 os_sem_t os_sem_create(void)
@@ -97,6 +96,68 @@ e_err_t os_sem_release(os_sem_t sem)
 void os_sem_delete(os_sem_t sem)
 {
     vSemaphoreDelete(sem);
+}
+
+os_mutex_t os_mutex_create(void)
+{
+    return xSemaphoreCreateBinary();
+}
+
+e_err_t os_mutex_lock(os_mutex_t mutex, uint32_t millisec)
+{
+    TickType_t ticks;
+    portBASE_TYPE task_woken = pdFALSE;
+    
+    if(!rtos_is_running())
+        return E_EOK;
+    
+    
+    if(millisec==OS_WAIT_FOREVER)
+        ticks = portMAX_DELAY;
+    else if(millisec!=0){
+        ticks = millisec/portTICK_PERIOD_MS;
+        if(ticks == 0)
+            ticks = 1;
+    }
+    
+    if(in_isr_mode()){
+        if(xSemaphoreTakeFromISR(mutex, &task_woken)!=pdTRUE){
+            return -E_ERROR;
+        }
+        else
+        {
+            portEND_SWITCHING_ISR(task_woken);
+        }
+    }
+    else if(xSemaphoreTake(mutex, ticks)!=pdTRUE)
+    {
+        return -E_ERROR;
+    }
+    return E_EOK;
+}
+
+e_err_t os_mutex_unlock(os_mutex_t mutex)
+{
+    portBASE_TYPE task_woken = pdFALSE;
+    
+    
+    if(in_isr_mode()){
+        if(xSemaphoreGiveFromISR(mutex, &task_woken)!= pdTRUE){
+            return -E_ERROR;
+        }
+        portEND_SWITCHING_ISR(task_woken);
+    }
+    else{
+        if(xSemaphoreGive(mutex)!=pdTRUE){
+            return -E_ERROR;
+        }
+    }
+    return E_EOK;
+}
+
+void os_mutex_delete(os_mutex_t mutex)
+{
+    vSemaphoreDelete(mutex);
 }
 
 int rtos_is_running(void)

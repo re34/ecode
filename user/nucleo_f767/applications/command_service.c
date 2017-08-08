@@ -12,9 +12,14 @@ int command_getc(void)
 {
     int data;
     int ret = -1;
-    serial_open(COM1, SERIAL_OFLAG_RD);
-    ret = serial_read(COM1, &data, 1);
-    serial_close(COM1);
+    struct serial *serial = serial_open(COM1, SERIAL_OFLAG_RD);
+    if(serial==NULL)
+    {
+        LOG_DEBUG("serial open failed!");
+        return -1;
+    }
+    ret = serial_read(serial, &data, 1);
+    serial_close(serial);
     
     if(ret>0)
       return data;
@@ -26,10 +31,12 @@ int command_getc(void)
 int command_putc(char c)
 {
     int ret;
-    
-    serial_open(COM1,SERIAL_OFLAG_WR);
-    ret = serial_write(COM1, &c, 1);
-    serial_close(COM1);
+    struct serial *serial;
+    serial = serial_open(COM1,SERIAL_OFLAG_WR);
+    if(serial==NULL)
+      return -1;
+    ret = serial_write(serial, &c, 1);
+    serial_close(serial);
     
     return ret;
 }

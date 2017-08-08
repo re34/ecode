@@ -100,7 +100,7 @@ struct serial_rx_fifo
     e_uint16_t put_index, get_index;
     e_size_t bufsz;
 };
-struct serial_dev{
+struct serial{
     e_uint16_t flag;
     e_uint16_t oflag;
     const struct serial_operation *ops;
@@ -113,25 +113,26 @@ struct serial_dev{
     
     void *private_data;
 };
-typedef struct serial_device e_serial_t;
+typedef struct serialice e_serial_t;
 
 struct serial_operation{
-    e_err_t (*init)(struct serial_dev *dev);
-    int (*fputc)(struct serial_dev *dev, char c);
-    int (*fgetc)(struct serial_dev *dev);
+    e_err_t (*init)(struct serial *dev);
+    int (*fputc)(struct serial *dev, char c);
+    int (*fgetc)(struct serial *dev);
 };
 
 
+
 e_err_t serial_register(int fd,
-                    struct serial_dev *serial,
+                    struct serial *serial,
                     const char *name);
-e_err_t serial_open(int fd, int oflags);
-void serial_close(int fd);
-e_size_t serial_write(int fd,
+struct serial * serial_open(int fd, int oflags);
+void serial_close(struct serial *serial);
+e_size_t serial_write(struct serial *serial,
                 const void *buffer,
                 e_size_t size);
-e_size_t serial_read(int fd, 
+e_size_t serial_read(struct serial *serial, 
                 void *buffer,
                 e_size_t size);
-void serial_hw_isr(struct serial_dev *serial, int event);
+void serial_hw_isr(struct serial *serial, int event);
 #endif

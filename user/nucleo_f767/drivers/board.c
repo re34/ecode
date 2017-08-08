@@ -7,14 +7,12 @@
 #include "tftp_update.h"
 
 void board_clock_configuration(void);
-static int print_log_putc(unsigned char c);
+
 /**
  * This function will initial STM32 board.
  */
 void ecode_hw_board_init()
 {
-    struct print_log_interface fprint_log;
-	
 	//__set_PRIMASK(1);
 	
 #if CONFIG_USE_BOOTLOADER==1
@@ -34,10 +32,6 @@ void ecode_hw_board_init()
     
     stm_pin_init();
     
-    fprint_log.fputc = print_log_putc;
-    
-    print_log_register_io(fprint_log);
-    
 #if CONFIG_BOOTLOADER_EN==1
     bootloader_running();
 #endif
@@ -48,12 +42,6 @@ void ecode_hw_board_init()
     
     tftp_update_init();
     
-}
-
-static int print_log_putc(unsigned char c)
-{
-    serial_write(COM1,&c,1);
-    return c;
 }
 
 void SysTick_Handler(void)

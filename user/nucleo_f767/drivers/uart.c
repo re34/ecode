@@ -28,7 +28,7 @@ struct stm_uart{
 
 
 
-static e_err_t stm_uart_init(struct serial_dev *serial)
+static e_err_t stm_uart_init(struct serial *serial)
 {
     struct stm_uart *uart;
     struct serial_configure *cfg;
@@ -83,7 +83,7 @@ static e_err_t stm_uart_init(struct serial_dev *serial)
     return E_EOK;
 }
 
-static void uart_isr(struct serial_dev *serial)
+static void uart_isr(struct serial *serial)
 {
     struct stm_uart * uart= (struct stm_uart *)serial->private_data;
     
@@ -105,7 +105,7 @@ static void uart_isr(struct serial_dev *serial)
 }
 
 
-static int stm_putc(struct serial_dev *serial, char c)
+static int stm_putc(struct serial *serial, char c)
 {
     struct stm_uart *uart;
 
@@ -119,7 +119,7 @@ static int stm_putc(struct serial_dev *serial, char c)
     return 1;
 }
 
-static int stm_getc(struct serial_dev *serial)
+static int stm_getc(struct serial *serial)
 {
     int ch;
     struct stm_uart *uart;
@@ -158,7 +158,7 @@ struct serial_rx_fifo serial3_rx_fifo={
     .bufsz = SERIAL_RB_BUFSZ,
 };
 
-static struct serial_dev serial3={
+static struct serial serial3={
     .flag = SERIAL_FLAG_INT_RX,
     
     .ops = &stm_uart_ops,
@@ -211,11 +211,15 @@ static void uart_nvic_configuration(struct stm_uart *uart)
     NVIC_EnableIRQ(uart->irq);
 }
 
+
+static int print_log_putc(unsigned char c);
+
 void uart_hw_init(void)
 {
     struct stm_uart *uart;
     struct serial_configure config = SERIAL_CONFIG_DEFAULT;
-    
+    struct print_log_interface fprint_log;
+	
     uart_rcc_configuration();
     uart_gpio_configuration();
     
@@ -230,5 +234,15 @@ void uart_hw_init(void)
     serial_register(COM1,
                     &serial3,
                     "COM1");
+    
+    fprint_log.fputc = print_log_putc;
+    
+    print_log_register_io(fprint_log);
 #endif
+}
+
+static int print_log_putc(unsigned char c)
+{
+    serial_write(&serial3,&c,1);
+    return c;
 }

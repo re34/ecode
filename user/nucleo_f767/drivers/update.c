@@ -7,6 +7,8 @@
 #define FLASH_UPDATE_SECTOR_2       FLASH_SECTOR_11
 
 
+static struct serial *serial = NULL;
+
 e_err_t update_erea_erase(void)
 {
     HAL_StatusTypeDef ret;
@@ -112,13 +114,15 @@ update_error:
 
 static e_err_t xmodem_open(void)
 {
-    serial_open(COM1, NULL);
+    serial = serial_open(COM1, NULL);
+    if(serial == NULL)
+        return -E_ERROR;
     return E_EOK;
 }
 
 static void xmodem_close(void)
 {
-    serial_close(COM1);
+    serial_close(serial);
 }
 
 
@@ -138,7 +142,7 @@ static int xmodem_getc(void)
 {
     e_uint8_t ch;
 
-    if(serial_read(COM1, &ch, 1)<=0)
+    if(serial_read(serial, &ch, 1)<=0)
       return -1;
     
     return ch;
@@ -146,7 +150,7 @@ static int xmodem_getc(void)
 
 static void xmodem_putc(e_uint8_t ch)
 {
-    serial_write(COM1, &ch, 1);
+    serial_write(serial, &ch, 1);
 }
 
 void update_init(void)

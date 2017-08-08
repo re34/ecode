@@ -6,9 +6,9 @@
 #define COMn    2
 #endif
 
-static struct serial_dev *serials[COMn]={NULL};
+static struct serial *serials[COMn]={NULL};
 
-e_inline int _serial_poll_rx(struct serial_dev *serial, e_uint8_t *data, int length)
+e_inline int _serial_poll_rx(struct serial *serial, e_uint8_t *data, int length)
 {
     int ch;
     int size;
@@ -30,7 +30,7 @@ e_inline int _serial_poll_rx(struct serial_dev *serial, e_uint8_t *data, int len
     return size-length;    
 }
 
-e_inline int _serial_poll_tx(struct serial_dev *serial, const e_uint8_t *data, int length)
+e_inline int _serial_poll_tx(struct serial *serial, const e_uint8_t *data, int length)
 {
     int size;
     ASSERT_PARAM(serial != NULL);
@@ -48,7 +48,7 @@ e_inline int _serial_poll_tx(struct serial_dev *serial, const e_uint8_t *data, i
 }
 
 
-e_inline int _serial_int_rx(struct serial_dev *serial, e_uint8_t *data, int length)
+e_inline int _serial_int_rx(struct serial *serial, e_uint8_t *data, int length)
 {
     int size;
     struct serial_rx_fifo *rx_fifo;
@@ -85,7 +85,7 @@ e_inline int _serial_int_rx(struct serial_dev *serial, e_uint8_t *data, int leng
     return size - length;
 }
 
-e_inline int _serial_int_tx(struct serial_dev *serial, const e_uint8_t *data, int length)
+e_inline int _serial_int_tx(struct serial *serial, const e_uint8_t *data, int length)
 {
     int size;
     struct serial_tx_fifo *tx;
@@ -110,7 +110,7 @@ e_inline int _serial_int_tx(struct serial_dev *serial, const e_uint8_t *data, in
 }
 
 e_err_t serial_register(int fd,
-                    struct serial_dev *serial,
+                    struct serial *serial,
                     const char *name)
 {
     e_err_t err;
@@ -137,9 +137,9 @@ e_err_t serial_register(int fd,
     return E_EOK;
 }
 
-e_err_t serial_open(int fd, int oflag)
+struct serial * serial_open(int fd, int oflag)
 {
-    struct serial_dev *serial;
+    struct serial *serial;
     
     ASSERT_PARAM(fd<COMn);
     
@@ -149,35 +149,25 @@ e_err_t serial_open(int fd, int oflag)
     
     os_sem_wait(serial->sem, OS_WAIT_FOREVER);
     
-    return E_EOK;
+    return serial;
 }
 
-void serial_close(int fd)
+void serial_close(struct serial *serial)
 {
-    struct serial_dev *serial;
-    
-    ASSERT_PARAM(fd<COMn);
-    
-    serial = serials[fd];
-    
-    ASSERT_PARAM(serial!=NULL);
+    if(serial==NULL)
+        return;
     
     os_sem_release(serial->sem);
 }
 
-e_size_t serial_write(int fd,
+e_size_t serial_write(struct serial *serial,
                 const void *buffer,
                 e_size_t size)
 {
-    struct serial_dev *serial;
-    
     e_size_t ret = 0;
     
-    ASSERT_PARAM(fd<COMn);
-    
-    serial = serials[fd];
-    
-    ASSERT_PARAM(serial!=NULL);
+    if(serial==NULL)
+        return 0;
 
     if(serial->flag&SERIAL_FLAG_INT_TX)
     {
@@ -191,19 +181,14 @@ e_size_t serial_write(int fd,
     return ret;
 }
 
-e_size_t serial_read(int fd, 
+e_size_t serial_read(struct serial *serial, 
                 void *buffer,
                 e_size_t size)
 {
-    struct serial_dev *serial;
-    
     e_size_t ret = 0;
     
-    ASSERT_PARAM(fd<COMn);
-    
-    serial = serials[fd];
-    
-    ASSERT_PARAM(serial!=NULL);
+    if(serial==NULL)
+        return 0;
     
     if(serial->flag&SERIAL_FLAG_INT_RX)
     {
@@ -219,7 +204,7 @@ e_size_t serial_read(int fd,
 
 
 
-void serial_hw_isr(struct serial_dev *serial, int event)
+void serial_hw_isr(struct serial *serial, int event)
 {
     struct serial_rx_fifo *rx_fifo;
     switch(event&0xFF)
