@@ -10,7 +10,7 @@ e_uint8_t command_rx_buffer[COMMAND_RX_BUFFER_SIZE];
 
 int command_getc(void)
 {
-    int data;
+    char data;
     int ret = -1;
     struct serial *serial = serial_open(COM1, SERIAL_OFLAG_RD);
     if(serial==NULL)
