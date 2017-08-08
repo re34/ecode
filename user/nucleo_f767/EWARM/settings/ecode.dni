@@ -28,7 +28,7 @@ LeaveTargetRunning=_ 0
 stlinkserialNo=67032755
 stlinkfoundProbes=
 [DebugChecksum]
-Checksum=-623892367
+Checksum=2054455393
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -115,7 +115,10 @@ ShowTiming=1
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Count=0
+Bp0=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\drivers\update.c}.16.5" 0 0 1 "" 0 "" 0
+Bp1=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\drivers\update.c}.45.5" 0 0 1 "" 0 "" 0
+Bp2=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\library\lwip\apps\tftp\tftp_server.c}.212.3" 0 0 1 "" 0 "" 0
+Count=3
 [Aliases]
 Count=0
 SuppressDialog=0

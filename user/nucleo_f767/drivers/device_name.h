@@ -31,7 +31,11 @@ enum{
 };
 #define TIMERn      3
 
-
+enum{
+    FLASH1,
+    FLASH2,
+};
+#define FLASHn      2
 
 
 #endif

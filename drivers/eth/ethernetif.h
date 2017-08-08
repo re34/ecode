@@ -21,6 +21,7 @@
 #include "lwip/init.h"
 #include "lwip/dhcp.h"
 #include "lwip/timeouts.h"
+#include "lwip/apps/tftp_server.h"
 
 
 

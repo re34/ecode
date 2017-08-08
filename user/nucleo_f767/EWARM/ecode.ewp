@@ -1948,6 +1948,12 @@
   <group>
     <name>drivers</name>
     <group>
+      <name>chip</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\drivers\chip\flash.c</name>
+      </file>
+    </group>
+    <group>
       <name>eth</name>
       <file>
         <name>$PROJ_DIR$\..\..\..\drivers\eth\ethernetif.c</name>
@@ -2172,6 +2178,12 @@
         </file>
       </group>
       <group>
+        <name>app</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\library\lwip\apps\tftp\tftp_server.c</name>
+        </file>
+      </group>
+      <group>
         <name>arch</name>
         <file>
           <name>$PROJ_DIR$\..\..\..\library\lwip\arch\lwipopts.h</name>
@@ -2392,6 +2404,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\system_stm32f7xx.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\drivers\tftp_update.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\drivers\uart.c</name>

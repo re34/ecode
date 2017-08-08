@@ -4,6 +4,7 @@
 #include "eth.h"
 #include "update.h"
 #include "bootloader.h"
+#include "tftp_update.h"
 
 void board_clock_configuration(void);
 static int print_log_putc(unsigned char c);
@@ -45,6 +46,7 @@ void ecode_hw_board_init()
     
     update_init();
     
+    tftp_update_init();
     
 }
 

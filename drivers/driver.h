@@ -15,5 +15,6 @@
 #include "./oled/oled.h"
 #include "./spi/spi.h"
 #include "./spi/spi_bit.h"
+#include "./chip/flash.h"
 
 #endif
