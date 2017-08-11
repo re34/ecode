@@ -59,7 +59,7 @@ void eth_stream_task(void *args);
 
 void eth_init(void)
 {
-  
+    xSemaphoreEth = os_sem_new(1);
     os_thread_t eth_stream_thread={
         .name = "eth stream",
         .pthread = eth_stream_task,
@@ -256,7 +256,7 @@ void eth_stream_task(void *args)
   LOG_DEBUG("eth stream task running...");
   for(;;)
   {
-    xSemaphoreTake(xSemaphoreEth, portMAX_DELAY);
+    os_sem_wait(xSemaphoreEth, OS_WAIT_FOREVER);
     ethernet_process();
     //delay_ms(1);
   

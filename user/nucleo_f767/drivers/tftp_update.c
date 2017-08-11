@@ -88,23 +88,23 @@ static int tftp_write(void *handle, struct pbuf *p)
     e_uint32_t address;
     e_uint32_t word_count;
     e_uint32_t buffer[128];
+    e_uint16_t i;
 
     
     if(handle==NULL)
         return 0;
-    
     address = file->address+file->offset;
     LOG_DEBUG("write %d bytes to 0x%x", p->len, address);
+
     pbuf_copy_partial(p, buffer, p->len, 0);
     word_count = p->len/4;
     if((p->len%4)!=0)
       word_count++;
-    while(word_count>0)
+    for(i=0;i<word_count;i++)
     {
-        if(HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, address, *buffer)!=HAL_OK)
+        if(HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, address, buffer[i])!=HAL_OK)
             return -1;
         address += 4;
-        word_count--;
     }
     file->offset+=p->len;
     
