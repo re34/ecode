@@ -1,7 +1,22 @@
 #ifndef	__SYS_ARCH_H__
 #define __SYS_ARCH_H__
 
+#include "rtos.h"
+
+
+
+
 u32_t sys_now(void);
+
+typedef os_sem_t sys_sem_t;
+typedef os_sem_t sys_mutex_t;
+typedef os_mbox_t sys_mbox_t;
+typedef os_thread_t sys_thread_t;
+
+#define SYS_MBOX_NULL   (os_queue_t)0
+#define SYS_SEM_NULL    (os_sem_t)0
+#define SYS_DEFAULT_THREAD_STACK_DEPTH  configMINIMAL_STACK_SIZE
+
 
 /*
 

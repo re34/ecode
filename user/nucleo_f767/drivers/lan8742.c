@@ -290,9 +290,11 @@ static void low_level_init(struct netif *netif)
   
   /* Accept broadcast address and ARP traffic */
   /* don't set NETIF_FLAG_ETHARP if this device is not an ethernet one */
-
+  #if LWIP_ARP
     netif->flags |= NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP;
-  
+  #else 
+    netif->flags |= NETIF_FLAG_BROADCAST;
+  #endif /* LWIP_ARP */
   /* Enable MAC and DMA transmission and reception */
   HAL_ETH_Start(&heth);
 
@@ -312,8 +314,8 @@ static void low_level_init(struct netif *netif)
   HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR , &regvalue);
 
 /* USER CODE BEGIN PHY_POST_CONFIG */ 
-    __HAL_ETH_DMA_CLEAR_IT(&heth, ETH_DMA_IT_R);
-    __HAL_ETH_DMA_CLEAR_IT(&heth, ETH_DMA_IT_NIS);
+    //__HAL_ETH_DMA_CLEAR_IT(&heth, ETH_DMA_IT_R);
+    //__HAL_ETH_DMA_CLEAR_IT(&heth, ETH_DMA_IT_NIS);
 /* USER CODE END PHY_POST_CONFIG */
 
 
@@ -510,8 +512,8 @@ void HAL_ETH_RxCpltCallback(ETH_HandleTypeDef *heth)
     int xhigher_priority_woken = pdFALSE;
     if(lan8742_ops.indicate!=NULL)
         lan8742_ops.indicate(&xhigher_priority_woken);
-    if(xhigher_priority_woken)
-      portYIELD_FROM_ISR(xhigher_priority_woken);
+    //if(xhigher_priority_woken)
+      //portYIELD_FROM_ISR(xhigher_priority_woken);
 }
 
 void ETH_IRQHandler(void)

@@ -1,6 +1,7 @@
 #include "rtos.h"
 #include "types.h"
 #include "print_log.h"
+#include "mem.h"
 
 
 
@@ -14,31 +15,47 @@ static int in_isr_mode(void)
     return __get_IPSR()!=0;
 }
 
-
-
-void rtos_task_create(    TaskFunction_t task,
-                            const char * const name,
-                            const uint16_t stack_depth,
-                            void * const args,
-                            UBaseType_t priority,
-                            TaskHandle_t * const handle )
+static unsigned portBASE_TYPE os_make_priority(os_priority_t priority)
 {
-    xTaskCreate(task, name, stack_depth, args, priority, handle);
-    LOG_DEBUG("task %s created!", name);
+    unsigned portBASE_TYPE fpriority = tskIDLE_PRIORITY;
+    
+    if(priority!=OS_PRIO_ERROR){
+        fpriority += (priority - OS_PRIO_IDLE);
+    }
+    return fpriority;
+} 
+
+e_err_t os_thread_new(os_thread_t *thread)
+{
+
+    if(thread==NULL)
+        return -E_ERROR;
+    
+    if(xTaskCreate(thread->pthread, 
+                    thread->name, 
+                    thread->stacksz, 
+                    thread->args, 
+                    os_make_priority(thread->priority), 
+                    &thread->handle)!=pdTRUE)
+        return -E_ERROR;
+        
+    LOG_DEBUG("thread %s created!priority[%d]", thread->name, os_make_priority(thread->priority));
+    
+    return E_EOK;
 }
 
-void os_task_create(TaskFunction_t task,
-                    const char *name,
-                    const uint16_t stack_depth,
-                    os_priority_t prio,
-                    TaskHandle_t *const handle)
-{
 
-}
-
-os_sem_t os_sem_create(void)
+os_sem_t os_sem_new(e_uint16_t count)
 {
-    return xSemaphoreCreateBinary();
+    os_sem_t sem;
+    if(count==0)
+    {
+        sem = xSemaphoreCreateBinary();
+    }
+    else{
+        sem = xSemaphoreCreateCounting(count, count);
+    }
+    return sem;
 }
 
 e_err_t os_sem_wait(os_sem_t sem, uint32_t millisec)
@@ -46,7 +63,7 @@ e_err_t os_sem_wait(os_sem_t sem, uint32_t millisec)
     TickType_t ticks;
     portBASE_TYPE task_woken = pdFALSE;
     
-    if(!rtos_is_running())
+    if(!os_is_running())
         return E_EOK;
     
     
@@ -74,7 +91,7 @@ e_err_t os_sem_wait(os_sem_t sem, uint32_t millisec)
     return E_EOK;
 }
 
-e_err_t os_sem_release(os_sem_t sem)
+e_err_t os_sem_post(os_sem_t sem)
 {
     portBASE_TYPE task_woken = pdFALSE;
     
@@ -98,9 +115,9 @@ void os_sem_delete(os_sem_t sem)
     vSemaphoreDelete(sem);
 }
 
-os_mutex_t os_mutex_create(void)
+os_mutex_t os_mutex_new(void)
 {
-    return xSemaphoreCreateBinary();
+    return xSemaphoreCreateMutex();
 }
 
 e_err_t os_mutex_lock(os_mutex_t mutex, uint32_t millisec)
@@ -108,7 +125,7 @@ e_err_t os_mutex_lock(os_mutex_t mutex, uint32_t millisec)
     TickType_t ticks;
     portBASE_TYPE task_woken = pdFALSE;
     
-    if(!rtos_is_running())
+    if(!os_is_running())
         return E_EOK;
     
     
@@ -160,7 +177,84 @@ void os_mutex_delete(os_mutex_t mutex)
     vSemaphoreDelete(mutex);
 }
 
-int rtos_is_running(void)
+os_queue_t os_queue_new(e_uint16_t length, e_uint16_t item_size)
+{
+    return xQueueCreate(length, item_size);
+}
+
+void os_queue_delete(os_queue_t queue)
+{
+    vQueueDelete(queue);
+}
+
+e_err_t os_queue_send(os_queue_t queue, void *item, e_uint32_t millisec)
+{
+    TickType_t ticks;
+    portBASE_TYPE task_woken = pdFALSE;
+    
+    if(!os_is_running())
+        return E_EOK;
+    
+    
+    if(millisec==OS_WAIT_FOREVER)
+        ticks = portMAX_DELAY;
+    else if(millisec!=0){
+        ticks = millisec/portTICK_PERIOD_MS;
+        if(ticks == 0)
+            ticks = 1;
+    }
+    
+    if(in_isr_mode()){
+        if(xQueueSendFromISR(queue, item, &task_woken)!=pdTRUE){
+            return -E_ERROR;
+        }
+        else
+        {
+            portEND_SWITCHING_ISR(task_woken);
+        }
+    }
+    else if(xQueueSend(queue, item, ticks)!=pdTRUE)
+    {
+        return -E_ERROR;
+    }
+    return E_EOK;
+}
+
+
+e_err_t os_queue_receive(os_queue_t queue, void *item, e_uint32_t millisec)
+{
+    TickType_t ticks;
+    portBASE_TYPE task_woken = pdFALSE;
+    
+    if(!os_is_running())
+        return E_EOK;
+    
+    
+    if(millisec==OS_WAIT_FOREVER)
+        ticks = portMAX_DELAY;
+    else if(millisec!=0){
+        ticks = millisec/portTICK_PERIOD_MS;
+        if(ticks == 0)
+            ticks = 1;
+    }
+    
+    if(in_isr_mode()){
+        if(xQueueReceiveFromISR(queue, item, &task_woken)!=pdTRUE){
+            return -E_ERROR;
+        }
+        else
+        {
+            portEND_SWITCHING_ISR(task_woken);
+        }
+    }
+    else if(xQueueReceive(queue, item, ticks)!=pdTRUE)
+    {
+        return -E_ERROR;
+    }
+    return E_EOK;
+}
+
+int os_is_running(void)
 {
 #if ( ( INCLUDE_xTaskGetSchedulerState == 1 ) || ( configUSE_TIMERS == 1 ) )
   if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED)
@@ -172,12 +266,13 @@ int rtos_is_running(void)
 #endif      
 }
 
-void rtos_start_scheduler(void)
+void os_kernel_start(void)
 {
+  LOG_DEBUG("os kernel starting...");
   vTaskStartScheduler();
 }
 
-void rtos_systick(void)
+void os_systick(void)
 {
 #if (INCLUDE_xTaskGetSchedulerState  == 1 )
   if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED)

@@ -40,15 +40,13 @@ void ecode_hw_board_init()
     
     update_init();
     
-    tftp_update_init();
-    
 }
 
 void SysTick_Handler(void)
 {
     HAL_IncTick();
     system_time_inc();
-	rtos_systick();
+	os_systick();
 }
 
 #if RTOS_EN==1

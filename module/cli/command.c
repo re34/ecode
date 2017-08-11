@@ -122,7 +122,7 @@ e_size_t command_output(struct cli_dev *cli, void *buffer, e_size_t size)
 
 void command_print_promot(struct command_dev *command)
 {
-    command_puts(command, "arno@ecode$ ");
+  command_puts(command, "arno@ecode# ");
 }
 
 e_err_t command_parsing(struct cli_dev *cli, struct cli_command *cmd)

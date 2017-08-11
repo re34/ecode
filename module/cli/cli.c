@@ -27,8 +27,15 @@ void cli_unregister(struct cli_dev *cli)
 
 e_err_t cli_init(void)
 {
+    os_thread_t cli_thread={
+        .name = "cli",
+        .pthread = cli_task,
+        .stacksz = 512,
+        .priority = OS_PRIO_NORMAL,
+        .args = NULL,
+    };
     
-    rtos_task_create(cli_task,"cli task", 512, NULL, 2, NULL);
+    os_thread_new(&cli_thread);
     
     return E_EOK;
 }

@@ -6,7 +6,15 @@ static void led_task(void *args);
 
 void led_task_init(void)
 {
-    rtos_task_create(led_task, "led_task", 512, NULL, 3, NULL);
+    os_thread_t led_thread={
+        .name = "led",
+        .pthread = led_task,
+        .stacksz = 512,
+        .priority = OS_PRIO_NORMAL,
+        .args = NULL,
+    };
+
+    os_thread_new(&led_thread);
 }
 
 static void led_task(void *args)

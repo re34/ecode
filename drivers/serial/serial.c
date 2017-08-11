@@ -126,9 +126,7 @@ e_err_t serial_register(int fd,
         return -E_ERROR;
     
 
-    serial->sem = os_sem_create();
-    
-    os_sem_release(serial->sem);
+    serial->lock = os_mutex_new();
     
     serials[fd]=serial;
     
@@ -147,7 +145,7 @@ struct serial * serial_open(int fd, int oflag)
     
     ASSERT_PARAM(serial!=NULL);
     
-    os_sem_wait(serial->sem, OS_WAIT_FOREVER);
+    os_mutex_lock(serial->lock, OS_WAIT_FOREVER);
     
     return serial;
 }
@@ -157,7 +155,7 @@ void serial_close(struct serial *serial)
     if(serial==NULL)
         return;
     
-    os_sem_release(serial->sem);
+    os_mutex_unlock(serial->lock);
 }
 
 e_size_t serial_write(struct serial *serial,

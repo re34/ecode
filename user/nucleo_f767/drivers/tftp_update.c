@@ -38,7 +38,8 @@ e_err_t tftp_update_init(void)
 
 static void * tftp_open(const char *fname, const char *mode, u8_t write)
 {
-    if(strcmp(fname,"ecode")!=0)
+  
+    if(strncmp(fname,"ecode",5)!=0)
     {
         return NULL;
     }
@@ -66,6 +67,7 @@ static void * tftp_open(const char *fname, const char *mode, u8_t write)
     
     if(ret!=HAL_OK)
         return NULL;
+  
     return &ftftp_file;
 }
 
@@ -85,40 +87,27 @@ static int tftp_write(void *handle, struct pbuf *p)
     struct tftp_file *file = handle;
     e_uint32_t address;
     e_uint32_t word_count;
-    e_uint8_t rem_count;
-    e_uint8_t *pbuffer;
-    e_uint32_t data;
-    int i;
+    e_uint32_t buffer[128];
+
     
     if(handle==NULL)
         return 0;
     
     address = file->address+file->offset;
+    LOG_DEBUG("write %d bytes to 0x%x", p->len, address);
+    pbuf_copy_partial(p, buffer, p->len, 0);
     word_count = p->len/4;
-    rem_count = p->len%4;
-    pbuffer = p->payload;
-    
+    if((p->len%4)!=0)
+      word_count++;
     while(word_count>0)
     {
-        if(HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, address, *((uint32_t *)pbuffer))!=HAL_OK)
+        if(HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, address, *buffer)!=HAL_OK)
             return -1;
         address += 4;
-        pbuffer += 4;
         word_count--;
-        file->offset += 4;
     }
-    if(rem_count>0)
-    {
-        data = 0;
-        for(i=rem_count-1;i>=0;i--)
-        {
-            data<<=8;
-            data |= ((uint8_t *)pbuffer)[i];
-        }
-        if(HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, address, data)!=HAL_OK)
-            return -2;
-        file->offset += rem_count;
-    }
+    file->offset+=p->len;
+    
 
     return 0;
 }

@@ -109,7 +109,7 @@ struct serial{
     void *serial_rx;
     void *serial_tx;
     
-    os_sem_t sem;
+    os_mutex_t lock;
     
     void *private_data;
 };

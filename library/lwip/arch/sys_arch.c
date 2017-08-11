@@ -10,7 +10,9 @@ u32_t sys_jiffies(void)
 {
     return system_get_time();
 }
-/*
+
+#if !NO_SYS
+
 void sys_init(void)
 {
 
@@ -18,7 +20,8 @@ void sys_init(void)
 
 err_t sys_sem_new(sys_sem_t * sem, u8_t count)
 {
-
+    
+    
 	return ERR_OK;
 }
 
@@ -36,6 +39,8 @@ u32_t sys_arch_sem_wait(sys_sem_t * sem, u32_t timeout)
 err_t sys_mbox_new(sys_mbox_t * mbox, int size)
 {
 	
+    
+    
 	return ERR_OK;
 }
 
@@ -88,4 +93,6 @@ void sys_arch_unprotect(sys_prot_t pval)
 
 }
 
-*/
+#endif
+
+

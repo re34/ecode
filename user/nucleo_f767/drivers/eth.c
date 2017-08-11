@@ -59,19 +59,25 @@ void eth_stream_task(void *args);
 
 void eth_init(void)
 {
+  
+    os_thread_t eth_stream_thread={
+        .name = "eth stream",
+        .pthread = eth_stream_task,
+        .stacksz = 512,
+        .priority = OS_PRIO_HIGH,
+        .args = NULL,
+    };
+    
+    os_thread_new(&eth_stream_thread);
 
-    xTaskCreate(eth_stream_task,
-            "eth_stream_task",
-            512,
-            NULL,
-            5,
-            NULL);
-	xTaskCreate(eth_server_task,
-            "eth_server_task",
-            512,
-            NULL,
-            1,
-            NULL);
+    os_thread_t eth_server_thread={
+        .name = "eth server",
+        .pthread = eth_server_task,
+        .stacksz = 512,
+        .priority = OS_PRIO_NORMAL,
+        .args = NULL,
+    };
+	os_thread_new(&eth_server_thread);
 }
 
 #if USE_DHCP==1
@@ -140,12 +146,7 @@ void dhcp_process(void)
 
 void ethernet_rx_indicate(int * xhigher_priority_woken)
 {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    
-    xSemaphoreGiveFromISR(xSemaphoreEth,&xHigherPriorityTaskWoken);
-
-    *xhigher_priority_woken = xHigherPriorityTaskWoken;
-    //portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    os_sem_post(xSemaphoreEth);
 }
 
 void ethernet_process(void)
@@ -250,12 +251,14 @@ void eth_stream_task(void *args)
         dhcp_state = DHCP_START;
     }
 #endif
-    
+    tftp_update_init();
+
   LOG_DEBUG("eth stream task running...");
   for(;;)
   {
     xSemaphoreTake(xSemaphoreEth, portMAX_DELAY);
     ethernet_process();
+    //delay_ms(1);
   
   }
 }

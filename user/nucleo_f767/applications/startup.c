@@ -17,7 +17,7 @@ void main(void)
 
 	ecode_startup();
 
-	rtos_start_scheduler();
+	os_kernel_start();
 }
 
 
